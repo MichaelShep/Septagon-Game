@@ -21,7 +21,8 @@ public class Engine extends Vehicle
         this.id = id;
     }
 
-
+    /* When fire engine is in range of the station it will refill
+    at the rate defined in fillSpeed*/
     public void fill()
     {
         if (this.volume <= (this.maxVolume - this.fillSpeed)) 

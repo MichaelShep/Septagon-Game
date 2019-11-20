@@ -1,7 +1,8 @@
 package com.septagon.entites;
 
 /*
- * Class that will be used to define all the tiles in the game
+ * Class that will be used to define all the different entities that are not
+ * under the control of the player or the enemy
  */
 
 public class Tile extends Entity 
