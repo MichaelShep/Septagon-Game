@@ -1,5 +1,9 @@
 package com.septagon.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 /*
 Child class of the State class that will manage the system when the user is in the game
  */
@@ -24,8 +28,10 @@ public class GameState extends State
     {
     }
 
-    public void render()
+    public void render(SpriteBatch batch)
     {
+    	Gdx.gl.glClearColor(1, 0, 0, 1);
+    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     public void pauseGame() {}

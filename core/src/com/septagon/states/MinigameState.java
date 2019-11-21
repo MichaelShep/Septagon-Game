@@ -1,5 +1,7 @@
 package com.septagon.states;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 /*
 Child of State class that will be used to manage the system when the user is playing the minigame
  */
@@ -21,7 +23,7 @@ public class MinigameState extends State
     {
     }
 
-    public void render()
+    public void render(SpriteBatch batch)
     {
     }
 
