@@ -4,10 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.states.GameState;
@@ -27,6 +30,8 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	public final static float VP_WIDTH = 1280 * INV_SCALE;
 	public final static float VP_HEIGHT = 720 * INV_SCALE;
 
+	private Boolean projectionMatrixSet = false;
+
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
 	private ShapeRenderer shapes;
@@ -35,6 +40,12 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	//Initialises and creates all variables and objects in the game
 	public void create () 
 	{
+		camera = new OrthographicCamera();
+		// pick a viewport that suits your thing, ExtendViewport is a good start
+		viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
+		// ShapeRenderer so we can see our touch point
+		shapes = new ShapeRenderer();
+		Gdx.input.setInputProcessor(this);
 		batch = new SpriteBatch();
 		
 		//Intialise all variables with default values
@@ -60,6 +71,9 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		
 		//Anything between begin and end is used to render our whole game
 		batch.begin();
+
+		shapes.setProjectionMatrix(camera.combined);
+		shapes.end();
 		
 		//Render the current state of the game
 		stateManager.render(batch);
@@ -87,7 +101,7 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	@Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		// ignore if its not left mouse button or first touch pointer
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
-		camera.unproject(tp.set(screenX, screenY, 0));
+		//camera.unproject(tp.set(screenX, screenY, 0));
 		dragging = true;
 		return true;
 	}
@@ -105,10 +119,10 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		return true;
 	}
 
-	@Override public void resize (int width, int height) {
+	/*@Override public void resize (int width, int height) {
 		// viewport must be updated for it to work properly
 		viewport.update(width, height, true);
-	}
+	}*/
 
 
 	@Override public boolean keyDown (int keycode) {
