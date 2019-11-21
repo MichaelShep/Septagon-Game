@@ -25,7 +25,7 @@ public class MenuState extends State
 
     public void initialise()
     {
-
+    	System.out.println("PLZZZZ");
     }
 
     public void update()
