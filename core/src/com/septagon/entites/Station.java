@@ -1,7 +1,7 @@
 package com.septagon.entites;
 
 /*
- * Class that will be used to define all the fire stations in the game
+ * Class that will be used to define the fire stations in the game
  */
 
 public class Station extends Entity

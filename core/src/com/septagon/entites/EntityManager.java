@@ -1,8 +1,8 @@
 package com.septagon.entites;
 
 /*
- * Class that will be used to handle the processing of all entities in the 
- * game
+ * Class that will be used to keep track of and handle the processing
+ * of all entities in the game
  */
 
 public class EntityManager 
