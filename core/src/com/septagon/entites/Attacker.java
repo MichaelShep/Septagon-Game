@@ -5,6 +5,8 @@ package com.septagon.entites;
  * for all entities in the game that will be able to attack other entities
  */
 
+import com.badlogic.gdx.graphics.Texture;
+
 public abstract class Attacker extends Entity
 {
     protected int health;
@@ -13,7 +15,7 @@ public abstract class Attacker extends Entity
     protected String alignment;
 
 
-    public Attacker(int x, int y, int width, int height, int texture, char orientation, int health, int damage, int range, String alignment)
+    public Attacker(int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment)
     {
         super(x,y,width,height,texture,orientation);
         this.health = health;

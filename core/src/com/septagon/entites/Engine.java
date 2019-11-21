@@ -5,14 +5,16 @@ package com.septagon.entites;
  * in the game
  */
 
-public class Engine extends Vehicle 
+import com.badlogic.gdx.graphics.Texture;
+
+public class Engine extends Vehicle
 {
     private int volume;
     private int maxVolume;
     private int fillSpeed;
     private Integer id;
 
-    public Engine(int x, int y, int width, int height, int texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
+    public Engine(int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
     {
         super(x,y,width,height,texture,orientation,health,damage,range,alignment,speed,direction);
         this.volume = volume;

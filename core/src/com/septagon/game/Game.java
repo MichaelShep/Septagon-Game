@@ -2,17 +2,34 @@ package com.septagon.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.states.GameState;
 import com.septagon.states.State;
 import com.septagon.states.StateManager;
 
-public class Game extends ApplicationAdapter
+public class Game extends ApplicationAdapter implements InputProcessor
 {
 	private SpriteBatch batch;
 	private State startState;
 	private StateManager stateManager;
+
+	// we will use 32px/unit in world
+	public final static float SCALE = 32f;
+	public final static float INV_SCALE = 1.f/SCALE;
+	// this is our "target" resolution, not that the window can be any size, it is not bound to this one
+	public final static float VP_WIDTH = 1280 * INV_SCALE;
+	public final static float VP_HEIGHT = 720 * INV_SCALE;
+
+	private OrthographicCamera camera;
+	private ExtendViewport viewport;
+	private ShapeRenderer shapes;
 	
 	@Override
 	//Initialises and creates all variables and objects in the game
@@ -57,4 +74,58 @@ public class Game extends ApplicationAdapter
 	{
 		batch.dispose();
 	}
+
+
+	Vector3 tp = new Vector3();
+	boolean dragging;
+	@Override public boolean mouseMoved (int screenX, int screenY) {
+		// we can also handle mouse movement without anything pressed
+//		camera.unproject(tp.set(screenX, screenY, 0));
+		return false;
+	}
+
+	@Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		// ignore if its not left mouse button or first touch pointer
+		if (button != Input.Buttons.LEFT || pointer > 0) return false;
+		camera.unproject(tp.set(screenX, screenY, 0));
+		dragging = true;
+		return true;
+	}
+
+	@Override public boolean touchDragged (int screenX, int screenY, int pointer) {
+		if (!dragging) return false;
+		camera.unproject(tp.set(screenX, screenY, 0));
+		return true;
+	}
+
+	@Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		if (button != Input.Buttons.LEFT || pointer > 0) return false;
+		camera.unproject(tp.set(screenX, screenY, 0));
+		dragging = false;
+		return true;
+	}
+
+	@Override public void resize (int width, int height) {
+		// viewport must be updated for it to work properly
+		viewport.update(width, height, true);
+	}
+
+
+	@Override public boolean keyDown (int keycode) {
+		return false;
+	}
+
+	@Override public boolean keyUp (int keycode) {
+		return false;
+	}
+
+	@Override public boolean keyTyped (char character) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
+		return false;
+	}
 }
+
+
