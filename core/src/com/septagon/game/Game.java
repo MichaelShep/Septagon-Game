@@ -27,8 +27,8 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	public final static float SCALE = 32f;
 	public final static float INV_SCALE = 1.f/SCALE;
 	// this is our "target" resolution, not that the window can be any size, it is not bound to this one
-	public final static float VP_WIDTH = 1280 * INV_SCALE;
-	public final static float VP_HEIGHT = 720 * INV_SCALE;
+	public final static float VP_WIDTH = 640 * INV_SCALE;
+	public final static float VP_HEIGHT = 480 * INV_SCALE;
 
 	private Boolean projectionMatrixSet = false;
 
@@ -40,7 +40,12 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	//Initialises and creates all variables and objects in the game
 	public void create () 
 	{
+		//Set up the games camera and make it so that y = 0 is at the bottom of the screen
+		//not the top
 		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(200, 1000, 0);
+		camera.update();
 		// pick a viewport that suits your thing, ExtendViewport is a good start
 		viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
 		// ShapeRenderer so we can see our touch point
@@ -49,7 +54,7 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		batch = new SpriteBatch();
 		
 		//Intialise all variables with default values
-		startState = new GameState();
+		startState = new GameState(camera);
 		stateManager = new StateManager();
 		
 		//Set the current state of the game to be the GameState and 
@@ -69,6 +74,7 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		//Updates the current state of the game
 		stateManager.update();
 		
+		batch.setProjectionMatrix(camera.combined);
 		//Anything between begin and end is used to render our whole game
 		batch.begin();
 
