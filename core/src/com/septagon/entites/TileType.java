@@ -47,21 +47,13 @@ public enum TileType
 		return name;
 	}
 	
-	public TextureRegion getTexture()
-	{
-		//gets the texture of the current tile from the larger image
-		return new TextureRegion(tilesImage, (id-1)*TILE_IMAGE_SIZE, 0, TILE_IMAGE_SIZE, TILE_IMAGE_SIZE);
-	}
-	
 	private static HashMap<Integer, TileType> tileMap;
-	private static Texture tilesImage;
 	
 	//Sets up the hash map containing ids that link with the tile types and also the image for all tiles
 	//MUST BE CALLED BEFORE TILEMAP CAN BE USED
 	public static void setupTileTypeMap()
 	{
 		tileMap = new HashMap<Integer, TileType>();
-		tilesImage = new Texture(Gdx.files.internal("tiles.png"));
 		
 		for(TileType tileType: TileType.values())
 		{

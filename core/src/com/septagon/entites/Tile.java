@@ -27,7 +27,6 @@ public class Tile extends Entity
     
     public void render(SpriteBatch batch)
     {
-    	batch.draw(type.getTexture(), x, y, width, height);
     }
     
     public TileType getType()

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.septagon.entites.Tile;
 import com.septagon.entites.TileType;
@@ -41,21 +42,6 @@ public class GameState extends State
 
     public void update()
     {
-    	//Test code to output the tile that has been clicked on
-    	if(Gdx.input.justTouched())
-    	{
-    		//Convert the coordinates of the mouse press on the screen to the mouse press in the
-    		//game world/map
-    		Vector3 position = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-    		Tile tile = gameMap.getTileByLocation(1, (int)position.x, (int)position.y);
-    		if(tile != null)
-    		{
-    			//Prints out the type of tile that the user pressed on
-    			TileType type = tile.getType();
-    			System.out.println("You clicked on a " + type.getName() + " tile");
-    		}
-    	}
-    	
     	gameMap.update();
     }
 
@@ -74,7 +60,7 @@ public class GameState extends State
     	}
     	
     	//Render the map for our game
-    	gameMap.render(batch);
+    	gameMap.render(camera);
     }
 
     public void pauseGame() {}

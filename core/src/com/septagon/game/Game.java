@@ -44,7 +44,7 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		//not the top
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(200, 1000, 0);
+		camera.position.set(0, 0, 0);
 		camera.update();
 		// pick a viewport that suits your thing, ExtendViewport is a good start
 		viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
