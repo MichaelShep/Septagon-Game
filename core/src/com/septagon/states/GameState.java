@@ -51,14 +51,7 @@ public class GameState extends State
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     	
-    	
-    	//Bit of test input code to allow us to move the camera around
-    	if(Gdx.input.isTouched())
-    	{
-    		camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
-    		camera.update();
-    	}
-    	
+
     	//Render the map for our game
     	gameMap.render(camera);
     }

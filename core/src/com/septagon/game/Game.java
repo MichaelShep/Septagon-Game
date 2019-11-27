@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -30,11 +31,14 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	public final static float VP_WIDTH = 640 * INV_SCALE;
 	public final static float VP_HEIGHT = 480 * INV_SCALE;
 
-	private Boolean projectionMatrixSet = false;
 
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
 	private ShapeRenderer shapes;
+
+	private Boolean touched = false;
+
+
 	
 	@Override
 	//Initialises and creates all variables and objects in the game
@@ -85,7 +89,18 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		stateManager.render(batch);
 		
 		batch.end();
-		
+
+
+		if (touched){
+			shapes.begin(ShapeRenderer.ShapeType.Filled);
+			shapes.setColor(0, 0, 1, 0);
+			shapes.rect(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 32, 96);
+			shapes.rect(Gdx.input.getX(), camera.viewportHeight - Gdx.input.getY(), 96, 32);
+			System.out.println("Running");
+			shapes.end();
+		}
+
+
 	}
 	
 	@Override
@@ -108,12 +123,16 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		// ignore if its not left mouse button or first touch pointer
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
 		//camera.unproject(tp.set(screenX, screenY, 0));
+		touched = !touched;
 		dragging = true;
 		return true;
 	}
 
 	@Override public boolean touchDragged (int screenX, int screenY, int pointer) {
 		if (!dragging) return false;
+		touched = false;
+		camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
+		camera.update();
 		camera.unproject(tp.set(screenX, screenY, 0));
 		return true;
 	}
