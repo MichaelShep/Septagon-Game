@@ -13,7 +13,9 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.states.GameState;
 import com.septagon.states.State;
 import com.septagon.states.StateManager;
@@ -35,8 +37,12 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
 	private ShapeRenderer shapes;
+	private FitViewport shapeViewport;
+	private Stage stage;
 
 	private Boolean touched = false;
+	private int xCoord;
+	private int yCoord;
 
 
 	
@@ -44,6 +50,7 @@ public class Game extends ApplicationAdapter implements InputProcessor
 	//Initialises and creates all variables and objects in the game
 	public void create () 
 	{
+		batch = new SpriteBatch();
 		//Set up the games camera and make it so that y = 0 is at the bottom of the screen
 		//not the top
 		camera = new OrthographicCamera();
@@ -54,8 +61,9 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
 		// ShapeRenderer so we can see our touch point
 		shapes = new ShapeRenderer();
+		shapeViewport = new FitViewport(640, 480);
+		stage = new Stage(shapeViewport, batch);
 		Gdx.input.setInputProcessor(this);
-		batch = new SpriteBatch();
 		
 		//Intialise all variables with default values
 		startState = new GameState(camera);
@@ -82,21 +90,18 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		//Anything between begin and end is used to render our whole game
 		batch.begin();
 
-		shapes.setProjectionMatrix(camera.combined);
-		shapes.end();
 		
 		//Render the current state of the game
 		stateManager.render(batch);
 		
 		batch.end();
 
-
+		batch.setProjectionMatrix(stage.getCamera().combined);
 		if (touched){
 			shapes.begin(ShapeRenderer.ShapeType.Filled);
 			shapes.setColor(0, 0, 1, 0);
-			shapes.rect(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 32, 96);
-			shapes.rect(Gdx.input.getX(), camera.viewportHeight - Gdx.input.getY(), 96, 32);
-			System.out.println("Running");
+			shapes.rect(xCoord, Gdx.graphics.getHeight() - yCoord - 32, 32, 96);
+			shapes.rect(xCoord - 32, camera.viewportHeight - yCoord, 96, 32);
 			shapes.end();
 		}
 
@@ -124,6 +129,8 @@ public class Game extends ApplicationAdapter implements InputProcessor
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
 		//camera.unproject(tp.set(screenX, screenY, 0));
 		touched = !touched;
+		xCoord = Gdx.input.getX();
+		yCoord = Gdx.input.getY();
 		dragging = true;
 		return true;
 	}
