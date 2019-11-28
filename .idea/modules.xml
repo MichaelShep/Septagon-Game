@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SEPRGame.iml" filepath="$PROJECT_DIR$/.idea/modules/SEPRGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/SEPRGame.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.test.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/SEPRGame.desktop.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Septagon Project.iml" filepath="$PROJECT_DIR$/.idea/Septagon Project.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Septagon_Project.iml" filepath="$PROJECT_DIR$/.idea/modules/Septagon_Project.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon_Project.core.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.test.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon_Project.desktop.test.iml" />
     </modules>
   </component>
 </project>
