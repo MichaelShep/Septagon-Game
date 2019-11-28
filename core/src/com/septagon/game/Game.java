@@ -98,8 +98,8 @@ public class Game extends ApplicationAdapter implements InputProcessor
 
 		batch.setProjectionMatrix(stage.getCamera().combined);
 		if (touched){
-			shapes.begin(ShapeRenderer.ShapeType.Filled);
-			shapes.setColor(0, 0, 1, 0);
+			shapes.begin(ShapeRenderer.ShapeType.Line);
+			shapes.setColor(0, 0, 1, 1);
 			shapes.rect(xCoord, Gdx.graphics.getHeight() - yCoord - 32, 32, 96);
 			shapes.rect(xCoord - 32, camera.viewportHeight - yCoord, 96, 32);
 			shapes.end();
