@@ -12,7 +12,7 @@ public class SettingsState extends State
 {
     public SettingsState(InputManager inputManager, BitmapFont font)
     {
-        super(inputManager, font);
+        super(inputManager, font, StateID.SETTINGS);
     }
 
     public void initialise()

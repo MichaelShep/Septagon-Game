@@ -14,7 +14,7 @@ public class MinigameState extends State
 
     public MinigameState(InputManager inputManager, BitmapFont font)
     {
-        super(inputManager, font);
+        super(inputManager, font, StateID.MINIGAME);
         score = 0;
     }
 

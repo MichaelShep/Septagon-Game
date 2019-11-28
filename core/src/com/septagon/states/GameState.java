@@ -46,7 +46,7 @@ public class GameState extends State
 
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
     {
-        super(inputManager, font);
+        super(inputManager, font, StateID.GAME);
     	this.camera = camera;
     	this.batch = batch;
         timePassed = 0;

@@ -16,7 +16,7 @@ public class GameOverState extends State
 
     public GameOverState(InputManager inputManager, BitmapFont font)
     {
-        super(inputManager, font);
+        super(inputManager, font, StateID.GAME_OVER);
         gameOverLabel = "";
         scoreLabel = "";
         playAgainLabel = "";

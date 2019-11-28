@@ -11,6 +11,7 @@ public class DesktopLauncher
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
+		config.forceExit = true;
 		new LwjglApplication(new Game(), config);
 	}
 }

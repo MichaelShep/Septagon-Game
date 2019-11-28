@@ -14,7 +14,7 @@ public class HelpState extends State
 
     public HelpState(InputManager inputManager, BitmapFont font)
     {
-        super(inputManager, font);
+        super(inputManager, font, StateID.HELP);
         helpLabel = "";
     }
 

@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.states.GameState;
+import com.septagon.states.MenuState;
 import com.septagon.states.State;
 import com.septagon.states.StateManager;
 
@@ -45,16 +46,16 @@ public class Game extends ApplicationAdapter
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("GameFont.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		parameter.size = 32;
-		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:";
+		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:-";
 		font = generator.generateFont(parameter);
 		generator.dispose();
 
-		inputManager = new InputManager(camera);
-		Gdx.input.setInputProcessor(inputManager);
-		
 		//Intialise all variables with default values
-		startState = new GameState(inputManager, font, batch, camera);
+		startState = new MenuState(inputManager, font);
 		stateManager = new StateManager();
+
+		inputManager = new InputManager(camera, stateManager, font, batch);
+		Gdx.input.setInputProcessor(inputManager);
 		
 		//Set the current state of the game to be the GameState and 
 		//initialise this state

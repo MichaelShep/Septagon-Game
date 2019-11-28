@@ -36,6 +36,7 @@ public class StateManager
 
     public void changeState(State newState)
     {
+        newState.initialise();
     	states.add(newState);
     	currentIndex = states.indexOf(newState);
     }
@@ -45,4 +46,5 @@ public class StateManager
     }
     
     public int getCurrentIndex() { return currentIndex; }
+    public State getCurrentState() { return states.get(currentIndex); }
 }
