@@ -62,6 +62,9 @@ public class GameState extends State
         shapeViewport = new FitViewport(640, 480);
         stage = new Stage(shapeViewport, batch);
 
+        camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+        camera.update();
+
         gameMap = new TiledGameMap();
     	//Initialises the tileType hash map
     	TileType.setupTileTypeMap();
@@ -125,4 +128,7 @@ public class GameState extends State
     public void setTimePassed(int timePassed) {
         this.timePassed = timePassed;
     }
+
+    public int getMapWidth() { return gameMap.getMapWidth(); }
+    public int getMapHeight() { return gameMap.getMapHeight(); }
 }

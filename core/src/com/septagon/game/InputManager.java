@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.septagon.entites.Tile;
 import com.septagon.states.*;
 
 public class InputManager implements InputProcessor
@@ -56,9 +57,18 @@ public class InputManager implements InputProcessor
     {
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
+            GameState currentState = (GameState) stateManager.getCurrentState();
             if (!dragging) return false;
             touched = false;
-            camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY(), 0);
+            float newX = camera.position.x - Gdx.input.getDeltaX();
+            float newY = camera.position.y + Gdx.input.getDeltaY();
+
+            if(newX >= Gdx.graphics.getWidth() / 2 && newX <= currentState.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2)
+                camera.translate(-Gdx.input.getDeltaX(), 0, 0);
+
+            if(newY >= Gdx.graphics.getHeight()/2 && newY <= currentState.getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2)
+                camera.translate(0, Gdx.input.getDeltaY(), 0);
+
             camera.update();
             camera.unproject(tp.set(screenX, screenY, 0));
         }
