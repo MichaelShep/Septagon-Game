@@ -9,6 +9,8 @@
     <orderEntry type="module" module-name="Septagon-Game.desktop.main" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.10" level="project" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-platform:natives-desktop:1.9.10" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-freetype-platform:natives-desktop:1.9.10" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-freetype:1.9.10" level="project" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:1.9.10" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl_util:2.9.3" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl:2.9.3" level="project" />

@@ -7,6 +7,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Septagon-Game.core.main" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-freetype:1.9.10" level="project" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:1.9.10" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="Septagon-Game.core.main" />

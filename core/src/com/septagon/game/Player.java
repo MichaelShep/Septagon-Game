@@ -24,8 +24,4 @@ public class Player
         this.engines.remove(index);
     }
 
-
-    public void handleUserInput()
-    {
-    }
 }
