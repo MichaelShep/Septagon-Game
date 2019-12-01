@@ -1,20 +1,16 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.entites.Engine;
-import com.septagon.entites.Tile;
 import com.septagon.entites.TileType;
 import com.septagon.entites.TiledGameMap;
 import com.septagon.game.InputManager;
@@ -47,11 +43,13 @@ public class GameState extends State
     private boolean paused = false;
     private int minigameScore;
 
-    //Loads all engine textures and adds them to the player class (also initiated here)
+    //Loads textures initiates engines with these textures
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
     private Engine engine1 = new Engine(0,0,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
     private Engine engine2 = new Engine(100,100,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
+
+    //Creates player class to contain list of engines
     private Player player = new Player();
 
 
@@ -74,7 +72,7 @@ public class GameState extends State
 
         // ShapeRenderer so we can see our touch point
         shapes = new ShapeRenderer();
-        shapeViewport = new FitViewport(640, 480);
+        shapeViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(shapeViewport, batch);
 
         camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
@@ -102,6 +100,7 @@ public class GameState extends State
 
         //Render engines
         SpriteBatch batch1 = new SpriteBatch();
+        batch1.setProjectionMatrix(camera.combined);
         batch1.begin();
         engine1.render(batch1);
         engine2.render(batch1);
@@ -111,11 +110,19 @@ public class GameState extends State
         batch.setProjectionMatrix(stage.getCamera().combined);
         if (inputManager.isTouched())
         {
-            shapes.begin(ShapeRenderer.ShapeType.Line);
-            shapes.setColor(0, 0, 1, 1);
-            shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
-            shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
-            shapes.end();
+            if ((inputManager.getXCoord() >= engine1.getX() && inputManager.getXCoord() <= engine1.getX() + 64) && (camera.viewportHeight - inputManager.getYCoord() >= engine1.getY() && camera.viewportHeight - inputManager.getYCoord() <= engine1.getY() + 64)){
+                shapes.begin(ShapeRenderer.ShapeType.Line);
+                shapes.setColor(0, 0, 1, 1);
+                shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
+                shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
+                shapes.end();
+            }else{
+                shapes.begin(ShapeRenderer.ShapeType.Line);
+                shapes.setColor(0, 1, 1, 1);
+                shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
+                shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
+                shapes.end();
+            }
         }
 
     }
