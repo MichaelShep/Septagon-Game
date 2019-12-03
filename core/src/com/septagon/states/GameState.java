@@ -12,10 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.entites.Engine;
-import com.septagon.entites.TileType;
+import com.septagon.entites.Tile;
 import com.septagon.entites.TiledGameMap;
 import com.septagon.game.InputManager;
 import com.septagon.game.Player;
+
+import java.util.ArrayList;
 
 /*
 Child class of the State class that will manage the system when the user is in the game
@@ -56,8 +58,12 @@ public class GameState extends State
     private Engine engine1;
     private Engine engine2;
 
+    private float currentCameraX, currentCameraY;
+
     //Creates player class to contain list of engines
     private Player player = new Player();
+
+    private ArrayList<Tile> tiles = new ArrayList<Tile>();
 
 
     //Constructor that initialises all neccessary variables and also takes in all required values from the game
@@ -68,6 +74,8 @@ public class GameState extends State
     	this.batch = batch;
         timePassed = 0;
         minigameScore = 0;
+        currentCameraX = 0;
+        currentCameraY = 0;
     }
 
     //Sets up all the objects in our game
@@ -94,7 +102,6 @@ public class GameState extends State
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
-        TileType.setupTileTypeMap();
         gameMap.initialise();
 
         //Moves the camera to its starting position and makes sure the screen gets updated after this
@@ -103,6 +110,16 @@ public class GameState extends State
         camera.update();
 
         objectBatch.setProjectionMatrix(camera.combined);
+
+        //Create objects referring to all tiles in game
+        for(int y = 0; y < gameMap.getMapHeight(); y++)
+        {
+            for(int x = 0; x < gameMap.getMapWidth(); x++)
+            {
+                if(gameMap.getTileByCoordinate(0, x, y) != null)
+                    tiles.add(gameMap.getTileByCoordinate(0, x, y));
+            }
+        }
     }
 
     //Update all objects in the game
@@ -110,6 +127,16 @@ public class GameState extends State
     {
     	gameMap.update();
     	player.update();
+    	currentCameraX = camera.position.x;
+    	currentCameraY = camera.position.y;
+    }
+
+    public void touchedTile(float x, float y)
+    {
+        for(Tile t: tiles)
+        {
+            t.checkIfIntesectedWith(x, y);
+        }
     }
 
     public void render(SpriteBatch batch)
@@ -164,6 +191,17 @@ public class GameState extends State
     {
         return timePassed;
     }
+
+    public float getCurrentCameraX()
+    {
+        return currentCameraX;
+    }
+
+    public float getCurrentCameraY()
+    {
+        return currentCameraY;
+    }
+
 
     public boolean isPaused()
     {
