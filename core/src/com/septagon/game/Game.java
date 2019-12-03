@@ -58,13 +58,13 @@ public class Game extends ApplicationAdapter
 	//Render all objects onto the screen - called every frame
 	public void render () 
 	{
+		//Updates the current state of the game
+		stateManager.update();
+
 		//Used to clear the background of the screen to black
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		//Updates the current state of the game
-		stateManager.update();
-		
+
 		batch.setProjectionMatrix(camera.combined);
 		//Anything between begin and end is used to render our whole game
 		batch.begin();

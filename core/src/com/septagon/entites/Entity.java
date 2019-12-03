@@ -32,7 +32,7 @@ public abstract class Entity
     public int getY(){ return this.y; }
     public int getWidth(){ return this.width;}
     public int getHeight(){ return this.height;}
-    public Texture getTexture() { return  this.texture;}
+    public Texture getTexture() { return this.texture;}
     public char getOrientation() { return this.orientation;}
 
 

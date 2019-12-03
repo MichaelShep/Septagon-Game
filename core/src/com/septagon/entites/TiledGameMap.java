@@ -73,7 +73,6 @@ public class TiledGameMap
 				int id = tile.getId();
 				return new Tile(col * Tile.TILE_SIZE, row * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE,
 						null, 'U', false, false, TileType.getTileById(id));
-
 			}
 		}
 		//If either the cell or the tile doesn't exist, return null

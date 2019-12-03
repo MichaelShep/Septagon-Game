@@ -29,6 +29,11 @@ public class MenuState extends State
     private GlyphLayout layout;
     private int titleCentreX;
 
+    /***
+     * Constructor that set initial values for all class member variables
+     * @param inputManager The games InputManager class so that this class can also handle input
+     * @param font The games font so that the class can draw text to the screen
+     */
     public MenuState(InputManager inputManager, BitmapFont font)
     {
         super(inputManager, font, StateID.MENU);
@@ -67,6 +72,14 @@ public class MenuState extends State
         drawString(batch, 3, exitLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 250);
     }
 
+    /***
+     * Method used to draw each individual string to the screen, based on if it is the current position or not
+     * @param batch The spritebatch that is used for rendering all objects
+     * @param position The position in the list of menu items that the current string is
+     * @param text The text that should be rendered
+     * @param x The x position of the string on the screen
+     * @param y The y position of the string on the screen
+     */
     private void drawString(SpriteBatch batch, int position, String text, float x, float y)
     {
         if(position == menuPosition)
@@ -80,6 +93,7 @@ public class MenuState extends State
         font.draw(batch, text, x, y);
     }
 
+    //Getters and Setters for member variable menuPosition
     public void setMenuPosition(int menuPosition)
     {
         if(menuPosition < 0 || menuPosition >= NUM_MENU_ITEMS)

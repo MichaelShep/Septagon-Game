@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,18 +26,24 @@ public class GameState extends State
     // we will use 32px/unit in world
     public final static float SCALE = 32f;
     public final static float INV_SCALE = 1.f/SCALE;
-    // this is our "target" resolution, not that the window can be any size, it is not bound to this one
+    // this is our "target" resolution, note that the window can be any size, it is not bound to this one
     public final static float VP_WIDTH = 640 * INV_SCALE;
     public final static float VP_HEIGHT = 480 * INV_SCALE;
 
 	//Camera that control the viewport of the game depending on input
     private OrthographicCamera camera;
+    //Viewport that is used alongside the camera that contains the whole game map
     private ExtendViewport viewport;
+    //Renderer for drawing all none textured items to the screen
     private ShapeRenderer shapes;
+    //Viewport that is used for elements that should stay on the screen at all times
     private FitViewport shapeViewport;
-    private Stage stage;
+    private Stage shapeStage;
+    //Spritebatch that is used for renderering all objects in the game
     private SpriteBatch batch;
-	
+    private SpriteBatch objectBatch;
+
+    //Contains all the information about our game map
 	private TiledGameMap gameMap;
 	
     private int timePassed;
@@ -46,13 +53,14 @@ public class GameState extends State
     //Loads textures initiates engines with these textures
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
-    private Engine engine1 = new Engine(0,0,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
-    private Engine engine2 = new Engine(100,100,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
+    private Engine engine1;
+    private Engine engine2;
 
     //Creates player class to contain list of engines
     private Player player = new Player();
 
 
+    //Constructor that initialises all neccessary variables and also takes in all required values from the game
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
     {
         super(inputManager, font, StateID.GAME);
@@ -62,31 +70,46 @@ public class GameState extends State
         minigameScore = 0;
     }
 
+    //Sets up all the objects in our game
     public void initialise()
     {
+        //Initialises all engines in the game
+        engine1 = new Engine(450,300,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
+        engine2 = new Engine(100,100,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
+
+        //Adds all the engines to the player class's list of engines
         player.addEngine(engine1);
         player.addEngine(engine2);
 
-        // pick a viewport that suits your thing, ExtendViewport is a good start
+        // Intialises the game viewport
         viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
 
         // ShapeRenderer so we can see our touch point
         shapes = new ShapeRenderer();
         shapeViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        stage = new Stage(shapeViewport, batch);
+        shapeStage = new Stage(shapeViewport, batch);
+        shapes.setProjectionMatrix(shapeStage.getCamera().combined);
 
+        objectBatch = new SpriteBatch();
+
+        //Creates and initialises the game map
+        gameMap = new TiledGameMap();
+        TileType.setupTileTypeMap();
+        gameMap.initialise();
+
+        //Moves the camera to its starting position and makes sure the screen gets updated after this
         camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.update();
 
-        gameMap = new TiledGameMap();
-    	//Initialises the tileType hash map
-    	TileType.setupTileTypeMap();
-    	gameMap.initialise();
+        objectBatch.setProjectionMatrix(camera.combined);
     }
 
+    //Update all objects in the game
     public void update()
     {
     	gameMap.update();
+    	player.update();
     }
 
     public void render(SpriteBatch batch)
@@ -99,18 +122,23 @@ public class GameState extends State
     	gameMap.render(camera);
 
         //Render engines
-        SpriteBatch batch1 = new SpriteBatch();
-        batch1.setProjectionMatrix(camera.combined);
-        batch1.begin();
-        engine1.render(batch1);
-        engine2.render(batch1);
-        batch1.end();
+        //SpriteBatch batch1 = new SpriteBatch();
+        //batch1.setProjectionMatrix(camera.combined);
+        //batch1.begin();
+        //engine1.render(batch);
+        //engine2.render(batch1);
+        //batch1.end();
+        objectBatch.setProjectionMatrix(camera.combined);
+        objectBatch.begin();
 
+        player.render(objectBatch);
+        objectBatch.end();
 
-        batch.setProjectionMatrix(stage.getCamera().combined);
         if (inputManager.isTouched())
         {
-            if ((inputManager.getXCoord() >= engine1.getX() && inputManager.getXCoord() <= engine1.getX() + 64) && (camera.viewportHeight - inputManager.getYCoord() >= engine1.getY() && camera.viewportHeight - inputManager.getYCoord() <= engine1.getY() + 64)){
+            if ((inputManager.getXCoord() >= engine1.getX() && inputManager.getXCoord() <= engine1.getX() + 64) &&
+                    (camera.viewportHeight - inputManager.getYCoord() >= engine1.getY() &&
+                            camera.viewportHeight - inputManager.getYCoord() <= engine1.getY() + 64)){
                 shapes.begin(ShapeRenderer.ShapeType.Line);
                 shapes.setColor(0, 0, 1, 1);
                 shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
@@ -124,7 +152,6 @@ public class GameState extends State
                 shapes.end();
             }
         }
-
     }
 
     public void pauseGame() {}
