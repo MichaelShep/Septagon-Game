@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -149,15 +148,8 @@ public class GameState extends State
     	gameMap.render(camera);
 
         //Render engines
-        //SpriteBatch batch1 = new SpriteBatch();
-        //batch1.setProjectionMatrix(camera.combined);
-        //batch1.begin();
-        //engine1.render(batch);
-        //engine2.render(batch1);
-        //batch1.end();
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
-
         player.render(objectBatch);
         objectBatch.end();
 
