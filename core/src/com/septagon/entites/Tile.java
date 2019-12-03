@@ -14,24 +14,20 @@ public class Tile extends Entity
 	
     private boolean inhabitable;
     private boolean occupied;
-    private TileType type;
 
 
-    public Tile(int x, int y, int width, int height, Texture texture, char orientation, Boolean inhabitable, Boolean occupied, TileType type)
+    public Tile(int x, int y, int width, int height, Texture texture, char orientation, Boolean inhabitable, Boolean occupied)
     {
         super(x,y,width,height,texture,orientation);
         this.inhabitable = inhabitable;
         this.occupied = occupied;
-        this.type = type;
-    }
-    
-    public void render(SpriteBatch batch)
-    {
-    }
-    
-    public TileType getType()
-    {
-    	return type;
     }
 
+    public void checkIfIntesectedWith(float x, float y)
+    {
+        if(x >= this.getX() && x <= this.getX() + this.getWidth() && y >= this.getY() && y <= this.getY() + this.getHeight())
+        {
+            System.out.println("Tile X: " + getX() / Tile.TILE_SIZE + ", Tile Y: " + getY() / Tile.TILE_SIZE);
+        }
+    }
 }
