@@ -22,11 +22,15 @@ public class Tile extends Entity
         this.occupied = occupied;
     }
 
-    public void checkIfIntersectedWith(float x, float y)
+    public int[] checkIfIntersectedWith(float x, float y)
     {
         if(x >= this.getX() && x <= this.getX() + this.getWidth() && y >= this.getY() && y <= this.getY() + this.getHeight())
         {
             System.out.println("Tile X: " + getX() / Tile.TILE_SIZE + ", Tile Y: " + getY() / Tile.TILE_SIZE);
+            return new int[]{getX()/ TILE_SIZE, getY()/ TILE_SIZE};
         }
+
+        return new int[]{-1,-1};
+
     }
 }

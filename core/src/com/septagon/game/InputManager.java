@@ -51,7 +51,7 @@ public class InputManager implements InputProcessor
 
             GameState currentState = (GameState) stateManager.getCurrentState();
 
-            currentState.touchedTile((xCoord - Gdx.graphics.getWidth() / 2) + currentState.getCurrentCameraX(), (Gdx.graphics.getHeight() - yCoord) - (Gdx.graphics.getHeight() / 2) + currentState.getCurrentCameraY());
+
 
             dragging = true;
         }

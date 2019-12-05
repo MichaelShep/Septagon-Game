@@ -150,12 +150,16 @@ public class GameState extends State
     	currentCameraY = camera.position.y;
     }
 
-    public void touchedTile(float x, float y)
+    public Boolean touchedTile(float x, float y)
     {
-        for(Tile t: tiles)
-        {
-            t.checkIfIntersectedWith(x, y);
+        for(Tile t: tiles) {
+            for (Engine e: player.getEngines()){
+                if ((t.checkIfIntersectedWith(x, y)[0] == e.getX()) && (t.checkIfIntersectedWith(x, y)[1] == e.getY())){
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     public void render(SpriteBatch batch)
@@ -180,23 +184,20 @@ public class GameState extends State
         entityManager.render(objectBatch);
         objectBatch.end();
 
-        if (inputManager.isTouched())
-        {
-            if ((inputManager.getXCoord() >= engine1.getX() && inputManager.getXCoord() <= engine1.getX() + 64) &&
-                    (camera.viewportHeight - inputManager.getYCoord() >= engine1.getY() &&
-                            camera.viewportHeight - inputManager.getYCoord() <= engine1.getY() + 64)){
-                shapes.begin(ShapeRenderer.ShapeType.Line);
-                shapes.setColor(0, 0, 1, 1);
-                shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
-                shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
-                shapes.end();
-            }else{
-                shapes.begin(ShapeRenderer.ShapeType.Line);
-                shapes.setColor(0, 1, 1, 1);
-                shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
-                shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
-                shapes.end();
-            }
+        if (inputManager.isTouched()){
+            this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
+
+        }
+
+    }
+
+    public void renderMovementGrid(float x, float y){
+        if (this.touchedTile((x - Gdx.graphics.getWidth() / 2) + this.getCurrentCameraX(), (Gdx.graphics.getHeight() - y) - (Gdx.graphics.getHeight() / 2) + this.getCurrentCameraY())){
+            shapes.begin(ShapeRenderer.ShapeType.Line);
+            shapes.setColor(0, 0, 1, 1);
+            shapes.rect((inputManager.getXCoord() / 32)*32, Gdx.graphics.getHeight() - (((inputManager.getYCoord()) / 32)*32) - 32, 32, 96);
+            shapes.rect(((inputManager.getXCoord() / 32)*32) - 32, camera.viewportHeight - ((inputManager.getYCoord() / 32)*32), 96, 32);
+            shapes.end();
         }
     }
 
