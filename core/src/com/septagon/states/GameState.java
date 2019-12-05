@@ -65,6 +65,7 @@ public class GameState extends State
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
 
 
+
     //Constructor that initialises all neccessary variables and also takes in all required values from the game
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
     {
@@ -81,8 +82,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines in the game
-        engine1 = new Engine(450,300,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
-        engine2 = new Engine(100,100,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
+        engine1 = new Engine(0,0,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
+        engine2 = new Engine(35,35,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
 
         //Adds all the engines to the player class's list of engines
         player.addEngine(engine1);
@@ -97,6 +98,7 @@ public class GameState extends State
         shapeStage = new Stage(shapeViewport, batch);
         shapes.setProjectionMatrix(shapeStage.getCamera().combined);
 
+        //This batch is used to render the objects (Engines, ET Fortresses) on top of the map
         objectBatch = new SpriteBatch();
 
         //Creates and initialises the game map
@@ -134,7 +136,7 @@ public class GameState extends State
     {
         for(Tile t: tiles)
         {
-            t.checkIfIntesectedWith(x, y);
+            t.checkIfIntersectedWith(x, y);
         }
     }
 
@@ -147,17 +149,24 @@ public class GameState extends State
     	//Render the map for our game
     	gameMap.render(camera);
 
+    	//render movement grid if needed
+        if (inputManager.isTouched()){
+            this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
+        }
+
         //Render engines
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
         player.render(objectBatch);
         objectBatch.end();
 
-        if (inputManager.isTouched())
-        {
-            if ((inputManager.getXCoord() >= engine1.getX() && inputManager.getXCoord() <= engine1.getX() + 64) &&
-                    (camera.viewportHeight - inputManager.getYCoord() >= engine1.getY() &&
-                            camera.viewportHeight - inputManager.getYCoord() <= engine1.getY() + 64)){
+    }
+
+
+    public void renderMovementGrid(float x, float y){
+            if ((x >= engine1.getX() && x <= engine1.getX() + 64) &&
+                    (camera.viewportHeight - y >= engine1.getY() &&
+                            camera.viewportHeight - y <= engine1.getY() + 64)){
                 shapes.begin(ShapeRenderer.ShapeType.Line);
                 shapes.setColor(0, 0, 1, 1);
                 shapes.rect(inputManager.getXCoord(), Gdx.graphics.getHeight() - inputManager.getYCoord() - 32, 32, 96);
@@ -170,7 +179,6 @@ public class GameState extends State
                 shapes.rect(inputManager.getXCoord() - 32, camera.viewportHeight - inputManager.getYCoord(), 96, 32);
                 shapes.end();
             }
-        }
     }
 
     public void pauseGame() {}

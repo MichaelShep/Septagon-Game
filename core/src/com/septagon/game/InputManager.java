@@ -39,6 +39,7 @@ public class InputManager implements InputProcessor
     }
 
     @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+        //makes sure the current state is the game state then handles what needs to be done on a touch down
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
             // ignore if its not left mouse button or first touch pointer
@@ -49,6 +50,7 @@ public class InputManager implements InputProcessor
             yCoord = Gdx.input.getY();
 
             GameState currentState = (GameState) stateManager.getCurrentState();
+
             currentState.touchedTile((xCoord - Gdx.graphics.getWidth() / 2) + currentState.getCurrentCameraX(), (Gdx.graphics.getHeight() - yCoord) - (Gdx.graphics.getHeight() / 2) + currentState.getCurrentCameraY());
 
             dragging = true;

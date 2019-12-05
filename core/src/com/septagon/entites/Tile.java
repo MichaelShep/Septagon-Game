@@ -6,7 +6,6 @@ package com.septagon.entites;
  */
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Tile extends Entity
 {
@@ -23,7 +22,7 @@ public class Tile extends Entity
         this.occupied = occupied;
     }
 
-    public void checkIfIntesectedWith(float x, float y)
+    public void checkIfIntersectedWith(float x, float y)
     {
         if(x >= this.getX() && x <= this.getX() + this.getWidth() && y >= this.getY() && y <= this.getY() + this.getHeight())
         {
