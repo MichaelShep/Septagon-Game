@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Fortress extends Attacker
 {
-    public Fortress(int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment)
+    public Fortress(int x, int y, int width, int height, Texture texture, int health, int damage, int range)
     {
-        super(x,y,width,height,texture,orientation,health,damage,range,alignment);
+        super(x,y,width,height,texture, 'U', health, damage, range, "ET");
     }
 
 
