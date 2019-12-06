@@ -63,6 +63,9 @@ public class GameState extends State
     private Fortress fortressStation;
     private Fortress fortressMinister;
 
+    private Texture fireStationTexture = new Texture(Gdx.files.internal("images/fireStation.png"));
+    private Station fireStation;
+
     private float currentCameraX, currentCameraY;
 
     //Creates player class to contain list of engines
@@ -93,6 +96,7 @@ public class GameState extends State
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 20);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 20);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 20);
+        fireStation = new Station(42, 6, 256, 128, fireStationTexture, 'U');
 
         entityManager = new EntityManager();
         //Adds all the engines to the player class's list of engines
@@ -106,6 +110,7 @@ public class GameState extends State
         entityManager.addEntity(fortressFire);
         entityManager.addEntity(fortressMinister);
         entityManager.addEntity(fortressStation);
+        entityManager.addEntity(fireStation);
 
         // Intialises the game viewport
         viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
