@@ -14,7 +14,6 @@ public class Tile extends Entity
     private boolean inhabitable;
     private boolean occupied;
 
-
     public Tile(int x, int y, int width, int height, Texture texture, char orientation, Boolean inhabitable, Boolean occupied)
     {
         super(x,y,width,height,texture,orientation);
@@ -22,15 +21,16 @@ public class Tile extends Entity
         this.occupied = occupied;
     }
 
-    public int[] checkIfIntersectedWith(float x, float y)
+    public boolean checkIfClickedInside(float x, float y)
     {
-        if(x >= this.getX() && x <= this.getX() + this.getWidth() && y >= this.getY() && y <= this.getY() + this.getHeight())
+        float worldX = this.getX() * Tile.TILE_SIZE;
+        float worldY = this.getY() * Tile.TILE_SIZE;
+        if(x >= worldX && x <= worldX + Tile.TILE_SIZE && y >= worldY && y <= worldY + Tile.TILE_SIZE)
         {
-            System.out.println("Tile X: " + getX() / Tile.TILE_SIZE + ", Tile Y: " + getY() / Tile.TILE_SIZE);
-            return new int[]{getX()/ TILE_SIZE, getY()/ TILE_SIZE};
+            return true;
         }
 
-        return new int[]{-1,-1};
+        return false;
 
     }
 }
