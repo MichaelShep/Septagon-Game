@@ -55,6 +55,6 @@ public abstract class Entity
 
     public void render(SpriteBatch batch)
     {
-        batch.draw(this.texture, this.x, this.y, this.width, this.height);
+        batch.draw(this.texture, this.x * Tile.TILE_SIZE, this.y * Tile.TILE_SIZE, this.width, this.height);
     }
 }

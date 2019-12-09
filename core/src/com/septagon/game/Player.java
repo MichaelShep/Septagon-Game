@@ -24,19 +24,5 @@ public class Player
         this.engines.remove(index);
     }
 
-    public void update()
-    {
-        for(Engine e: engines)
-        {
-            e.update();
-        }
-    }
-
-    public void render(SpriteBatch batch)
-    {
-        for(Engine e: engines)
-        {
-            e.render(batch);
-        }
-    }
+    public ArrayList<Engine> getEngines() { return engines; }
 }
