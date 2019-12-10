@@ -161,17 +161,35 @@ public class GameState extends State
     {
         for(Tile t: tiles) {
             if(t.checkIfClickedInside(x, y)) {
+                currentlyTouchedTile = t;
+                if (currentEngine != null) {
+                    if (currentlyTouchedTile.isMovable()) {
+                        currentEngine.setX(currentlyTouchedTile.getX());
+                        currentEngine.setY(currentlyTouchedTile.getY());
+                    }
+                }
                 for (Engine e: player.getEngines()){
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
                         System.out.println("Have touched a engine");
-                        currentlyTouchedTile = t;
                         currentEngine = e;
+                        setMovableTiles();
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    public void setMovableTiles(){
+        for(Tile t: tiles){
+            if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
+                (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
+                    t.setMovable(true);
+            }else{
+                t.setMovable(false);
+            }
+        }
     }
 
     public void render(SpriteBatch batch)
@@ -204,9 +222,9 @@ public class GameState extends State
     }
 
     public void renderMovementGrid(float x, float y){
-        if(currentlyTouchedTile != null) {
-            float engineDrawX = currentlyTouchedTile.getX() * Tile.TILE_SIZE - currentCameraX + (Gdx.graphics.getWidth() / 2);
-            float engineDrawY = currentlyTouchedTile.getY() * Tile.TILE_SIZE - currentCameraY + (Gdx.graphics.getHeight() / 2);
+        if(currentlyTouchedTile != null && currentEngine != null) {
+            float engineDrawX = currentEngine.getX() * Tile.TILE_SIZE - currentCameraX + (Gdx.graphics.getWidth() / 2);
+            float engineDrawY = currentEngine.getY() * Tile.TILE_SIZE - currentCameraY + (Gdx.graphics.getHeight() / 2);
 
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(0, 0, 1, 1);

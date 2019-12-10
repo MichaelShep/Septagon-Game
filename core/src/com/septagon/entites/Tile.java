@@ -13,6 +13,7 @@ public class Tile extends Entity
 	
     private boolean inhabitable;
     private boolean occupied;
+    private boolean movable = false;
 
     public Tile(int x, int y, int width, int height, Texture texture, char orientation, Boolean inhabitable, Boolean occupied)
     {
@@ -33,4 +34,17 @@ public class Tile extends Entity
         return false;
 
     }
+
+    //changes the private variable to true if false and false if true
+    public void setMovable(boolean value)
+    {
+        movable = value;
+    }
+
+
+    public boolean isMovable()
+    {
+        return movable;
+    }
+
 }
