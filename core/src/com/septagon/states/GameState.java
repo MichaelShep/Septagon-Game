@@ -183,12 +183,14 @@ public class GameState extends State
 
     public void setMovableTiles(){
         for(Tile t: tiles){
-            if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
-                (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
-                    t.setMovable(true);
-            }else{
-                t.setMovable(false);
-            }
+            if(t.isInhabitable() && !t.isOccupied()){
+                if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
+                    (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
+                        t.setMovable(true);
+                }
+            }else {
+                    t.setMovable(false);
+                }
         }
     }
 

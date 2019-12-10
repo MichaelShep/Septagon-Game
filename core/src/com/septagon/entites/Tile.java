@@ -47,4 +47,13 @@ public class Tile extends Entity
         return movable;
     }
 
+
+    public boolean isInhabitable() {
+        return inhabitable;
+    }
+
+
+    public boolean isOccupied() {
+        return occupied;
+    }
 }
