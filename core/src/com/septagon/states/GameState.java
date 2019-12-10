@@ -73,6 +73,8 @@ public class GameState extends State
     private EntityManager entityManager = new EntityManager();
 
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private Tile currentlyTouchedTile = null;
+    private Engine currentEngine = null;
 
 
     //Constructor that initialises all neccessary variables and also takes in all required values from the game
@@ -91,8 +93,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines in the game
-        engine1 = new Engine(0,0,64,64, engineTexture1,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 01);
-        engine2 = new Engine(40,35,64,64, engineTexture2,'U', 10, 2, 4, "Friendly", 1, 'U', 20, 20, 4, 02);
+        engine1 = new Engine(0,0,32,32, engineTexture1,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 01);
+        engine2 = new Engine(40,35,32,32, engineTexture2,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 20);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 20);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 20);
@@ -158,9 +160,14 @@ public class GameState extends State
     public Boolean touchedTile(float x, float y)
     {
         for(Tile t: tiles) {
-            for (Engine e: player.getEngines()){
-                if ((t.checkIfIntersectedWith(x, y)[0] == e.getX()) && (t.checkIfIntersectedWith(x, y)[1] == e.getY())){
-                    return true;
+            if(t.checkIfClickedInside(x, y)) {
+                for (Engine e: player.getEngines()){
+                    if (t.getX() == e.getX() && t.getY() == e.getY()) {
+                        System.out.println("Have touched a engine");
+                        currentlyTouchedTile = t;
+                        currentEngine = e;
+                        return true;
+                    }
                 }
             }
         }
@@ -189,7 +196,7 @@ public class GameState extends State
         entityManager.render(objectBatch);
         objectBatch.end();
 
-        if (inputManager.isTouched()){
+        if (inputManager.isHasBeenTouched()){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
 
         }
@@ -197,11 +204,19 @@ public class GameState extends State
     }
 
     public void renderMovementGrid(float x, float y){
-        if (this.touchedTile((x - Gdx.graphics.getWidth() / 2) + this.getCurrentCameraX(), (Gdx.graphics.getHeight() - y) - (Gdx.graphics.getHeight() / 2) + this.getCurrentCameraY())){
+        if(currentlyTouchedTile != null) {
+            float engineDrawX = currentlyTouchedTile.getX() * Tile.TILE_SIZE - currentCameraX + (Gdx.graphics.getWidth() / 2);
+            float engineDrawY = currentlyTouchedTile.getY() * Tile.TILE_SIZE - currentCameraY + (Gdx.graphics.getHeight() / 2);
+
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(0, 0, 1, 1);
-            shapes.rect((inputManager.getXCoord() / 32)*32, Gdx.graphics.getHeight() - (((inputManager.getYCoord()) / 32)*32) - 32, 32, 96);
-            shapes.rect(((inputManager.getXCoord() / 32)*32) - 32, camera.viewportHeight - ((inputManager.getYCoord() / 32)*32), 96, 32);
+            shapes.rect(engineDrawX, engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            for(int i = 1; i <= currentEngine.getSpeed(); i++) {
+                shapes.rect(engineDrawX, engineDrawY - (i * Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+                shapes.rect(engineDrawX, engineDrawY + (i * Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
+                shapes.rect(engineDrawX + (i * Tile.TILE_SIZE), engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                shapes.rect(engineDrawX - (i * Tile.TILE_SIZE), engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            }
             shapes.end();
         }
     }

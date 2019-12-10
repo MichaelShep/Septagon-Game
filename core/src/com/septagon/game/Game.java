@@ -54,6 +54,11 @@ public class Game extends ApplicationAdapter
 		stateManager.initialise();
 	}
 
+	public void resize(int width, int height)
+	{
+		
+	}
+
 	@Override
 	//Render all objects onto the screen - called every frame
 	public void render () 

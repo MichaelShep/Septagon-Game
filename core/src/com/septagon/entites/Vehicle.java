@@ -21,4 +21,7 @@ public class Vehicle extends Attacker
     public void move(Character direction, int distance)
     {
     }
+
+    public int getSpeed() { return speed; }
+    public char getDirection() { return direction; }
 }

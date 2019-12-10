@@ -20,9 +20,9 @@ public class InputManager implements InputProcessor
     private BitmapFont font;
     private SpriteBatch batch;
 
-    private Boolean touched = false;
-    private int xCoord;
-    private int yCoord;
+    private Boolean hasBeenTouched = false;
+    private float xCoord;
+    private float yCoord;
 
     public InputManager(OrthographicCamera camera, StateManager stateManager, BitmapFont font, SpriteBatch batch)
     {
@@ -45,13 +45,18 @@ public class InputManager implements InputProcessor
             // ignore if its not left mouse button or first touch pointer
             if (button != Input.Buttons.LEFT || pointer > 0) return false;
             //camera.unproject(tp.set(screenX, screenY, 0));
-            touched = !touched;
+            hasBeenTouched = true;
             xCoord = Gdx.input.getX();
             yCoord = Gdx.input.getY();
 
+            //Convert input coords to screen coords
+            xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
+            yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
+
+            System.out.println("X position: " + (int)xCoord / 32 + ", Y Position: " + (int)yCoord / 32);
+
             GameState currentState = (GameState) stateManager.getCurrentState();
-
-
+            currentState.touchedTile(xCoord, yCoord);
 
             dragging = true;
         }
@@ -64,7 +69,7 @@ public class InputManager implements InputProcessor
         {
             GameState currentState = (GameState) stateManager.getCurrentState();
             if (!dragging) return false;
-            touched = false;
+
             float newX = camera.position.x - Gdx.input.getDeltaX();
             float newY = camera.position.y + Gdx.input.getDeltaY();
 
@@ -146,7 +151,7 @@ public class InputManager implements InputProcessor
         return false;
     }
 
-    public boolean isTouched() { return touched; }
-    public int getXCoord() { return xCoord; }
-    public int getYCoord() { return yCoord; }
+    public boolean isHasBeenTouched() { return hasBeenTouched; }
+    public float getXCoord() { return xCoord; }
+    public float getYCoord() { return yCoord; }
 }
