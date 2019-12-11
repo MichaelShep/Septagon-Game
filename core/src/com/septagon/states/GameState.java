@@ -105,14 +105,14 @@ public class GameState extends State
         player.addEngine(engine1);
         player.addEngine(engine2);
 
-        for(Engine e: player.getEngines())
-        {
-            entityManager.addEntity(e);
-        }
         entityManager.addEntity(fortressFire);
         entityManager.addEntity(fortressMinister);
         entityManager.addEntity(fortressStation);
         entityManager.addEntity(fireStation);
+        for(Engine e: player.getEngines())
+        {
+            entityManager.addEntity(e);
+        }
 
         // Intialises the game viewport
         viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
@@ -146,6 +146,7 @@ public class GameState extends State
                     tiles.add(gameMap.getTileByCoordinate(0, x, y));
             }
         }
+        this.setInhabitedTiles();
     }
 
     //Update all objects in the game
@@ -182,6 +183,12 @@ public class GameState extends State
     }
 
     public void setMovableTiles(){
+        //Reset all moveable tiles from previous turn
+        for(Tile t: tiles)
+        {
+            t.setMovable(false);
+        }
+
         for(Tile t: tiles){
             if(t.isInhabitable() && !t.isOccupied()){
                 if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
@@ -192,6 +199,64 @@ public class GameState extends State
                     t.setMovable(false);
                 }
         }
+    }
+
+    //Sets up all the tiles that are currently occupied by fortress or the fire station
+    public void setInhabitedTiles()
+    {
+        //Set the all the tiles within the fire station fortress bounds as occupied
+        for(int x = 4; x < 12; x++)
+        {
+            for(int y = 10; y < 15; y++)
+            {
+                Tile t = getTileAtLocation(x, y);
+                if(t != null)
+                    t.setOccupied(true);
+            }
+        }
+
+        //Sets all the tiles within the minister fortress as occupied
+        for(int x = 11; x < 19; x++)
+        {
+            for(int y = 41; y < 48; y++)
+            {
+                Tile t = getTileAtLocation(x, y);
+                if(t != null)
+                    t.setOccupied(true);
+            }
+        }
+
+        //Sets all the tiles within the station fortress as occupied
+        for(int x = 31; x < 39; x++)
+        {
+            for(int y = 30; y < 34; y++)
+            {
+                Tile t = getTileAtLocation(x, y);
+                if(t != null)
+                    t.setOccupied(true);
+            }
+        }
+
+        //Sets all the tiles in the fire station as occupied
+        for(int x = 42; x < 50; x++)
+        {
+            for(int y = 6; y < 10; y++)
+            {
+                Tile t = getTileAtLocation(x, y);
+                if(t != null)
+                    t.setOccupied(true);
+            }
+        }
+    }
+
+    private Tile getTileAtLocation(int x, int y)
+    {
+        for(Tile t: tiles)
+        {
+            if(t.getX() == x && t.getY() == y)
+                return t;
+        }
+        return null;
     }
 
     public void render(SpriteBatch batch)
@@ -225,17 +290,14 @@ public class GameState extends State
 
     public void renderMovementGrid(float x, float y){
         if(currentlyTouchedTile != null && currentEngine != null) {
-            float engineDrawX = currentEngine.getX() * Tile.TILE_SIZE - currentCameraX + (Gdx.graphics.getWidth() / 2);
-            float engineDrawY = currentEngine.getY() * Tile.TILE_SIZE - currentCameraY + (Gdx.graphics.getHeight() / 2);
-
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(0, 0, 1, 1);
-            shapes.rect(engineDrawX, engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
-            for(int i = 1; i <= currentEngine.getSpeed(); i++) {
-                shapes.rect(engineDrawX, engineDrawY - (i * Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
-                shapes.rect(engineDrawX, engineDrawY + (i * Tile.TILE_SIZE), Tile.TILE_SIZE, Tile.TILE_SIZE);
-                shapes.rect(engineDrawX + (i * Tile.TILE_SIZE), engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
-                shapes.rect(engineDrawX - (i * Tile.TILE_SIZE), engineDrawY, Tile.TILE_SIZE, Tile.TILE_SIZE);
+
+            //Draw grid around engine with all the movable spaces
+            for(Tile t: tiles) {
+                if (t.isMovable()) {
+                    shapes.rect(t.getX() * Tile.TILE_SIZE, t.getY() * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                }
             }
             shapes.end();
         }

@@ -40,6 +40,7 @@ public class Tile extends Entity
     {
         movable = value;
     }
+    public void setOccupied(boolean occupied) { this.occupied = occupied; }
 
 
     public boolean isMovable()
@@ -47,12 +48,9 @@ public class Tile extends Entity
         return movable;
     }
 
-
     public boolean isInhabitable() {
         return inhabitable;
     }
-
-
     public boolean isOccupied() {
         return occupied;
     }

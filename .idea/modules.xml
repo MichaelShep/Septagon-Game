@@ -3,6 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Septagon Project.iml" filepath="$PROJECT_DIR$/.idea/Septagon Project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Septagon-Game.iml" filepath="$PROJECT_DIR$/.idea/modules/Septagon-Game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon-Game.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.test.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/Septagon-Game.desktop.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Septagon-GameNew.iml" filepath="$PROJECT_DIR$/.idea/modules/Septagon-GameNew.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon-GameNew.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon-GameNew.core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Septagon-GameNew.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Septagon-GameNew.core.main.iml" />
