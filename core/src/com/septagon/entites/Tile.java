@@ -22,6 +22,8 @@ public class Tile extends Entity
         this.occupied = occupied;
     }
 
+
+    //Returns true if the current mouse click is inside the tile at point x and y
     public boolean checkIfClickedInside(float x, float y)
     {
         float worldX = this.getX() * Tile.TILE_SIZE;
@@ -35,23 +37,12 @@ public class Tile extends Entity
 
     }
 
-    //changes the private variable to true if false and false if true
-    public void setMovable(boolean value)
-    {
-        movable = value;
-    }
+    //Changes the attributes to be either movable or not movable.
+    public void setMovable(boolean value) { movable = value; }
     public void setOccupied(boolean occupied) { this.occupied = occupied; }
 
 
-    public boolean isMovable()
-    {
-        return movable;
-    }
-
-    public boolean isInhabitable() {
-        return inhabitable;
-    }
-    public boolean isOccupied() {
-        return occupied;
-    }
+    public boolean isMovable() { return movable; }
+    public boolean isInhabitable() { return inhabitable; }
+    public boolean isOccupied() { return occupied; }
 }

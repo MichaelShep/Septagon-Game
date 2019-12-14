@@ -77,7 +77,7 @@ public class GameState extends State
     private Engine currentEngine = null;
 
 
-    //Constructor that initialises all neccessary variables and also takes in all required values from the game
+    //Constructor that initialises all necessary variables and also takes in all required values from the game
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
     {
         super(inputManager, font, StateID.GAME);
@@ -105,6 +105,8 @@ public class GameState extends State
         player.addEngine(engine1);
         player.addEngine(engine2);
 
+        //Adds all the entities to the entity manager so they can be found
+        //more easily.
         entityManager.addEntity(fortressFire);
         entityManager.addEntity(fortressMinister);
         entityManager.addEntity(fortressStation);
@@ -117,13 +119,16 @@ public class GameState extends State
         // Intialises the game viewport
         viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
 
-        // ShapeRenderer so we can see our touch point
+        // ShapeRenderer to render our movement grid
         shapes = new ShapeRenderer();
         shapeViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shapeStage = new Stage(shapeViewport, batch);
         shapes.setProjectionMatrix(shapeStage.getCamera().combined);
 
+        //A new sprite batch so we can render the engines and fortresses on top
+        //of the tile map.
         objectBatch = new SpriteBatch();
+        objectBatch.setProjectionMatrix(camera.combined);
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
@@ -134,8 +139,6 @@ public class GameState extends State
         camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.update();
-
-        objectBatch.setProjectionMatrix(camera.combined);
 
         //Create objects referring to all tiles in game
         for(int y = 0; y < gameMap.getMapHeight(); y++)
@@ -158,6 +161,9 @@ public class GameState extends State
     	currentCameraY = camera.position.y;
     }
 
+
+    //Updates the currentlyTouchedTile and if you touch an engine it updates the currentEngine.
+    //Calls for the movement of the engine if the touch is in one of the movement grid squares.
     public Boolean touchedTile(float x, float y)
     {
         for(Tile t: tiles) {
@@ -182,6 +188,9 @@ public class GameState extends State
         return false;
     }
 
+    //Creates a grid of tiles that are able to be moved onto,
+    // this is achieved by changing the inhabitable attribute of each tile to either;
+    // true if it is within moving distance of the current engine, or false if not.
     public void setMovableTiles(){
         //Reset all moveable tiles from previous turn
         for(Tile t: tiles)
@@ -249,6 +258,8 @@ public class GameState extends State
         }
     }
 
+
+    //Returns the tile object at a location specified.
     private Tile getTileAtLocation(int x, int y)
     {
         for(Tile t: tiles)
@@ -268,13 +279,6 @@ public class GameState extends State
     	//Render the map for our game
     	gameMap.render(camera);
 
-        //Render engines
-        //SpriteBatch batch1 = new SpriteBatch();
-        //batch1.setProjectionMatrix(camera.combined);
-        //batch1.begin();
-        //engine1.render(batch);
-        //engine2.render(batch1);
-        //batch1.end();
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
 
@@ -288,6 +292,8 @@ public class GameState extends State
 
     }
 
+    //Renders in a grid so that a player can see where they are able to
+    //move an engine.
     public void renderMovementGrid(float x, float y){
         if(currentlyTouchedTile != null && currentEngine != null) {
             shapes.begin(ShapeRenderer.ShapeType.Line);
