@@ -1,6 +1,7 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -302,7 +303,13 @@ public class GameState extends State
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
-                    shapes.rect(t.getX() * Tile.TILE_SIZE, t.getY() * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    float xPosition = t.getX() * Tile.TILE_SIZE - camera.position.x + (Gdx.graphics.getWidth() / 2);
+                    float yPosition = t.getY() * Tile.TILE_SIZE - camera.position.y + (Gdx.graphics.getHeight() / 2);
+                    float leftOfScreen = camera.position.x - (Gdx.graphics.getWidth() / 2);
+                    float bottomOfScreen = camera.position.y - (Gdx.graphics.getHeight() / 2);
+                    if(xPosition >= leftOfScreen && xPosition <= leftOfScreen + Gdx.graphics.getWidth() &&
+                    yPosition >= bottomOfScreen && yPosition <= bottomOfScreen + Gdx.graphics.getHeight())
+                        shapes.rect(xPosition, yPosition, Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
             shapes.end();
