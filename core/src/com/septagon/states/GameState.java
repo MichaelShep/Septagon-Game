@@ -199,8 +199,11 @@ public class GameState extends State
             t.setMovable(false);
         }
 
+
+
         for(Tile t: tiles){
             if(t.isInhabitable() && !t.isOccupied()){
+                //Creates a grid of movable tiles in a cross shape
                 if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
                     (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
                         t.setMovable(true);
@@ -305,11 +308,14 @@ public class GameState extends State
                 if (t.isMovable()) {
                     float xPosition = t.getX() * Tile.TILE_SIZE - camera.position.x + (Gdx.graphics.getWidth() / 2);
                     float yPosition = t.getY() * Tile.TILE_SIZE - camera.position.y + (Gdx.graphics.getHeight() / 2);
-                    float leftOfScreen = camera.position.x - (Gdx.graphics.getWidth() / 2);
+                    /*float leftOfScreen = camera.position.x - (Gdx.graphics.getWidth() / 2);
                     float bottomOfScreen = camera.position.y - (Gdx.graphics.getHeight() / 2);
                     if(xPosition >= leftOfScreen && xPosition <= leftOfScreen + Gdx.graphics.getWidth() &&
-                    yPosition >= bottomOfScreen && yPosition <= bottomOfScreen + Gdx.graphics.getHeight())
-                        shapes.rect(xPosition, yPosition, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    yPosition >= bottomOfScreen && yPosition <= bottomOfScreen + Gdx.graphics.getHeight())*/
+
+                    //Removed this as it was causing the second engine's grid to not render
+
+                    shapes.rect(xPosition, yPosition, Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
             shapes.end();
