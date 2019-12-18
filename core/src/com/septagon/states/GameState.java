@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -31,6 +32,11 @@ public class GameState extends State
     public final static float VP_WIDTH = 640 * INV_SCALE;
     public final static float VP_HEIGHT = 480 * INV_SCALE;
 
+    private boolean playerTurn = true;
+    private GlyphLayout playerTurnText = new GlyphLayout(font, "Your Turn");
+    private GlyphLayout enemyTurnText = new GlyphLayout(font, "Enemy Turn");
+
+
 	//Camera that control the viewport of the game depending on input
     private OrthographicCamera camera;
     //Viewport that is used alongside the camera that contains the whole game map
@@ -40,9 +46,10 @@ public class GameState extends State
     //Viewport that is used for elements that should stay on the screen at all times
     private FitViewport shapeViewport;
     private Stage shapeStage;
-    //Spritebatch that is used for renderering all objects in the game
+    //Spritebatch that is used for rendering all objects in the game
     private SpriteBatch batch;
     private SpriteBatch objectBatch;
+    private SpriteBatch uiBatch;
 
     //Contains all the information about our game map
 	private TiledGameMap gameMap;
@@ -51,12 +58,13 @@ public class GameState extends State
     private boolean paused = false;
     private int minigameScore;
 
-    //Loads textures initiates engines with these textures
+    //Loads textures initialises engines
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
     private Engine engine1;
     private Engine engine2;
 
+    //Loads textures and initialises fortresses
     private Texture fortressFireTexture = new Texture(Gdx.files.internal("images/FortressFire.png"));
     private Texture fortressMinisterTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
     private Texture fortressStationTexture = new Texture(Gdx.files.internal("images/FortressStation.png"));
@@ -73,6 +81,7 @@ public class GameState extends State
     private Player player = new Player();
     private EntityManager entityManager = new EntityManager();
 
+    //These are used to help manage the input of the user when clicking our objects
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private Tile currentlyTouchedTile = null;
     private Engine currentEngine = null;
@@ -130,6 +139,8 @@ public class GameState extends State
         //of the tile map.
         objectBatch = new SpriteBatch();
         objectBatch.setProjectionMatrix(camera.combined);
+        //Another SpriteBatch to render UI objects
+        uiBatch = new SpriteBatch();
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
@@ -171,9 +182,10 @@ public class GameState extends State
             if(t.checkIfClickedInside(x, y)) {
                 currentlyTouchedTile = t;
                 if (currentEngine != null) {
-                    if (currentlyTouchedTile.isMovable()) {
+                    if (currentlyTouchedTile.isMovable() && !currentEngine.isMoved()) {
                         currentEngine.setX(currentlyTouchedTile.getX());
                         currentEngine.setY(currentlyTouchedTile.getY());
+                        currentEngine.setMoved(true);
                     }
                 }
                 for (Engine e: player.getEngines()){
@@ -188,6 +200,7 @@ public class GameState extends State
         }
         return false;
     }
+
 
     //Creates a grid of tiles that are able to be moved onto,
     // this is achieved by changing the inhabitable attribute of each tile to either;
@@ -280,16 +293,28 @@ public class GameState extends State
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+    	if(allEnginesMoved()){
+    	    this.playerTurn = false;
+        }else{
+    	    this.playerTurn = true;
+        }
     	//Render the map for our game
     	gameMap.render(camera);
-
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
-
         entityManager.render(objectBatch);
         objectBatch.end();
+        uiBatch.begin();
+        if (this.playerTurn){
+            font.setColor(Color.BLUE);
+            font.draw(uiBatch, playerTurnText, Gdx.graphics.getWidth()/2 - 30, Gdx.graphics.getHeight() - 32);
+        }else{
+            font.setColor(Color.RED);
+            font.draw(uiBatch, enemyTurnText, Gdx.graphics.getWidth()/2 - 30, Gdx.graphics.getHeight() - 32);
+        }
+        uiBatch.end();
 
-        if (inputManager.isHasBeenTouched()){
+        if (inputManager.isHasBeenTouched() && this.playerTurn){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
 
         }
@@ -299,7 +324,7 @@ public class GameState extends State
     //Renders in a grid so that a player can see where they are able to
     //move an engine.
     public void renderMovementGrid(float x, float y){
-        if(currentlyTouchedTile != null && currentEngine != null) {
+        if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(0, 0, 1, 1);
 
@@ -320,6 +345,14 @@ public class GameState extends State
             }
             shapes.end();
         }
+    }
+
+    public boolean allEnginesMoved(){
+        for(Engine e : player.getEngines()){
+            if(!e.isMoved()){
+                return false;
+            }
+        } return true;
     }
 
     public void pauseGame() {}
