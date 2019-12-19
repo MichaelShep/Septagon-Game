@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
 import com.septagon.game.Player;
+import com.septagon.game.UIManager;
 
 import java.util.ArrayList;
 
@@ -33,9 +34,6 @@ public class GameState extends State
     public final static float VP_HEIGHT = 480 * INV_SCALE;
 
     private boolean playerTurn = true;
-    private GlyphLayout playerTurnText = new GlyphLayout(font, "Your Turn");
-    private GlyphLayout enemyTurnText = new GlyphLayout(font, "Enemy Turn");
-
 
 	//Camera that control the viewport of the game depending on input
     private OrthographicCamera camera;
@@ -49,7 +47,6 @@ public class GameState extends State
     //Spritebatch that is used for rendering all objects in the game
     private SpriteBatch batch;
     private SpriteBatch objectBatch;
-    private SpriteBatch uiBatch;
 
     //Contains all the information about our game map
 	private TiledGameMap gameMap;
@@ -85,6 +82,8 @@ public class GameState extends State
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private Tile currentlyTouchedTile = null;
     private Engine currentEngine = null;
+
+    private UIManager uiManager;
 
 
     //Constructor that initialises all necessary variables and also takes in all required values from the game
@@ -139,13 +138,14 @@ public class GameState extends State
         //of the tile map.
         objectBatch = new SpriteBatch();
         objectBatch.setProjectionMatrix(camera.combined);
-        //Another SpriteBatch to render UI objects
-        uiBatch = new SpriteBatch();
+        //Creates instance of uiManager which will be used to render and manage all UI elements
+        uiManager = new UIManager(font, this);
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
         gameMap.initialise();
         entityManager.initialise();
+        uiManager.initialise();
 
         //Moves the camera to its starting position and makes sure the screen gets updated after this
         camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
@@ -192,6 +192,7 @@ public class GameState extends State
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
                         System.out.println("Have touched a engine");
                         currentEngine = e;
+                        uiManager.setCurrentEngine(e);
                         setMovableTiles();
                         return true;
                     }
@@ -304,19 +305,10 @@ public class GameState extends State
         objectBatch.begin();
         entityManager.render(objectBatch);
         objectBatch.end();
-        uiBatch.begin();
-        if (this.playerTurn){
-            font.setColor(Color.BLUE);
-            font.draw(uiBatch, playerTurnText, Gdx.graphics.getWidth()/2 - 30, Gdx.graphics.getHeight() - 32);
-        }else{
-            font.setColor(Color.RED);
-            font.draw(uiBatch, enemyTurnText, Gdx.graphics.getWidth()/2 - 30, Gdx.graphics.getHeight() - 32);
-        }
-        uiBatch.end();
+        uiManager.render();
 
         if (inputManager.isHasBeenTouched() && this.playerTurn){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
-
         }
 
     }
@@ -326,6 +318,7 @@ public class GameState extends State
     public void renderMovementGrid(float x, float y){
         if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
             shapes.begin(ShapeRenderer.ShapeType.Line);
+
             shapes.setColor(0, 0, 1, 1);
 
             //Draw grid around engine with all the movable spaces
@@ -374,6 +367,11 @@ public class GameState extends State
     public float getCurrentCameraY()
     {
         return currentCameraY;
+    }
+
+    public boolean isPlayerTurn()
+    {
+        return playerTurn;
     }
 
 
