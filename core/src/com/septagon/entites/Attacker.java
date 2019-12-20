@@ -29,12 +29,19 @@ public abstract class Attacker extends Entity
 
     }
 
+    public void DamageFortressIfInRange(Fortress f){
+        if (this.x + this.range >= f.getX() && this.x +this.range < f.getX() + f.getWidth() && this.y + this.range >= f.getY() && this.y + this.range < f.getY() + f.getHeight() ||
+                this.x - this.range >= f.getX() && this.x - this.range < f.getX() + f.getWidth() && this.y - this.range >= f.getY() && this.y - this.range < f.getY() + f.getHeight()){
+            f.takeDamage(this.damage);
+        }
+    }
+
     public int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void takeDamage(int damage) {
+        this.health -= damage;
     }
 
     public int getDamage() {

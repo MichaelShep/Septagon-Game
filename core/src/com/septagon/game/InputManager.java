@@ -58,9 +58,8 @@ public class InputManager implements InputProcessor
             yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
 
             float onScreenXCoord = Gdx.input.getX();
-            float onScreenYCoord =Gdx.graphics.getHeight() - Gdx.input.getY();
+            float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-            System.out.println("X coord: " + Gdx.input.getX() + ", y coord: " + Gdx.input.getY());
 
             GameState currentState = (GameState) stateManager.getCurrentState();
 

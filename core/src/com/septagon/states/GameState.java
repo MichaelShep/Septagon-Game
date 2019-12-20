@@ -206,7 +206,6 @@ public class GameState extends State
                 checkIfTouchingFortress(x, y);
                 for (Engine e: player.getEngines()){
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
-                        System.out.println("Have touched a engine");
                         currentEngine = e;
                         uiManager.setCurrentEngine(e);
                         setMovableTiles();
@@ -313,6 +312,7 @@ public class GameState extends State
 
     	if(allEnginesMoved()){
     	    this.playerTurn = false;
+    	    BattleTurn();
         }else{
     	    this.playerTurn = true;
         }
@@ -349,6 +349,17 @@ public class GameState extends State
                 return false;
             }
         } return true;
+    }
+
+    public void BattleTurn(){
+        for (Engine e : player.getEngines()){
+            e.setMoved(false);
+            for (Fortress f: fortresses){
+                e.DamageFortressIfInRange(f);
+                f.DamageEngineIfInRange(e);
+            }
+
+        }
     }
 
     public void pauseGame() {}
