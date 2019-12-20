@@ -139,7 +139,7 @@ public class GameState extends State
         objectBatch = new SpriteBatch();
         objectBatch.setProjectionMatrix(camera.combined);
         //Creates instance of uiManager which will be used to render and manage all UI elements
-        uiManager = new UIManager(font, this);
+        uiManager = new UIManager(this);
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
@@ -367,6 +367,11 @@ public class GameState extends State
     public float getCurrentCameraY()
     {
         return currentCameraY;
+    }
+
+    public UIManager getUiManager()
+    {
+        return uiManager;
     }
 
     public boolean isPlayerTurn()

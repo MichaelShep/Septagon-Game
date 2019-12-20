@@ -57,9 +57,21 @@ public class InputManager implements InputProcessor
             xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
             yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
 
-            System.out.println("X position: " + (int)xCoord / 32 + ", Y Position: " + (int)yCoord / 32);
+            float onScreenXCoord = Gdx.input.getX();
+            float onScreenYCoord =Gdx.graphics.getHeight() - Gdx.input.getY();
+
+            System.out.println("X coord: " + Gdx.input.getX() + ", y coord: " + Gdx.input.getY());
 
             GameState currentState = (GameState) stateManager.getCurrentState();
+
+            if(currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
+            {
+                currentState.getUiManager().pressedShowStatsButton();
+            }
+            if(currentState.getUiManager().getMinimiseRect().contains(onScreenXCoord, onScreenYCoord))
+            {
+                currentState.getUiManager().pressedMinimiseButton();
+            }
             currentState.touchedTile(xCoord, yCoord);
 
             dragging = true;
