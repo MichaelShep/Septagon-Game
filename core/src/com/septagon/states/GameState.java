@@ -39,11 +39,6 @@ public class GameState extends State
     private OrthographicCamera camera;
     //Viewport that is used alongside the camera that contains the whole game map
     private ExtendViewport viewport;
-    //Renderer for drawing all none textured items to the screen
-    private ShapeRenderer shapes;
-    //Viewport that is used for elements that should stay on the screen at all times
-    private FitViewport shapeViewport;
-    private Stage shapeStage;
     //Spritebatch that is used for rendering all objects in the game
     private SpriteBatch batch;
     private SpriteBatch objectBatch;
@@ -58,10 +53,12 @@ public class GameState extends State
     //Loads textures initialises engines
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
+    private Texture moveSpaceTexture = new Texture(Gdx.files.internal("move_square.png"));
     private Engine engine1;
     private Engine engine2;
 
     //Loads textures and initialises fortresses
+    private ArrayList<Fortress> fortresses;
     private Texture fortressFireTexture = new Texture(Gdx.files.internal("images/FortressFire.png"));
     private Texture fortressMinisterTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
     private Texture fortressStationTexture = new Texture(Gdx.files.internal("images/FortressStation.png"));
@@ -104,10 +101,15 @@ public class GameState extends State
         //Initialises all engines in the game
         engine1 = new Engine(0,0,32,32, engineTexture1,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 01);
         engine2 = new Engine(40,35,32,32, engineTexture2,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 02);
-        fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 20);
-        fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 20);
-        fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 20);
+        fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
+        fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
+        fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
         fireStation = new Station(42, 6, 256, 128, fireStationTexture, 'U');
+
+        fortresses = new ArrayList<Fortress>();
+        fortresses.add(fortressFire);
+        fortresses.add(fortressMinister);
+        fortresses.add(fortressStation);
 
         entityManager = new EntityManager();
         //Adds all the engines to the player class's list of engines
@@ -116,10 +118,11 @@ public class GameState extends State
 
         //Adds all the entities to the entity manager so they can be found
         //more easily.
-        entityManager.addEntity(fortressFire);
-        entityManager.addEntity(fortressMinister);
-        entityManager.addEntity(fortressStation);
         entityManager.addEntity(fireStation);
+        for(Fortress f: fortresses)
+        {
+            entityManager.addEntity(f);
+        }
         for(Engine e: player.getEngines())
         {
             entityManager.addEntity(e);
@@ -127,12 +130,6 @@ public class GameState extends State
 
         // Intialises the game viewport
         viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
-
-        // ShapeRenderer to render our movement grid
-        shapes = new ShapeRenderer();
-        shapeViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeStage = new Stage(shapeViewport, batch);
-        shapes.setProjectionMatrix(shapeStage.getCamera().combined);
 
         //A new sprite batch so we can render the engines and fortresses on top
         //of the tile map.
@@ -173,6 +170,23 @@ public class GameState extends State
     	currentCameraY = camera.position.y;
     }
 
+    public void checkIfTouchingFortress(float x, float y)
+    {
+        int xTilePosition = (int)x / Tile.TILE_SIZE;
+        int yTilePosition = (int)y / Tile.TILE_SIZE;
+
+        for(Fortress f: fortresses)
+        {
+            if(xTilePosition >= f.getX() && xTilePosition <= f.getX() + (f.getWidth() / 32) &&
+                    yTilePosition >= f.getY() && yTilePosition <= f.getY() + (f.getHeight() / 32)) {
+                f.setSelected(true);
+            }
+            else {
+                f.setSelected(false);
+            }
+        }
+    }
+
 
     //Updates the currentlyTouchedTile and if you touch an engine it updates the currentEngine.
     //Calls for the movement of the engine if the touch is in one of the movement grid squares.
@@ -188,6 +202,8 @@ public class GameState extends State
                         currentEngine.setMoved(true);
                     }
                 }
+
+                checkIfTouchingFortress(x, y);
                 for (Engine e: player.getEngines()){
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
                         System.out.println("Have touched a engine");
@@ -218,7 +234,8 @@ public class GameState extends State
         for(Tile t: tiles){
             if(t.isInhabitable() && !t.isOccupied()){
                 //Creates a grid of movable tiles in a cross shape
-                if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
+                if(t.getX() == currentEngine.getX() && t.getY() == currentEngine.getY()) continue;
+                else if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
                     (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
                         t.setMovable(true);
                 }
@@ -304,39 +321,25 @@ public class GameState extends State
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
         entityManager.render(objectBatch);
-        objectBatch.end();
-        uiManager.render();
 
         if (inputManager.isHasBeenTouched() && this.playerTurn){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
         }
 
+        objectBatch.end();
+        uiManager.render();
     }
 
     //Renders in a grid so that a player can see where they are able to
     //move an engine.
     public void renderMovementGrid(float x, float y){
         if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
-            shapes.begin(ShapeRenderer.ShapeType.Line);
-
-            shapes.setColor(0, 0, 1, 1);
-
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
-                    float xPosition = t.getX() * Tile.TILE_SIZE - camera.position.x + (Gdx.graphics.getWidth() / 2);
-                    float yPosition = t.getY() * Tile.TILE_SIZE - camera.position.y + (Gdx.graphics.getHeight() / 2);
-                    /*float leftOfScreen = camera.position.x - (Gdx.graphics.getWidth() / 2);
-                    float bottomOfScreen = camera.position.y - (Gdx.graphics.getHeight() / 2);
-                    if(xPosition >= leftOfScreen && xPosition <= leftOfScreen + Gdx.graphics.getWidth() &&
-                    yPosition >= bottomOfScreen && yPosition <= bottomOfScreen + Gdx.graphics.getHeight())*/
-
-                    //Removed this as it was causing the second engine's grid to not render
-
-                    shapes.rect(xPosition, yPosition, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    objectBatch.draw(moveSpaceTexture, t.getX() * Tile.TILE_SIZE, t.getY() * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
-            shapes.end();
         }
     }
 
