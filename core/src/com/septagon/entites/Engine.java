@@ -13,6 +13,7 @@ public class Engine extends Vehicle
     private int maxVolume;
     private int fillSpeed;
     private Integer id;
+    private boolean moved = false;
 
     public Engine(int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
     {
@@ -46,6 +47,10 @@ public class Engine extends Vehicle
     {
         return this.id;
     }
+
+    public boolean isMoved(){return this.moved;}
+
+    public void setMoved(boolean moved){this.moved = moved;}
 
 
 }

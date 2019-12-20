@@ -1,10 +1,12 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
 import com.septagon.game.Player;
+import com.septagon.game.UIManager;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,8 @@ public class GameState extends State
     public final static float VP_WIDTH = 640 * INV_SCALE;
     public final static float VP_HEIGHT = 480 * INV_SCALE;
 
+    private boolean playerTurn = true;
+
 	//Camera that control the viewport of the game depending on input
     private OrthographicCamera camera;
     //Viewport that is used alongside the camera that contains the whole game map
@@ -39,7 +44,7 @@ public class GameState extends State
     //Viewport that is used for elements that should stay on the screen at all times
     private FitViewport shapeViewport;
     private Stage shapeStage;
-    //Spritebatch that is used for renderering all objects in the game
+    //Spritebatch that is used for rendering all objects in the game
     private SpriteBatch batch;
     private SpriteBatch objectBatch;
 
@@ -50,12 +55,13 @@ public class GameState extends State
     private boolean paused = false;
     private int minigameScore;
 
-    //Loads textures initiates engines with these textures
+    //Loads textures initialises engines
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
     private Engine engine1;
     private Engine engine2;
 
+    //Loads textures and initialises fortresses
     private Texture fortressFireTexture = new Texture(Gdx.files.internal("images/FortressFire.png"));
     private Texture fortressMinisterTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
     private Texture fortressStationTexture = new Texture(Gdx.files.internal("images/FortressStation.png"));
@@ -72,9 +78,12 @@ public class GameState extends State
     private Player player = new Player();
     private EntityManager entityManager = new EntityManager();
 
+    //These are used to help manage the input of the user when clicking our objects
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private Tile currentlyTouchedTile = null;
     private Engine currentEngine = null;
+
+    private UIManager uiManager;
 
 
     //Constructor that initialises all necessary variables and also takes in all required values from the game
@@ -129,11 +138,14 @@ public class GameState extends State
         //of the tile map.
         objectBatch = new SpriteBatch();
         objectBatch.setProjectionMatrix(camera.combined);
+        //Creates instance of uiManager which will be used to render and manage all UI elements
+        uiManager = new UIManager(font, this);
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
         gameMap.initialise();
         entityManager.initialise();
+        uiManager.initialise();
 
         //Moves the camera to its starting position and makes sure the screen gets updated after this
         camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
@@ -170,15 +182,17 @@ public class GameState extends State
             if(t.checkIfClickedInside(x, y)) {
                 currentlyTouchedTile = t;
                 if (currentEngine != null) {
-                    if (currentlyTouchedTile.isMovable()) {
+                    if (currentlyTouchedTile.isMovable() && !currentEngine.isMoved()) {
                         currentEngine.setX(currentlyTouchedTile.getX());
                         currentEngine.setY(currentlyTouchedTile.getY());
+                        currentEngine.setMoved(true);
                     }
                 }
                 for (Engine e: player.getEngines()){
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
                         System.out.println("Have touched a engine");
                         currentEngine = e;
+                        uiManager.setCurrentEngine(e);
                         setMovableTiles();
                         return true;
                     }
@@ -187,6 +201,7 @@ public class GameState extends State
         }
         return false;
     }
+
 
     //Creates a grid of tiles that are able to be moved onto,
     // this is achieved by changing the inhabitable attribute of each tile to either;
@@ -198,8 +213,11 @@ public class GameState extends State
             t.setMovable(false);
         }
 
+
+
         for(Tile t: tiles){
             if(t.isInhabitable() && !t.isOccupied()){
+                //Creates a grid of movable tiles in a cross shape
                 if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
                     (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
                         t.setMovable(true);
@@ -276,18 +294,21 @@ public class GameState extends State
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+    	if(allEnginesMoved()){
+    	    this.playerTurn = false;
+        }else{
+    	    this.playerTurn = true;
+        }
     	//Render the map for our game
     	gameMap.render(camera);
-
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
-
         entityManager.render(objectBatch);
         objectBatch.end();
+        uiManager.render();
 
-        if (inputManager.isHasBeenTouched()){
+        if (inputManager.isHasBeenTouched() && this.playerTurn){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
-
         }
 
     }
@@ -295,18 +316,36 @@ public class GameState extends State
     //Renders in a grid so that a player can see where they are able to
     //move an engine.
     public void renderMovementGrid(float x, float y){
-        if(currentlyTouchedTile != null && currentEngine != null) {
+        if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
             shapes.begin(ShapeRenderer.ShapeType.Line);
+
             shapes.setColor(0, 0, 1, 1);
 
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
-                    shapes.rect(t.getX() * Tile.TILE_SIZE, t.getY() * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    float xPosition = t.getX() * Tile.TILE_SIZE - camera.position.x + (Gdx.graphics.getWidth() / 2);
+                    float yPosition = t.getY() * Tile.TILE_SIZE - camera.position.y + (Gdx.graphics.getHeight() / 2);
+                    /*float leftOfScreen = camera.position.x - (Gdx.graphics.getWidth() / 2);
+                    float bottomOfScreen = camera.position.y - (Gdx.graphics.getHeight() / 2);
+                    if(xPosition >= leftOfScreen && xPosition <= leftOfScreen + Gdx.graphics.getWidth() &&
+                    yPosition >= bottomOfScreen && yPosition <= bottomOfScreen + Gdx.graphics.getHeight())*/
+
+                    //Removed this as it was causing the second engine's grid to not render
+
+                    shapes.rect(xPosition, yPosition, Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
             shapes.end();
         }
+    }
+
+    public boolean allEnginesMoved(){
+        for(Engine e : player.getEngines()){
+            if(!e.isMoved()){
+                return false;
+            }
+        } return true;
     }
 
     public void pauseGame() {}
@@ -328,6 +367,11 @@ public class GameState extends State
     public float getCurrentCameraY()
     {
         return currentCameraY;
+    }
+
+    public boolean isPlayerTurn()
+    {
+        return playerTurn;
     }
 
 

@@ -24,7 +24,7 @@ public class InputManager implements InputProcessor
     private BitmapFont font;
     private SpriteBatch batch;
 
-    private Boolean hasBeenTouched = false;
+    private boolean hasBeenTouched = false;
     private float xCoord;
     private float yCoord;
 
