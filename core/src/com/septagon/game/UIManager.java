@@ -90,26 +90,7 @@ public class UIManager
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
 
-        //Set up all positions for gui objects
-        playerTurnX = (Gdx.graphics.getWidth() - playerTurnText.width) / 2;
-        playerTurnY = Gdx.graphics.getHeight() - 32;
-        enemyTurnX = (Gdx.graphics.getWidth() - enemyTurnText.width) / 2;
-        enemyTurnY = Gdx.graphics.getHeight() - 32;
-
-        showRectX = Gdx.graphics.getWidth() - 150;
-        showRectY = Gdx.graphics.getHeight() - 60;
-        showRectWidth = 130;
-        showRectHeight = 30;
-
-        statsRectX = Gdx.graphics.getWidth() - 200;
-        statsRectY = 200;
-        statsRectWidth = 180;
-        statsRectHeight = 250;
-
-        minimiseX = statsRectX + statsRectWidth - 20;
-        minimiseY = statsRectY + statsRectHeight - 20;
-        minimiseWidth = 20;
-        minimiseHeight = 20;
+        setupPositions();
     }
 
     public void render()
@@ -173,6 +154,30 @@ public class UIManager
             smallFont.draw(uiBatch, minimiseSymbol, minimiseX + 7, minimiseY + 15);
         }
         uiBatch.end();
+    }
+
+    public void setupPositions()
+    {
+        //Set up all positions for gui objects
+        playerTurnX = (Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 9)) / 2;
+        playerTurnY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 15);
+        enemyTurnX = (Gdx.graphics.getWidth() - enemyTurnText.width) / 2;
+        enemyTurnY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 15);
+
+        showRectX = Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4);
+        showRectY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 8);
+        showRectWidth = Gdx.graphics.getWidth() / 5;
+        showRectHeight = Gdx.graphics.getHeight() / 16;
+
+        statsRectX = Gdx.graphics.getWidth() - 200;
+        statsRectY = 200;
+        statsRectWidth = 180;
+        statsRectHeight = 250;
+
+        minimiseX = statsRectX + statsRectWidth - 20;
+        minimiseY = statsRectY + statsRectHeight - 20;
+        minimiseWidth = 20;
+        minimiseHeight = 20;
     }
 
     //Called by InputManager when the use presses the showStats button

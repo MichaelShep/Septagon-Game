@@ -1,21 +1,14 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
-import com.septagon.game.Player;
 import com.septagon.game.UIManager;
 
 import java.util.ArrayList;
@@ -51,6 +44,7 @@ public class GameState extends State
     private int minigameScore;
 
     //Loads textures initialises engines
+    private ArrayList<Engine> engines;
     private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
     private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
     private Texture moveSpaceTexture = new Texture(Gdx.files.internal("move_square.png"));
@@ -71,8 +65,7 @@ public class GameState extends State
 
     private float currentCameraX, currentCameraY;
 
-    //Creates player class to contain list of engines
-    private Player player = new Player();
+    //Create entityManager that will handle all entities in our game
     private EntityManager entityManager = new EntityManager();
 
     //These are used to help manage the input of the user when clicking our objects
@@ -112,9 +105,10 @@ public class GameState extends State
         fortresses.add(fortressStation);
 
         entityManager = new EntityManager();
+        engines = new ArrayList<Engine>();
         //Adds all the engines to the player class's list of engines
-        player.addEngine(engine1);
-        player.addEngine(engine2);
+        engines.add(engine1);
+        engines.add(engine2);
 
         //Adds all the entities to the entity manager so they can be found
         //more easily.
@@ -123,7 +117,7 @@ public class GameState extends State
         {
             entityManager.addEntity(f);
         }
-        for(Engine e: player.getEngines())
+        for(Engine e: engines)
         {
             entityManager.addEntity(e);
         }
@@ -204,7 +198,7 @@ public class GameState extends State
                 }
 
                 checkIfTouchingFortress(x, y);
-                for (Engine e: player.getEngines()){
+                for (Engine e: engines){
                     if (t.getX() == e.getX() && t.getY() == e.getY()) {
                         currentEngine = e;
                         uiManager.setCurrentEngine(e);
@@ -344,7 +338,7 @@ public class GameState extends State
     }
 
     public boolean allEnginesMoved(){
-        for(Engine e : player.getEngines()){
+        for(Engine e : engines){
             if(!e.isMoved()){
                 return false;
             }
@@ -352,7 +346,7 @@ public class GameState extends State
     }
 
     public void BattleTurn(){
-        for (Engine e : player.getEngines()){
+        for (Engine e : engines){
             e.setMoved(false);
             for (Fortress f: fortresses){
                 e.DamageFortressIfInRange(f);
@@ -360,6 +354,25 @@ public class GameState extends State
             }
 
         }
+    }
+
+    //Method that is called when the screen is resized - makes sure camera stays in map bounds
+    public void hasResized()
+    {
+        if(camera.position.x <= (Gdx.graphics.getWidth() / 2)) {
+            camera.position.x = Gdx.graphics.getWidth() / 2;
+        }
+        if(camera.position.y <= (Gdx.graphics.getHeight() / 2)) {
+            camera.position.y = Gdx.graphics.getHeight() / 2;
+        }
+
+        if(camera.position.x >= getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2){
+            camera.position.x = getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2;
+        }
+        if(camera.position.y >= getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2){
+            camera.position.x = getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2;
+        }
+        uiManager.setupPositions();
     }
 
     public void pauseGame() {}

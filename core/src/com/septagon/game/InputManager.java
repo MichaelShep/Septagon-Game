@@ -60,8 +60,10 @@ public class InputManager implements InputProcessor
             float onScreenXCoord = Gdx.input.getX();
             float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-
             GameState currentState = (GameState) stateManager.getCurrentState();
+
+            System.out.println("X Coord Press: " + onScreenXCoord + ", Y Coord Press: " + onScreenYCoord);
+            System.out.println("X Coord Rect: " + currentState.getUiManager().getShowStatsRect().getX() + ", Y Coord Rect: " + currentState.getUiManager().getShowStatsRect().getX());
 
             if(currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
             {
