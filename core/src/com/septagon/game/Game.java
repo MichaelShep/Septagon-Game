@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.septagon.states.GameState;
 import com.septagon.states.MenuState;
 import com.septagon.states.State;
 import com.septagon.states.StateManager;
@@ -56,7 +57,14 @@ public class Game extends ApplicationAdapter
 
 	public void resize(int width, int height)
 	{
-		
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		if(stateManager.getCurrentState().getID() == State.StateID.GAME)
+		{
+			GameState state = (GameState) stateManager.getCurrentState();
+			state.hasResized();
+		}
+		camera.update();
 	}
 
 	@Override
