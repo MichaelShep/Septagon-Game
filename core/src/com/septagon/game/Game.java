@@ -1,5 +1,6 @@
 package com.septagon.game;
 
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +22,8 @@ public class Game extends ApplicationAdapter
 	private BitmapFont font;
 
 	private InputManager inputManager;
+	
+
 
 	@Override
 	//Initialises and creates all variables and objects in the game

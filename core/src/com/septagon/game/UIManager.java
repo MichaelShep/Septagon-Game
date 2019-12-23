@@ -14,8 +14,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.septagon.entites.Engine;
 import com.septagon.states.GameState;
-import sun.font.TrueTypeFont;
-
 import java.awt.*;
 
 public class UIManager

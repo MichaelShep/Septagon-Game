@@ -1,6 +1,7 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -75,6 +76,7 @@ public class GameState extends State
 
     private UIManager uiManager;
 
+    ArrayList<Bullet> bullets;
 
     //Constructor that initialises all necessary variables and also takes in all required values from the game
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
@@ -86,6 +88,8 @@ public class GameState extends State
         minigameScore = 0;
         currentCameraX = 0;
         currentCameraY = 0;
+        
+        bullets = new ArrayList<Bullet>();
     }
 
     //Sets up all the objects in our game
@@ -93,7 +97,7 @@ public class GameState extends State
     {
         //Initialises all engines in the game
         engine1 = new Engine(0,0,32,32, engineTexture1,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 01);
-        engine2 = new Engine(40,35,32,32, engineTexture2,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 02);
+        engine2 = new Engine(0,10,32,32, engineTexture2,'U', 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
@@ -300,6 +304,23 @@ public class GameState extends State
 
     public void render(SpriteBatch batch)
     {
+    	// shooting bullet 
+    	if (Gdx.input.isButtonJustPressed(Keys.SPACE)) {
+    		bullets.add(new Bullet(40));
+    		bullets.add(new Bullet(44));
+    		System.out.print("a");
+    	}
+    	
+    	// update bullet
+    	ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
+    	for (Bullet bullet : bullets) {
+    		bullet.update(currentCameraX);
+    		if (bullet.remove)
+    			bulletToRemove.add(bullet);
+    	}
+    	bullets.removeAll(bulletToRemove);
+    	
+    	
     	//Clear the background to red
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -318,6 +339,9 @@ public class GameState extends State
 
         if (inputManager.isHasBeenTouched() && this.playerTurn){
             this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
+        }
+        for (Bullet bullet : bullets) {
+        	bullet.render(objectBatch);
         }
 
         objectBatch.end();
