@@ -77,6 +77,7 @@ public class GameState extends State
     private UIManager uiManager;
 
     ArrayList<Bullet> bullets;
+    private boolean shouldCreateBullets = false;
 
     //Constructor that initialises all necessary variables and also takes in all required values from the game
     public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
@@ -162,6 +163,10 @@ public class GameState extends State
     //Update all objects in the game
     public void update()
     {
+        if(shouldCreateBullets)
+        {
+            this.createBullets();
+        }
     	gameMap.update();
     	entityManager.update();
     	currentCameraX = camera.position.x;
@@ -225,8 +230,6 @@ public class GameState extends State
         {
             t.setMovable(false);
         }
-
-
 
         for(Tile t: tiles){
             if(t.isInhabitable() && !t.isOccupied()){
@@ -302,15 +305,17 @@ public class GameState extends State
         return null;
     }
 
+    private void createBullets()
+    {
+        // shooting bullet
+        bullets.add(new Bullet(40));
+        bullets.add(new Bullet(44));
+        System.out.println("Bullet has been created");
+        shouldCreateBullets = false;
+    }
+
     public void render(SpriteBatch batch)
     {
-    	// shooting bullet 
-    	if (Gdx.input.isButtonJustPressed(Keys.SPACE)) {
-    		bullets.add(new Bullet(40));
-    		bullets.add(new Bullet(44));
-    		System.out.print("a");
-    	}
-    	
     	// update bullet
     	ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
     	for (Bullet bullet : bullets) {
@@ -430,6 +435,7 @@ public class GameState extends State
         return playerTurn;
     }
 
+    public boolean isShouldCreateBullets() { return shouldCreateBullets; }
 
     public boolean isPaused()
     {
@@ -451,6 +457,8 @@ public class GameState extends State
     public void setTimePassed(int timePassed) {
         this.timePassed = timePassed;
     }
+
+    public void setShouldCreateBullets(boolean shouldCreateBullets) { this.shouldCreateBullets = shouldCreateBullets; }
 
     public int getMapWidth() { return gameMap.getMapWidth(); }
     public int getMapHeight() { return gameMap.getMapHeight(); }

@@ -122,17 +122,15 @@ public class InputManager implements InputProcessor
     {
         if(stateManager.getCurrentState().getID() == State.StateID.MENU)
         {
+            MenuState currentState = (MenuState) stateManager.getCurrentState();
             if(keycode == Input.Keys.DOWN)
             {
-                MenuState currentState = (MenuState) stateManager.getCurrentState();
                 currentState.setMenuPosition(currentState.getMenuPosition() + 1);
             }else if(keycode == Input.Keys.UP)
             {
-                MenuState currentState = (MenuState) stateManager.getCurrentState();
                 currentState.setMenuPosition(currentState.getMenuPosition() - 1);
             }else if(keycode == Input.Keys.ENTER)
             {
-                MenuState currentState = (MenuState) stateManager.getCurrentState();
                 switch(currentState.getMenuPosition())
                 {
                     case 0:
@@ -151,6 +149,13 @@ public class InputManager implements InputProcessor
                         System.err.println("Something went wrong with the menu system");
                         break;
                 }
+            }
+        }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
+            GameState currentState = (GameState) stateManager.getCurrentState();
+
+            if(keycode == Input.Keys.SPACE)
+            {
+                currentState.setShouldCreateBullets(true);
             }
         }
         return true;
