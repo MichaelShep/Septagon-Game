@@ -159,10 +159,10 @@ public class UIManager
     public void setupPositions()
     {
         //Set up all positions for gui objects
-        playerTurnX = (Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 9)) / 2;
-        playerTurnY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 15);
-        enemyTurnX = (Gdx.graphics.getWidth() - enemyTurnText.width) / 2;
-        enemyTurnY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 15);
+        playerTurnX = (int)(Gdx.graphics.getWidth() / 2 - playerTurnText.width / 2);
+        playerTurnY = Gdx.graphics.getHeight() - 30;
+        enemyTurnX = (int)(Gdx.graphics.getWidth() / 2 - enemyTurnText.width / 2);
+        enemyTurnY = Gdx.graphics.getHeight() - 30;
 
         showRectX = Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4);
         showRectY = Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 8);
@@ -176,8 +176,8 @@ public class UIManager
 
         minimiseX = statsRectX + statsRectWidth - 20;
         minimiseY = statsRectY + statsRectHeight - 20;
-        minimiseWidth = 20;
-        minimiseHeight = 20;
+        minimiseWidth = Gdx.graphics.getWidth() / 32;
+        minimiseHeight = Gdx.graphics.getHeight() / 24;
     }
 
     //Called by InputManager when the use presses the showStats button
@@ -222,11 +222,14 @@ public class UIManager
 
     public Rectangle getShowStatsRect()
     {
-        return new Rectangle(showRectX, showRectY, showRectWidth, showRectHeight);
+        return new Rectangle(Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4), Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 8),
+                Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 16);
     }
 
     public Rectangle getMinimiseRect()
     {
-        return new Rectangle(minimiseX, minimiseY, minimiseWidth, minimiseHeight);
+        return new Rectangle(getShowStatsRect().x + getShowStatsRect().width - 20,
+                getShowStatsRect().y + getShowStatsRect().height - 20,
+                Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight() / 24);
     }
 }

@@ -372,7 +372,7 @@ public class GameState extends State
         if(camera.position.y >= getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2){
             camera.position.x = getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2;
         }
-        uiManager.setupPositions();
+        //uiManager.setupPositions();
     }
 
     public void pauseGame() {}
