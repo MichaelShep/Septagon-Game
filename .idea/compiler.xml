@@ -2,14 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="Septagon-Game.core.main" target="1.7" />
-      <module name="Septagon-Game.core.test" target="1.7" />
-      <module name="Septagon-Game.desktop.main" target="1.7" />
-      <module name="Septagon-Game.desktop.test" target="1.7" />
-      <module name="Septagon-GameNew.core.main" target="1.7" />
-      <module name="Septagon-GameNew.core.test" target="1.7" />
-      <module name="Septagon-GameNew.desktop.main" target="1.7" />
-      <module name="Septagon-GameNew.desktop.test" target="1.7" />
+      <module name="core_main" target="1.7" />
+      <module name="core_test" target="1.7" />
+      <module name="desktop_main" target="1.7" />
+      <module name="desktop_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
