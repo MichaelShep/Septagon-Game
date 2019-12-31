@@ -19,17 +19,6 @@ public class TiledGameMap
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 	}
 	
-	public void initialise()
-	{
-		System.out.println("MapWidth: " + this.getMapWidth());
-		System.out.println("MapHeight: " + this.getMapHeight());
-	}
-	
-	//Updates all the tiles on the screen
-	public void update()
-	{
-	}
-	
 	//Draws the map to the screen based on the location of the game camera
 	public void render(OrthographicCamera camera)
 	{

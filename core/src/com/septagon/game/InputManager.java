@@ -134,7 +134,7 @@ public class InputManager implements InputProcessor
                 switch(currentState.getMenuPosition())
                 {
                     case 0:
-                        stateManager.changeState(new GameState(this, font, batch, camera));
+                        stateManager.changeState(new GameState(this, font, camera));
                         break;
                     case 1:
                         stateManager.changeState(new HelpState(this, font));

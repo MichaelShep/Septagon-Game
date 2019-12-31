@@ -34,7 +34,6 @@ public class GameState extends State
     //Viewport that is used alongside the camera that contains the whole game map
     private ExtendViewport viewport;
     //Spritebatch that is used for rendering all objects in the game
-    private SpriteBatch batch;
     private SpriteBatch objectBatch;
 
     //Contains all the information about our game map
@@ -80,11 +79,10 @@ public class GameState extends State
     private boolean shouldCreateBullets = false;
 
     //Constructor that initialises all necessary variables and also takes in all required values from the game
-    public GameState(InputManager inputManager, BitmapFont font, SpriteBatch batch, OrthographicCamera camera)
+    public GameState(InputManager inputManager, BitmapFont font, OrthographicCamera camera)
     {
         super(inputManager, font, StateID.GAME);
     	this.camera = camera;
-    	this.batch = batch;
         timePassed = 0;
         minigameScore = 0;
         currentCameraX = 0;
@@ -139,7 +137,6 @@ public class GameState extends State
 
         //Creates and initialises the game map
         gameMap = new TiledGameMap();
-        gameMap.initialise();
         entityManager.initialise();
         uiManager.initialise();
 
@@ -167,7 +164,6 @@ public class GameState extends State
         {
             this.createBullets();
         }
-    	gameMap.update();
     	entityManager.update();
     	currentCameraX = camera.position.x;
     	currentCameraY = camera.position.y;
