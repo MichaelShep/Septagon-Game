@@ -107,6 +107,12 @@ public class GameState extends State
         fortresses.add(fortressMinister);
         fortresses.add(fortressStation);
 
+        //Sets the engines positions so that they start from the fireStation
+        engine1.setX(fireStation.getX() + 3);
+        engine1.setY(fireStation.getY() - 1);
+        engine2.setX(fireStation.getX() + 5);
+        engine2.setY(fireStation.getY() - 1);
+
         entityManager = new EntityManager();
         engines = new ArrayList<Engine>();
         //Adds all the engines to the player class's list of engines
@@ -135,14 +141,13 @@ public class GameState extends State
         //Creates instance of uiManager which will be used to render and manage all UI elements
         uiManager = new UIManager(this);
 
-        //Creates and initialises the game map
         gameMap = new TiledGameMap();
         entityManager.initialise();
         uiManager.initialise();
 
         //Moves the camera to its starting position and makes sure the screen gets updated after this
-        camera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.x = Gdx.graphics.getWidth() / 2 + (getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth();
         camera.update();
 
         //Create objects referring to all tiles in game
