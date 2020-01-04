@@ -1,14 +1,19 @@
-package com.septagon.entites;/*
+package com.septagon.entites;
+
+/*
  * A class used to test the Entity class
  */
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EntityTest {
     @Test
     public void testEntity() throws Exception {
-
+        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture, 'U');
     }
 
     @Test

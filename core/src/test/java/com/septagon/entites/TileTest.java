@@ -1,4 +1,6 @@
-package com.septagon.entites;/*
+package com.septagon.entites;
+
+/*
  * A class used to test the Tile class
  */
 
