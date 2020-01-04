@@ -108,8 +108,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines, fortress and stations in the game
-        engine1 = new Engine(0,0,32,32, engineTexture1, 10, 2, 4, 2, 'U', 20, 20, 4, 01);
-        engine2 = new Engine(0,10,32,32, engineTexture2, 10, 2, 4, 2, 'U', 20, 20, 4, 02);
+        engine1 = new Engine(0,0, engineTexture1, 10, 2, 4, 2, 20, 4, 01);
+        engine2 = new Engine(0,10, engineTexture2, 10, 2, 4, 2, 20, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
@@ -122,10 +122,10 @@ public class GameState extends State
         fortresses.add(fortressStation);
 
         //Sets the engines positions so that they start from the fireStation
-        engine1.setX(fireStation.getX() + 3);
-        engine1.setY(fireStation.getY() - 1);
-        engine2.setX(fireStation.getX() + 5);
-        engine2.setY(fireStation.getY() - 1);
+        engine1.setCol(fireStation.getCol() + 3);
+        engine1.setRow(fireStation.getRow() - 1);
+        engine2.setCol(fireStation.getCol() + 5);
+        engine2.setRow(fireStation.getRow() - 1);
 
         //Adds all the engines to the ArrayList of engines
         engines = new ArrayList<Engine>();

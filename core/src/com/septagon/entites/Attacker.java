@@ -23,9 +23,9 @@ public abstract class Attacker extends Entity
      * @param damage The damage dealt by the Attacker
      * @param range The range of attacks for the Attacker
      */
-    public Attacker(int col, int row, Texture texture, int health, int damage, int range)
+    public Attacker(int col, int row, int width, int height, Texture texture, int health, int damage, int range)
     {
-        super(col,row,Tile.TILE_SIZE,Tile.TILE_SIZE,texture);
+        super(col,row,width,height,texture);
         this.health = health;
         this.damage = damage;
         this.range = range;
@@ -43,26 +43,24 @@ public abstract class Attacker extends Entity
         }
     }
 
+    //Getters
     public int getHealth() {
         return health;
     }
-
-    public void takeDamage(int damage) {
-        this.health -= damage;
-    }
-
     public int getDamage() {
         return damage;
     }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
     public int getRange() {
         return range;
     }
 
+    //Setters
+    public void takeDamage(int damage) {
+        this.health -= damage;
+    }
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
     public void setRange(int range) {
         this.range = range;
     }

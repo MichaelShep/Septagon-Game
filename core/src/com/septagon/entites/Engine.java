@@ -9,23 +9,40 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Engine extends Vehicle
 {
+    //Member variables that will be unique stats of each engine
     private int volume;
     private int maxVolume;
     private int fillSpeed;
     private Integer id;
+
+    //Keeps track of whether the engine has moved on the current player turn
     private boolean moved = false;
 
-    public Engine(int x, int y, int width, int height, Texture texture, int health, int damage, int range, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
+    /***
+     * Constructor that Sets up the member variables for engine
+     * @param col The column in the map that the engine is at
+     * @param row The row in the map that the engine is at
+     * @param texture The texture of the engine
+     * @param health The health of the engine - unique to engine
+     * @param damage The damage of the engine - unique to engine
+     * @param range The range of the engine - unique to engine
+     * @param speed The speed of the engine - unique to engine
+     * @param maxVolume The maximum volume of the engine - unique to engine
+     * @param fillSpeed The fill speed of the engine - unique to engine
+     * @param id The id of the engine - unique to engine
+     */
+    public Engine(int col, int row, Texture texture, int health, int damage, int range, int speed, int maxVolume, int fillSpeed, Integer id)
     {
-        super(x,y,width,height,texture,health,damage,range,speed,direction);
-        this.volume = volume;
+        super(col,row,texture,health,damage,range,speed);
+        this.volume = maxVolume;
         this.maxVolume = maxVolume;
         this.fillSpeed = fillSpeed;
         this.id = id;
     }
 
-    /* When fire engine is in range of the station it will refill
-    at the rate defined in fillSpeed*/
+    /***
+     * Method that will be called when the engine is at a station so that it can increase its volume
+     */
     public void fill()
     {
         if (this.volume <= (this.maxVolume - this.fillSpeed)) 
@@ -38,6 +55,7 @@ public class Engine extends Vehicle
 
     }
 
+    //Getters and Setters
     public int getMaxVolume()
     {
         return this.maxVolume;
