@@ -191,6 +191,23 @@ public class GameState extends State
         //Call the update method for all entities in our game
     	entityManager.update();
 
+        //Update the bullets
+        ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
+        for (Bullet bullet : bullets) {
+            bullet.update(currentCameraX);
+            if (bullet.remove)
+                bulletToRemove.add(bullet);
+        }
+        bullets.removeAll(bulletToRemove);
+
+        //If all the engines have been moved on the current turn, make it the enemies turn
+        if(allEnginesMoved()){
+            this.playerTurn = false;
+            BattleTurn();
+        }else{
+            this.playerTurn = true;
+        }
+
         //Updates the pointers to the current x and y positions of the camera
     	currentCameraX = camera.position.x;
     	currentCameraY = camera.position.y;
@@ -263,9 +280,9 @@ public class GameState extends State
     }
 
 
-    //Creates a grid of tiles that are able to be moved onto,
-    // this is achieved by changing the inhabitable attribute of each tile to either;
-    // true if it is within moving distance of the current engine, or false if not.
+    /***
+     * Get the movable tiles for all the engines based on their positions
+     */
     public void setMovableTiles(){
         //Reset all moveable tiles from previous turn
         for(Tile t: tiles)
@@ -273,10 +290,12 @@ public class GameState extends State
             t.setMovable(false);
         }
 
+        //Loops through all tiles and makes sure they are not occupied (since then they cannot be moved to)
         for(Tile t: tiles){
             if(!t.isOccupied()){
-                //Creates a grid of movable tiles in a cross shape
+                //If the tile we are looking is the one with the engine on, do nothing
                 if(t.getCol() == currentEngine.getCol() && t.getRow() == currentEngine.getRow()) continue;
+                //If the tile is within the range of movement for the engine, make it movable
                 else if((t.getCol() <= currentEngine.getCol() + currentEngine.getSpeed() && t.getCol() >= currentEngine.getCol() - currentEngine.getSpeed()
                         && t.getRow() == currentEngine.getRow())|| (t.getRow() <= currentEngine.getRow() + currentEngine.getSpeed()
                         && t.getRow() >= currentEngine.getRow() - currentEngine.getSpeed() && t.getCol() == currentEngine.getCol())){
@@ -288,7 +307,9 @@ public class GameState extends State
         }
     }
 
-    //Sets up all the tiles that are currently occupied by fortress or the fire station
+    /***
+     * Sets up the tiles which contain an engine, fortress or the station to be occupied
+     */
     public void setOccupiedTiles()
     {
         //Set the tiles that currently have an engine on to be occupied
@@ -350,12 +371,17 @@ public class GameState extends State
     }
 
 
-    //Returns the tile object at a location specified.
-    private Tile getTileAtLocation(int x, int y)
+    /***
+     * Method to get the tile at a row and column
+     * @param col The column of the tile you want to get
+     * @param row The row of the tile you want to get
+     * @return The tile at the location asked for
+     */
+    private Tile getTileAtLocation(int col, int row)
     {
         for(Tile t: tiles)
         {
-            if(t.getX() == x && t.getY() == y)
+            if(t.getCol() == col && t.getRow() == row)
                 return t;
         }
         return null;
@@ -370,48 +396,43 @@ public class GameState extends State
         shouldCreateBullets = false;
     }
 
+    /***
+     * Method that will render everything in the game each frame
+     * @param batch The batch which is used for all the rendering
+     */
     public void render(SpriteBatch batch)
     {
-    	// update bullet
-    	ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
-    	for (Bullet bullet : bullets) {
-    		bullet.update(currentCameraX);
-    		if (bullet.remove)
-    			bulletToRemove.add(bullet);
-    	}
-    	bullets.removeAll(bulletToRemove);
-    	
-    	
-    	//Clear the background to red
+    	//Clear the background to red - the colour does not reall matter
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    	if(allEnginesMoved()){
-    	    this.playerTurn = false;
-    	    BattleTurn();
-        }else{
-    	    this.playerTurn = true;
-        }
-    	//Render the map for our game
+    	//Render the map and all objects for our game
     	gameMap.render(camera);
         objectBatch.setProjectionMatrix(camera.combined);
         objectBatch.begin();
         entityManager.render(objectBatch);
-
-        if (inputManager.isHasBeenTouched() && this.playerTurn){
-            this.renderMovementGrid(inputManager.getXCoord(), inputManager.getYCoord());
-        }
         for (Bullet bullet : bullets) {
-        	bullet.render(objectBatch);
+            bullet.render(objectBatch);
         }
 
+        //Renderers the movement grid for the currently touched engine
+        if (inputManager.isHasBeenTouched() && this.playerTurn){
+            this.renderMovementGrid();
+        }
+
+        //Ends the drawing of all the objects for the current frame
         objectBatch.end();
+
+        //renders all the ui elements
         uiManager.render();
     }
 
-    //Renders in a grid so that a player can see where they are able to
-    //move an engine.
-    public void renderMovementGrid(float x, float y){
+    /***
+     * Renders a grid showing the player where the engine that they have pressed on can move to
+
+     */
+    public void renderMovementGrid(){
+        //If there is a engine that has been pressed and that engine has not yet moved this turn
         if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
@@ -422,6 +443,10 @@ public class GameState extends State
         }
     }
 
+    /***
+     * Checks if all engines have been moved or not so that the game knows when to end the players turn
+     * @return boolean of whether all the engines have been moved or not
+     */
     public boolean allEnginesMoved(){
         for(Engine e : engines){
             if(!e.isMoved()){
@@ -430,7 +455,11 @@ public class GameState extends State
         } return true;
     }
 
+    /***
+     * Method that is run for the enemies turn
+     */
     public void BattleTurn(){
+        //Set the moved variable to false for each engine and then check if damages can occur
         for (Engine e : engines){
             e.setMoved(false);
             for (Fortress f: fortresses){
@@ -441,23 +470,25 @@ public class GameState extends State
         }
     }
 
-    //Method that is called when the screen is resized - makes sure camera stays in map bounds
+    /***
+     * Method that handles map resizing when the window size is changed
+     */
     public void hasResized()
     {
+        //Checks that the change in screen size has not caused the camera to show features off the map
+        //If this is the case, clamp the camera position so that it sets it back to the edge of the map
         if(camera.position.x <= (Gdx.graphics.getWidth() / 2)) {
             camera.position.x = Gdx.graphics.getWidth() / 2;
         }
         if(camera.position.y <= (Gdx.graphics.getHeight() / 2)) {
             camera.position.y = Gdx.graphics.getHeight() / 2;
         }
-
         if(camera.position.x >= getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2){
             camera.position.x = getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2;
         }
         if(camera.position.y >= getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2){
             camera.position.x = getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2;
         }
-        //uiManager.setupPositions();
     }
 
     public void pauseGame() {}
