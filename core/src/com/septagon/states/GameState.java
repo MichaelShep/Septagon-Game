@@ -165,12 +165,12 @@ public class GameState extends State
         camera.update();
 
         //Create objects referring to all tiles in game
-        for(int y = 0; y < gameMap.getMapHeight(); y++)
+        for(int row = 0; row < gameMap.getMapHeight(); row++)
         {
-            for(int x = 0; x < gameMap.getMapWidth(); x++)
+            for(int col = 0; col < gameMap.getMapWidth(); col++)
             {
-                if(gameMap.getTileByCoordinate(0, x, y) != null)
-                    tiles.add(gameMap.getTileByCoordinate(0, x, y));
+                if(gameMap.getTileByCoordinate(0, col, row) != null)
+                    tiles.add(gameMap.getTileByCoordinate(0, col, row));
             }
         }
 
@@ -203,16 +203,12 @@ public class GameState extends State
      */
     public void checkIfTouchingFortress(float x, float y)
     {
-        //Converts positions of input into tile column and row positions (map locations)
-        int tileCol = (int)x / Tile.TILE_SIZE;
-        int tileRow = (int)y / Tile.TILE_SIZE;
-
         //Loops through all fortresses to check if any have been pressed
         for(Fortress f: fortresses)
         {
             //If the clicked on tile is within the bounds of the fortress make it selected, if not make not selected
-            if(tileCol >= f.getX() && tileCol <= f.getX() + (f.getWidth() / 32) &&
-                   tileRow >= f.getY() && tileRow <= f.getY() + (f.getHeight() / 32)) {
+            if(x >= f.getX() && x <= f.getX() + f.getWidth() &&
+                   y >= f.getY() && y <= f.getY() + f.getHeight()) {
                 f.setSelected(true);
             }
             else {
@@ -254,7 +250,7 @@ public class GameState extends State
                 //If not a moveable tile pressed, check if a fortress tile has been pressed
                 checkIfTouchingFortress(x, y);
                 for (Engine e: engines){
-                    if (t.getX() == e.getX() && t.getY() == e.getY()) {
+                    if (t.getCol() == e.getCol() && t.getRow() == e.getRow()) {
                         currentEngine = e;
                         uiManager.setCurrentEngine(e);
                         setMovableTiles();
@@ -280,9 +276,10 @@ public class GameState extends State
         for(Tile t: tiles){
             if(!t.isOccupied()){
                 //Creates a grid of movable tiles in a cross shape
-                if(t.getX() == currentEngine.getX() && t.getY() == currentEngine.getY()) continue;
-                else if((t.getX() <= currentEngine.getX() + currentEngine.getSpeed() && t.getX() >= currentEngine.getX() - currentEngine.getSpeed() && t.getY() == currentEngine.getY())||
-                    (t.getY() <= currentEngine.getY() + currentEngine.getSpeed() && t.getY() >= currentEngine.getY() - currentEngine.getSpeed() && t.getX() == currentEngine.getX())){
+                if(t.getCol() == currentEngine.getCol() && t.getRow() == currentEngine.getRow()) continue;
+                else if((t.getCol() <= currentEngine.getCol() + currentEngine.getSpeed() && t.getCol() >= currentEngine.getCol() - currentEngine.getSpeed()
+                        && t.getRow() == currentEngine.getRow())|| (t.getRow() <= currentEngine.getRow() + currentEngine.getSpeed()
+                        && t.getRow() >= currentEngine.getRow() - currentEngine.getSpeed() && t.getCol() == currentEngine.getCol())){
                         t.setMovable(true);
                 }
             }else {
@@ -299,7 +296,7 @@ public class GameState extends State
         {
             for(Tile t: tiles)
             {
-                if(t.getX() == e.getX() && t.getY() == e.getY())
+                if(t.getCol() == e.getCol() && t.getRow() == e.getRow())
                 {
                     t.setOccupied(true);
                     break;
@@ -419,7 +416,7 @@ public class GameState extends State
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
-                    objectBatch.draw(moveSpaceTexture, t.getX() * Tile.TILE_SIZE, t.getY() * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    objectBatch.draw(moveSpaceTexture, t.getX(), t.getY(), Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
         }
