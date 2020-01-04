@@ -11,9 +11,9 @@ public class Vehicle extends Attacker
     protected int speed;
     protected char direction;
 
-    public Vehicle (int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction)
+    public Vehicle (int x, int y, int width, int height, Texture texture, int health, int damage, int range, int speed, char direction)
     {
-        super(x,y,width,height,texture,orientation,health,damage,range,alignment);
+        super(x,y,width,height,texture,health,damage,range);
         this.speed = speed;
         this.direction = direction;
     }

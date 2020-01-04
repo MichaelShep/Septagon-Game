@@ -19,7 +19,7 @@ public class Fortress extends Attacker
 
     public Fortress(int x, int y, int width, int height, Texture texture, int health, int damage, int range)
     {
-        super(x,y,width,height,texture, 'U', health, damage, range, "ET");
+        super(x,y,width,height,texture, health, damage, range);
     }
 
 

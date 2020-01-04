@@ -10,9 +10,9 @@ public class Station extends Entity
 {
     private Boolean destroyed = false;
 
-    public Station(int x, int y, int width, int height, Texture texture, char orientation)
+    public Station(int x, int y, int width, int height, Texture texture)
     {
-        super(x,y,width,height,texture,orientation);
+        super(x,y,width,height,texture);
     }
 
 

@@ -10,15 +10,13 @@ import com.badlogic.gdx.graphics.Texture;
 public class Tile extends Entity
 {
 	public static final int TILE_SIZE = 32;
-	
-    private boolean inhabitable;
+
     private boolean occupied;
     private boolean movable = false;
 
-    public Tile(int x, int y, int width, int height, Texture texture, char orientation, Boolean inhabitable, Boolean occupied)
+    public Tile(int x, int y, int width, int height, Texture texture,  Boolean occupied)
     {
-        super(x,y,width,height,texture,orientation);
-        this.inhabitable = inhabitable;
+        super(x,y,width,height,texture);
         this.occupied = occupied;
     }
 
@@ -41,8 +39,6 @@ public class Tile extends Entity
     public void setMovable(boolean value) { movable = value; }
     public void setOccupied(boolean occupied) { this.occupied = occupied; }
 
-
     public boolean isMovable() { return movable; }
-    public boolean isInhabitable() { return inhabitable; }
     public boolean isOccupied() { return occupied; }
 }

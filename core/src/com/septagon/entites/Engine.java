@@ -15,9 +15,9 @@ public class Engine extends Vehicle
     private Integer id;
     private boolean moved = false;
 
-    public Engine(int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
+    public Engine(int x, int y, int width, int height, Texture texture, int health, int damage, int range, int speed, char direction, int volume, int maxVolume, int fillSpeed, Integer id)
     {
-        super(x,y,width,height,texture,orientation,health,damage,range,alignment,speed,direction);
+        super(x,y,width,height,texture,health,damage,range,speed,direction);
         this.volume = volume;
         this.maxVolume = maxVolume;
         this.fillSpeed = fillSpeed;

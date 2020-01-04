@@ -61,7 +61,7 @@ public class TiledGameMap
 				//Gets the id of the tile at the location and then returns a copy of that tile
 				int id = tile.getId();
 				return new Tile(col, row, Tile.TILE_SIZE, Tile.TILE_SIZE,
-						null, 'U', true, false);
+						null, false);
 			}
 		}
 		//If either the cell or the tile doesn't exist, return null
