@@ -67,4 +67,6 @@ public class EntityManager
         for(Entity e: entities)
             e.render(batch);
     }
+
+    public ArrayList<Entity> getEntities() { return entities; }
 }

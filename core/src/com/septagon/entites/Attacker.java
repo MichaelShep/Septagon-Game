@@ -11,6 +11,7 @@ public abstract class Attacker extends Entity
 {
     //Variables that will store different attributes for each Attacker - unique for each instance
     protected int health;
+    protected int maxHealth;
     protected int damage;
     protected int range;
 
@@ -27,6 +28,7 @@ public abstract class Attacker extends Entity
     {
         super(col,row,width,height,texture);
         this.health = health;
+        this.maxHealth = health;
         this.damage = damage;
         this.range = range;
     }
@@ -53,6 +55,9 @@ public abstract class Attacker extends Entity
     public int getRange() {
         return range;
     }
+    public int getMaxHealth() {
+        return maxHealth;
+    }
 
     //Setters
     public void takeDamage(int damage) {
@@ -63,5 +68,12 @@ public abstract class Attacker extends Entity
     }
     public void setRange(int range) {
         this.range = range;
+    }
+    public void setMaxHealth(int maxHealth){
+        this.maxHealth = maxHealth;
+    }
+
+    public void setHealth(int health){
+        this.health = health;
     }
 }
