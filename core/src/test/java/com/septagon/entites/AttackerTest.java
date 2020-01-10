@@ -23,7 +23,6 @@ class AttackerTest {
         assertEquals(testCA.health, 10);
         assertEquals(testCA.damage, 2);
         assertEquals(testCA.range, 4);
-        assertEquals(testCA.alignment, "Friendly");
     }
 
     @Test //A test for the Attacker class' damageFortressIfInRange method
@@ -82,21 +81,6 @@ class AttackerTest {
         ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
         testCA.setRange(3);
         assertEquals(testCA.range, 3);
-    }
-
-    @Test //A test for the Attacker class' getAlignment method
-    public void testGetAlignment() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
-        assertEquals(testCA.alignment, "Friendly");
-    }
-
-    @Test //A test for the Attacker class' setAlignment method
-    public void testSetAlignment() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
-        testCA.setAlignment("Enemy");
-        assertEquals(testCA.alignment, "Enemy");
     }
 }
 

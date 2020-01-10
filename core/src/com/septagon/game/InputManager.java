@@ -62,9 +62,6 @@ public class InputManager implements InputProcessor
 
             GameState currentState = (GameState) stateManager.getCurrentState();
 
-            System.out.println("X Coord Press: " + onScreenXCoord + ", Y Coord Press: " + onScreenYCoord);
-            System.out.println("X Coord Rect: " + currentState.getUiManager().getShowStatsRect().getX() + ", Y Coord Rect: " + currentState.getUiManager().getShowStatsRect().getX());
-
             if(currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
             {
                 currentState.getUiManager().pressedShowStatsButton();

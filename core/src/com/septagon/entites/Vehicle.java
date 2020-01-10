@@ -11,17 +11,22 @@ public class Vehicle extends Attacker
     protected int speed;
     protected char direction;
 
-    public Vehicle (int x, int y, int width, int height, Texture texture, char orientation, int health, int damage, int range, String alignment, int speed, char direction)
+    public Vehicle (int col, int row, Texture texture, int health, int damage, int range, int speed)
     {
-        super(x,y,width,height,texture,orientation,health,damage,range,alignment);
+        super(col,row, Tile.TILE_SIZE, Tile.TILE_SIZE, texture,health,damage,range);
         this.speed = speed;
-        this.direction = direction;
     }
 
+    /***
+     * Method that will control movement of vehicle - will be overwritten by subclasses where needed
+     * @param direction The direcion of the movement
+     * @param distance How far the vehicle should move
+     */
     public void move(Character direction, int distance)
     {
     }
 
+    //Getters
     public int getSpeed() { return speed; }
     public char getDirection() { return direction; }
 }

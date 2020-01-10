@@ -22,7 +22,6 @@ class FortressTest {
         assertEquals(testF.health, 100);
         assertEquals(testF.damage, 20);
         assertEquals(testF.range, 3);
-        assertEquals(testF.alignment, "ET");
     }
 
     @Test //A test for the Fortress class' damageEngineIfInRange method
@@ -30,8 +29,8 @@ class FortressTest {
         Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
         Fortress testF = new Fortress(4, 4, 256, 256, testTexture, 100, 20, 3);
         Texture testTexture2 = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE1 = new Engine(5,5,32,32, testTexture2, 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 01);
-        Engine testE = new Engine(10,10,32,32, testTexture2, 10, 2, 4, "Friendly", 2, 'U', 20, 20, 4, 01);
+        Engine testE1 = new Engine(5,5, testTexture, 10, 2, 4, 2, 20, 4, 01);
+        Engine testE2 = new Engine(10, 10, testTexture, 10, 2, 4, 2, 20, 4, 01);
 
     }
 

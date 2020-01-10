@@ -22,12 +22,12 @@ public class Game extends ApplicationAdapter
 	private BitmapFont font;
 
 	private InputManager inputManager;
-	
+
 
 
 	@Override
 	//Initialises and creates all variables and objects in the game
-	public void create () 
+	public void create ()
 	{
 		batch = new SpriteBatch();
 
@@ -51,7 +51,7 @@ public class Game extends ApplicationAdapter
 
 		inputManager = new InputManager(camera, stateManager, font, batch);
 		Gdx.input.setInputProcessor(inputManager);
-		
+
 		//Set the current state of the game to be the GameState and 
 		//initialise this state
 		stateManager.changeState(startState);
@@ -72,7 +72,7 @@ public class Game extends ApplicationAdapter
 
 	@Override
 	//Render all objects onto the screen - called every frame
-	public void render () 
+	public void render ()
 	{
 		//Updates the current state of the game
 		stateManager.update();
@@ -87,17 +87,15 @@ public class Game extends ApplicationAdapter
 
 		//Render the current state of the game
 		stateManager.render(batch);
-		
+
 		batch.end();
 	}
-	
+
 	@Override
 	//Disposes of all objects that need disposing once the game has finished
-	public void dispose () 
+	public void dispose ()
 	{
 		batch.dispose();
 		font.dispose();
 	}
 }
-
-

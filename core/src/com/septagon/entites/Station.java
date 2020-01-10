@@ -8,15 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Station extends Entity
 {
-    private Boolean destroyed = false;
-
-    public Station(int x, int y, int width, int height, Texture texture, char orientation)
+    /***
+     *Constructor that callS Entity constructor that is used to set up all member variables
+     */
+    public Station(int col, int row, int width, int height, Texture texture)
     {
-        super(x,y,width,height,texture,orientation);
-    }
-
-
-    public void destroy()
-    {
+        super(col,row,width,height,texture);
     }
 }

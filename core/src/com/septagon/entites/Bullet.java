@@ -32,5 +32,3 @@ public class Bullet {
         batch.draw(texture, x, y);
     }
 }
-
-

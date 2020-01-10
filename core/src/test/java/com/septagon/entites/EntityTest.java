@@ -99,7 +99,7 @@ class EntityTest {
     public void testSetRow() throws Exception {
         Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
         ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        testEN.setRow(32);
+        testEN.setRow(1);
         assertEquals(testEN.y, 32);
         assertEquals(testEN.row, 1);
     }
