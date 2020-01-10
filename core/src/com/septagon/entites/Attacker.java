@@ -45,6 +45,14 @@ public abstract class Attacker extends Entity
         }
     }
 
+    /***
+     * Overriding of the update method, used to make sure an attackers health never passes below 0
+     */
+    public void update(){
+        super.update();
+        if(health <= 0) health = 0;
+    }
+
     //Getters
     public int getHealth() {
         return health;

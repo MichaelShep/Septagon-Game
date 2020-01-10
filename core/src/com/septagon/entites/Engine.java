@@ -55,11 +55,6 @@ public class Engine extends Vehicle
 
     }
 
-    public void update(){
-        super.update();
-        if(health <= 0) health = 0;
-    }
-
     //Getters and Setters
     public int getMaxVolume()
     {

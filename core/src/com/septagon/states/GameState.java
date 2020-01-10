@@ -112,8 +112,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines, fortress and stations in the game
-        engine1 = new Engine(0,0, engineTexture1, 100, 2, 4, 2, 20, 4, 01);
-        engine2 = new Engine(0,0, engineTexture2, 100, 2, 4, 2, 20, 4, 02);
+        engine1 = new Engine(0,0, engineTexture1, 100, 2, 4, 6, 20, 4, 01);
+        engine2 = new Engine(0,0, engineTexture2, 100, 2, 4, 6, 20, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
@@ -191,7 +191,10 @@ public class GameState extends State
      */
     public void update()
     {
+        //Testing code for health
+        fortressStation.setHealth(fortressStation.getHealth() - 1);
         engine1.setHealth(engine1.getHealth() - 1);
+
         if(shouldCreateBullets)
         {
             this.createBullets();
@@ -294,25 +297,56 @@ public class GameState extends State
      */
     public void setMovableTiles(){
         //Reset all moveable tiles from previous turn
+        resetMovableTiles();
+
+        //Gets all the moveable tiles in the up direction
+        for(int i = 1; i <= currentEngine.getSpeed(); i++){
+            Tile nextTile = this.getTileAtLocation(currentEngine.getCol(), currentEngine.getRow() + i);
+            if(nextTile != null) {
+                if (!nextTile.isOccupied()) {
+                    nextTile.setMovable(true);
+                } else break;
+            }else break;
+        }
+
+        //Gets all the moveable tiles in the down direction
+        for(int i = 1; i <= currentEngine.getSpeed(); i++){
+            Tile nextTile = this.getTileAtLocation(currentEngine.getCol(), currentEngine.getRow() - i);
+            if(nextTile != null) {
+                if (!nextTile.isOccupied()) {
+                    nextTile.setMovable(true);
+                } else break;
+            }else break;
+        }
+
+        //Gets all the moveable tiles in the left direction
+        for(int i = 1; i <= currentEngine.getSpeed(); i++){
+            Tile nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow());
+            if(nextTile != null) {
+                if (!nextTile.isOccupied()) {
+                    nextTile.setMovable(true);
+                } else break;
+            }else break;
+        }
+
+        //Gets all the moveable tiles in the right direction
+        for(int i = 1; i <= currentEngine.getSpeed(); i++){
+            Tile nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow());
+            if(nextTile != null) {
+                if (!nextTile.isOccupied()) {
+                    nextTile.setMovable(true);
+                } else break;
+            }else break;
+        }
+    }
+
+    /***
+     * Clear all the current moveable tiles
+     */
+    private void resetMovableTiles(){
         for(Tile t: tiles)
         {
             t.setMovable(false);
-        }
-
-        //Loops through all tiles and makes sure they are not occupied (since then they cannot be moved to)
-        for(Tile t: tiles){
-            if(!t.isOccupied()){
-                //If the tile we are looking is the one with the engine on, do nothing
-                if(t.getCol() == currentEngine.getCol() && t.getRow() == currentEngine.getRow()) continue;
-                    //If the tile is within the range of movement for the engine, make it movable
-                else if((t.getCol() <= currentEngine.getCol() + currentEngine.getSpeed() && t.getCol() >= currentEngine.getCol() - currentEngine.getSpeed()
-                        && t.getRow() == currentEngine.getRow())|| (t.getRow() <= currentEngine.getRow() + currentEngine.getSpeed()
-                        && t.getRow() >= currentEngine.getRow() - currentEngine.getSpeed() && t.getCol() == currentEngine.getCol())){
-                    t.setMovable(true);
-                }
-            }else {
-                t.setMovable(false);
-            }
         }
     }
 
@@ -508,6 +542,7 @@ public class GameState extends State
      */
     public void BattleTurn(){
         //Set the moved variable to false for each engine and then check if damages can occur
+        this.resetMovableTiles();
         for (Engine e : engines){
             e.setMoved(false);
             for (Fortress f: fortresses){
