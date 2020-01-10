@@ -22,10 +22,12 @@ public class Bullet {
         }
     }
 
-    public void update (float deltaTime) {
+    public void update (float deltaTime, int mapHeightPixels) {
+
         y+= SPEED * deltaTime;
-        if (y > Gdx.graphics.getHeight())
+        if (y > mapHeightPixels)//Gdx.graphics.getHeight())
             remove = true;
+        System.out.println(this.y);
     }
 
     public void render (SpriteBatch batch){

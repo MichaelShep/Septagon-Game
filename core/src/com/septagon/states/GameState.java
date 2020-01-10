@@ -194,7 +194,8 @@ public class GameState extends State
         //Update the bullets
         ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
         for (Bullet bullet : bullets) {
-            bullet.update(currentCameraX);
+        	float dt = Math.min(Gdx.graphics.getDeltaTime(), 1 /60f);
+            bullet.update(dt, gameMap.getMapHeight() * 32);
             if (bullet.remove)
                 bulletToRemove.add(bullet);
         }
@@ -402,7 +403,7 @@ public class GameState extends State
      */
     public void render(SpriteBatch batch)
     {
-    	//Clear the background to red - the colour does not reall matter
+    	//Clear the background to red - the colour does not really matter
     	Gdx.gl.glClearColor(1, 0, 0, 1);
     	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
