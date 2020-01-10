@@ -10,24 +10,35 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VehicleTest {
-    @Test
+    @Test //A test for the Vehicle class initialisation
     public void testVehicle() throws Exception {
         Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Vehicle testV = new Vehicle(0,0,32,32, testTexture,'U', 10, 2, 4, "Friendly", 2, 'U');
+        Vehicle testV = new Vehicle(0,0,32,32, testTexture, 10, 2, 4, "Friendly", 2, 'U');
+        assertEquals(testV.x, 0);
+        assertEquals(testV.y, 0);
+        assertEquals(testV.width, 32);
+        assertEquals(testV.height, 32);
+        assertEquals(testV.texture, testTexture);
+        assertEquals(testV.health, 10);
+        assertEquals(testV.damage, 2);
+        assertEquals(testV.range, 4);
+        assertEquals(testV.alignment, "Friendly");
+        assertEquals(testV.speed, 2);
+        assertEquals(testV.direction, 'U');
     }
 
-    @Test
-    public void testMove() throws Exception {
-
-    }
-
-    @Test
+    @Test //A test for the Vehicle class' getSpeed method
     public void testGetSpeed() throws Exception {
-
+        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        Vehicle testV = new Vehicle(0,0,32,32, testTexture, 10, 2, 4, "Friendly", 2, 'U');
+        assertEquals(testV.getSpeed(), 2);
     }
-    @Test
-    public void testGetDirection() throws Exception {
 
+    @Test //A test for the Vehicle class' getDirection method
+    public void testGetDirection() throws Exception {
+        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        Vehicle testV = new Vehicle(0,0,32,32, testTexture, 10, 2, 4, "Friendly", 2, 'U');
+        assertEquals(testV.getDirection(), 'U');
     }
 
 }

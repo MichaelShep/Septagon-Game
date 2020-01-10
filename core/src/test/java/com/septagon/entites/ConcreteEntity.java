@@ -1,16 +1,16 @@
 package com.septagon.entites;
 
-/*
- * Concrete class for testing only
- */
-
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+/*
+ * Concrete class for testing of the Entity class only
+ * Not for use besides testing
+ */
 
 public class ConcreteEntity extends Entity{
 
-    public ConcreteEntity(int x, int y, int width, int height, Texture texture, char orientation)
+    public ConcreteEntity(int col, int row, int width, int height, Texture texture)
     {
-        super(x, y, width, height, texture, orientation);
+        super(col, row, width, height, texture);
     }
 }
