@@ -57,6 +57,8 @@ public class InputManager implements InputProcessor
             xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
             yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
 
+            System.out.println(xCoord / Tile.TILE_SIZE + " y: " + yCoord / Tile.TILE_SIZE);
+
             float onScreenXCoord = Gdx.input.getX();
             float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
 

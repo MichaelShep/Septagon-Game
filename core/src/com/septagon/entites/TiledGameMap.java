@@ -34,6 +34,22 @@ public class TiledGameMap
 	}
 
 	/***
+	 * Method that works out whether a specific tile is a water tile or not
+	 * @param col The column of the checked tile
+	 * @param row The row of the checked tile
+	 * @return Returns true if the tile is a water tile, false if not
+	 */
+	public boolean checkIfWaterTile(int col, int row){
+		//Gets the cell (format used by Tiled) at the current location
+		Cell cell = ((TiledMapTileLayer)tiledMap.getLayers().get(0)).getCell(col, row);
+
+		if(cell.getTile().getId() >= 400 && cell.getTile().getId() <= 550){
+			return true;
+		}
+		return false;
+	}
+
+	/***
 	 * Disposes of all objects once the game is finished
 	 */
 	public void dispose()
