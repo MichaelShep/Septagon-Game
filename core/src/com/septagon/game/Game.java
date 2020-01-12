@@ -46,8 +46,8 @@ public class Game extends ApplicationAdapter
 		generator.dispose();
 
 		//Intialise all variables with default values
-		startState = new MenuState(inputManager, font);
 		stateManager = new StateManager();
+		startState = new MenuState(inputManager, font, stateManager);
 
 		inputManager = new InputManager(camera, stateManager, font, batch);
 		Gdx.input.setInputProcessor(inputManager);

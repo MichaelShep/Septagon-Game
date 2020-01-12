@@ -12,9 +12,9 @@ public class MinigameState extends State
 {
     private int score;
 
-    public MinigameState(InputManager inputManager, BitmapFont font)
+    public MinigameState(InputManager inputManager, BitmapFont font, StateManager stateManager)
     {
-        super(inputManager, font, StateID.MINIGAME);
+        super(inputManager, font, StateID.MINIGAME, stateManager);
         score = 0;
     }
 

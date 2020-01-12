@@ -133,13 +133,13 @@ public class InputManager implements InputProcessor
                 switch(currentState.getMenuPosition())
                 {
                     case 0:
-                        stateManager.changeState(new GameState(this, font, camera));
+                        stateManager.changeState(new GameState(this, font, stateManager, camera));
                         break;
                     case 1:
-                        stateManager.changeState(new HelpState(this, font));
+                        stateManager.changeState(new HelpState(this, font, stateManager));
                         break;
                     case 2:
-                        stateManager.changeState(new SettingsState(this, font));
+                        stateManager.changeState(new SettingsState(this, font, stateManager));
                         break;
                     case 3:
                         Gdx.app.exit();
@@ -155,6 +155,20 @@ public class InputManager implements InputProcessor
             if(keycode == Input.Keys.SPACE)
             {
                 currentState.setShouldCreateBullets(true);
+            }
+        }else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
+            GameOverState currentState = (GameOverState) stateManager.getCurrentState();
+
+            if(keycode == Input.Keys.DOWN && currentState.getPosition() == 1){
+                currentState.setPosition(2);
+            }else if(keycode == Input.Keys.UP && currentState.getPosition() == 2){
+                currentState.setPosition(1);
+            }
+
+            if(keycode == Input.Keys.ENTER){
+                if(currentState.getPosition() == 1){
+                    stateManager.changeState(new GameState(this, font, stateManager, camera));
+                }
             }
         }
         return true;

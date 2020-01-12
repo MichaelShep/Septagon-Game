@@ -12,9 +12,9 @@ public class HelpState extends State
 {
     private String helpLabel;
 
-    public HelpState(InputManager inputManager, BitmapFont font)
+    public HelpState(InputManager inputManager, BitmapFont font, StateManager stateManager)
     {
-        super(inputManager, font, StateID.HELP);
+        super(inputManager, font, StateID.HELP, stateManager);
         helpLabel = "";
     }
 

@@ -94,9 +94,9 @@ public class GameState extends State
      * @param font The font being used for the game
      * @param camera The camera that controls what is displayed on the screen
      */
-    public GameState(InputManager inputManager, BitmapFont font, OrthographicCamera camera)
+    public GameState(InputManager inputManager, BitmapFont font, StateManager stateManager, OrthographicCamera camera)
     {
-        super(inputManager, font, StateID.GAME);
+        super(inputManager, font, StateID.GAME, stateManager);
         this.camera = camera;
         timePassed = 0;
         minigameScore = 0;
@@ -191,8 +191,10 @@ public class GameState extends State
      */
     public void update()
     {
-        //Testing code for health
+        //Testing code for health and end game conditions
         fortressStation.setHealth(fortressStation.getHealth() - 1);
+        fortressFire.setHealth(fortressFire.getHealth() - 1);
+        fortressMinister.setHealth(fortressMinister.getHealth() - 1);
         engine1.setHealth(engine1.getHealth() - 1);
 
         if(shouldCreateBullets)
@@ -223,6 +225,15 @@ public class GameState extends State
         //Updates the pointers to the current x and y positions of the camera
         currentCameraX = camera.position.x;
         currentCameraY = camera.position.y;
+
+        //Checks if the player has destroyed all the fortresses
+        boolean hasWon = true;
+        for(Fortress f: fortresses){
+            if(f.getHealth() > 0) hasWon = false;
+        }
+        if(hasWon){
+            stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
+        }
     }
 
     /***

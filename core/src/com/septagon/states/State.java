@@ -15,12 +15,14 @@ public abstract class State
     protected StateID id;
     protected InputManager inputManager;
     protected BitmapFont font;
+    protected StateManager stateManager;
 
-    protected State(InputManager inputManager, BitmapFont font, StateID id)
+    protected State(InputManager inputManager, BitmapFont font, StateID id, StateManager stateManager)
     {
         this.inputManager = inputManager;
         this.font = font;
         this.id = id;
+        this.stateManager = stateManager;
     }
 
     public abstract void initialise();

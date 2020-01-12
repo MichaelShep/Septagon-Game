@@ -34,9 +34,9 @@ public class MenuState extends State
      * @param inputManager The games InputManager class so that this class can also handle input
      * @param font The games font so that the class can draw text to the screen
      */
-    public MenuState(InputManager inputManager, BitmapFont font)
+    public MenuState(InputManager inputManager, BitmapFont font, StateManager stateManager)
     {
-        super(inputManager, font, StateID.MENU);
+        super(inputManager, font, StateID.MENU, stateManager);
         titleLabel = "Kroy - Septagon";
         playLabel = "Play";
         helpLabel = "Help";

@@ -10,9 +10,9 @@ Child class of the State class that will be used to manage the system when the u
 
 public class SettingsState extends State
 {
-    public SettingsState(InputManager inputManager, BitmapFont font)
+    public SettingsState(InputManager inputManager, BitmapFont font, StateManager stateManager)
     {
-        super(inputManager, font, StateID.SETTINGS);
+        super(inputManager, font, StateID.SETTINGS, stateManager);
     }
 
     public void initialise()
