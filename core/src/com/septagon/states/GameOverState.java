@@ -85,7 +85,7 @@ public class GameOverState extends State
 
         gameOverSpriteBatch.begin();
 
-        font.setColor(Color.RED);
+        font.setColor(Color.WHITE);
 
         if(didWin){
             gameOverLabel.setText(font, "Congrats, you win!");

@@ -156,18 +156,27 @@ public class InputManager implements InputProcessor
             {
                 currentState.setShouldCreateBullets(true);
             }
-        }else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
+        }
+        //Handle input for the game over state
+        else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
+            //Convert the currentState variable to an instance of GameOverState
             GameOverState currentState = (GameOverState) stateManager.getCurrentState();
 
+            //Move the position of the gameOverState up or down based on inputs
             if(keycode == Input.Keys.DOWN && currentState.getPosition() == 1){
                 currentState.setPosition(2);
             }else if(keycode == Input.Keys.UP && currentState.getPosition() == 2){
                 currentState.setPosition(1);
             }
-
+            //If the enter key is pressed, perform action based on the position
             if(keycode == Input.Keys.ENTER){
+                //If on yes, start a new GameState
                 if(currentState.getPosition() == 1){
                     stateManager.changeState(new GameState(this, font, stateManager, camera));
+                }
+                //If on no, close the window and exit the game
+                else if(currentState.getPosition() == 2){
+                    Gdx.app.exit();
                 }
             }
         }
