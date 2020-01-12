@@ -57,6 +57,9 @@ public class GameOverState extends State
         if(didWin){
             gameOverLabel.setText(font, "Congrats, you win!");
             extraInfoLabel.setText(font, "You destroyed all the ET Fortresses and saved York!");
+        }else {
+            gameOverLabel.setText(font, "Game Over! You Lose.");
+            extraInfoLabel.setText(font, "All your fire engines were destroyed!");
         }
         playAgainLabel.setText(font, "Play Again?");
         yesLabel.setText(font, "Yes");

@@ -191,12 +191,6 @@ public class GameState extends State
      */
     public void update()
     {
-        //Testing code for health and end game conditions
-        fortressStation.setHealth(fortressStation.getHealth() - 1);
-        fortressFire.setHealth(fortressFire.getHealth() - 1);
-        fortressMinister.setHealth(fortressMinister.getHealth() - 1);
-        engine1.setHealth(engine1.getHealth() - 1);
-
         if(shouldCreateBullets)
         {
             this.createBullets();
@@ -233,6 +227,15 @@ public class GameState extends State
         }
         if(hasWon){
             stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
+        }
+
+        //Checks if all the players fire engines have been destroyed
+        boolean hasLost = true;
+        for(Engine e: engines){
+            if(e.getHealth() > 0) hasLost = false;
+        }
+        if(hasLost){
+            stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
         }
     }
 
