@@ -112,8 +112,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines, fortress and stations in the game
-        engine1 = new Engine(0,0, engineTexture1, 100, 2, 4, 6, 20, 4, 01);
-        engine2 = new Engine(0,0, engineTexture2, 100, 2, 4, 6, 20, 4, 02);
+        engine1 = new Engine(0,0, engineTexture1, 100, 2, 4, 3, 20, 4, 01);
+        engine2 = new Engine(0,0, engineTexture2, 100, 2, 4, 4, 20, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
         fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
         fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
@@ -351,6 +351,51 @@ public class GameState extends State
                     nextTile.setMovable(true);
                 } else break;
             }else break;
+        }
+
+        //Get the diagonal moveable tiles
+        int loopCounter = 1;
+        while(loopCounter <= currentEngine.getSpeed() - 1)
+        {
+            for (int i = 1; i <= currentEngine.getSpeed() - loopCounter; i++)
+            {
+                Tile nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow() - loopCounter);
+                if (nextTile != null)
+                {
+                    if (!nextTile.isOccupied())
+                    {
+                        nextTile.setMovable(true);
+                    }
+                }
+
+                nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow() - loopCounter);
+                if (nextTile != null)
+                {
+                    if (!nextTile.isOccupied())
+                    {
+                        nextTile.setMovable(true);
+                    }
+                }
+
+                nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow() + loopCounter);
+                if (nextTile != null)
+                {
+                    if (!nextTile.isOccupied())
+                    {
+                        nextTile.setMovable(true);
+                    }
+                }
+
+                nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow() + loopCounter);
+                if (nextTile != null)
+                {
+                    if (!nextTile.isOccupied())
+                    {
+                        nextTile.setMovable(true);
+                    }
+                }
+            }
+            loopCounter++;
         }
     }
 
