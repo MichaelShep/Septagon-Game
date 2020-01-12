@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.septagon.game.InputManager;
-import jdk.nashorn.api.tree.SpreadTree;
 
 /*
 Child of the State class that will be used to manage the system when the user has reached game over
