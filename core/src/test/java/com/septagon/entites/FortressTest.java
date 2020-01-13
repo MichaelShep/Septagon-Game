@@ -2,6 +2,7 @@ package com.septagon.entites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,10 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 class FortressTest {
+
+    TestingFortress testF = null;
+    Texture testTexture = null;
+
+    @BeforeEach //A set up function for the tests
+    public void setUp() {
+        //Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
+        testF = new TestingFortress(4, 10, 256, 256, null, 100, 20, 3);
+    }
+
     @Test //A test for the Fortress class initialisation
     public void testFortress() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        TestingFortress testF = new TestingFortress(4, 10, 256, 256, null, 100, 20, 3);
         assertEquals(testF.x, 128);
         assertEquals(testF.y, 320);
         assertEquals(testF.col, 4);
@@ -28,8 +37,6 @@ class FortressTest {
 
     @Test //A test for the Fortress class' damageEngineIfInRange method
     public void testDamageEngineIfInRange() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        TestingFortress testF = new TestingFortress(4, 4, 256, 256, null, 100, 20, 3);
         //Texture testTexture2 = new Texture(Gdx.files.internal("images/engine1.png"));
         Engine testE1 = new Engine(2,2, null, 10, 2, 4, 2, 20, 4, 01);
         Engine testE2 = new Engine(3, 3, null, 10, 2, 4, 2, 20, 4, 01);
@@ -42,15 +49,11 @@ class FortressTest {
 
     @Test //A test for the Fortress class' isSelected method
     public void testIsSelected() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        TestingFortress testF = new TestingFortress(4, 10, 256, 256, null, 100, 20, 3);
         assertFalse(testF.isSelected());
     }
 
     @Test //A test for the Fortress class' setSelected method
     public void testSetSelected() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        TestingFortress testF = new TestingFortress(4, 10, 256, 256, null, 100, 20, 3);
         testF.setSelected(true);
         assertTrue(testF.isSelected());
     }

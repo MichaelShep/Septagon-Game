@@ -2,6 +2,7 @@ package com.septagon.entites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,10 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 class TileTest {
+
+    Tile testT = null;
+    Texture testTexture = null;
+
+    @BeforeEach //A set up function for the tests
+    public void setUp() {
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        testT = new Tile(2, 2, null, false);
+    }
+
     @Test //A test for the Tile class initialisation
     public void testTile() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Tile testT = new Tile(2, 2, null, false);
         assertEquals(testT.x, 64);
         assertEquals(testT.y, 64);
         assertEquals(testT.col, 2);
@@ -26,31 +35,23 @@ class TileTest {
 
     @Test //A test for the Tile class' setMovable method
     public void testSetMovable() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Tile testT = new Tile(2, 2, null, false);
         testT.setMovable(true);
         assertTrue(testT.isMovable());
     }
 
     @Test //A test for the Tile class' setOccupied method
     public void testSetOccupied() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Tile testT = new Tile(2, 2, null, false);
         testT.setOccupied(true);
         assertTrue(testT.isOccupied());
     }
 
     @Test //A test for the Tile class' isMovable method
     public void testIsMovable() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Tile testT = new Tile(2, 2, null, false);
         assertFalse(testT.isMovable());
     }
 
     @Test //A test for the Tile class' isOccupied method
     public void testIsOccupied() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Tile testT = new Tile(2, 2, null, false);
         assertFalse(testT.isOccupied());
     }
 

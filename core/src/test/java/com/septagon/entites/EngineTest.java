@@ -2,6 +2,7 @@ package com.septagon.entites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,10 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 class EngineTest {
+
+    Engine testE = null;
+    Texture testTexture = null;
+
+    @BeforeEach //A set up function for the tests
+    public void setUp() {
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
+    }
+
     @Test  //A test for the Engine class initialisation
     public void testEngine() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.x, 0);
         assertEquals(testE.y, 0);
         assertEquals(testE.width, 32);
@@ -30,57 +39,43 @@ class EngineTest {
 
     }
 
-    @Test
+    @Test //A test for the Engine class' testFill method
     public void testFill() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
+        testE.setVolume(10);
         testE.fill();
-        assertEquals(testE.getVolume(), 20);
-        //testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        assertEquals(testE.getVolume(), 14);
         testE = new Engine(0,0,null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.getVolume(), 20);
     }
 
     @Test //A test for the Engine class' getMaxVolume method
     public void testGetMaxVolume() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.getMaxVolume(), 20);
     }
 
     @Test //A test for the Engine class' getID method
     public void testGetID() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.getID(), 01);
     }
 
     @Test //A test for the Engine class' isMoved method
     public void testIsMoved() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         assertFalse(testE.isMoved());
     }
 
     @Test //A test for the Engine class' setMoved method
     public void testSetMoved() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         testE.setMoved(true);
         assertTrue(testE.isMoved());
     }
 
     @Test //A test for the Engine class' getID method
     public void testGetVolume() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.getVolume(), 20);
     }
 
     @Test //A test for the Engine class' getID method
     public void testGetFillSpeed() throws Exception {
-        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        Engine testE = new Engine(0, 0, null, 10, 2, 4, 2, 20, 4, 01);
         assertEquals(testE.getFillSpeed(), 4);
     }
 
