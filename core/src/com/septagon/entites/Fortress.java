@@ -28,15 +28,6 @@ public class Fortress extends Attacker
         super(col,row, width, height, texture, health, damage, range);
     }
 
-    /***
-     * Method that will be called if an engine is in range of the fortress so that the engine can be damaged
-     * @param e The current engine that is being checked
-     */
-    public void DamageEngineIfInRange(Engine e){
-        if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
-            e.takeDamage(this.damage);
-        }
-    }
 
     /***
      * Initialise method that is used to init all variables in the class and set up everything
@@ -45,7 +36,6 @@ public class Fortress extends Attacker
     public void initialise()
     {
         super.initialise();
-        setRangeCorners();
     }
 
     /***
@@ -70,15 +60,5 @@ public class Fortress extends Attacker
     //Setters
     public void setSelected(boolean selected) { this.selected = selected; }
 
-    private void setRangeCorners() {
-        //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
-        Integer leftX = this.col - this.range;
-        Integer rightX = this.col + this.width/Tile.TILE_SIZE + this.range;
-        Integer bottomY = this.row - this.range;
-        Integer topY = this.row + this.height/Tile.TILE_SIZE + this.range;
-        this.rangeCorners.add(leftX);
-        this.rangeCorners.add(rightX);
-        this.rangeCorners.add(bottomY);
-        this.rangeCorners.add(topY);
-    }
+
 }

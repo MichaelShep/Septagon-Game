@@ -7,6 +7,8 @@ package com.septagon.entites;
 
 import com.badlogic.gdx.graphics.Texture;
 
+import java.util.ArrayList;
+
 public abstract class Attacker extends Entity
 {
     //Variables that will store different attributes for each Attacker - unique for each instance
@@ -33,6 +35,8 @@ public abstract class Attacker extends Entity
         this.range = range;
     }
 
+    private ArrayList<Integer> rangeCorners = new ArrayList<Integer>();
+
     /***
      * Method that will check if the Attacker is in range of the fortress and if so will damage it
      * @param f The fortress we are currently checking the bounds/range of
@@ -46,11 +50,40 @@ public abstract class Attacker extends Entity
     }
 
     /***
+     * Method that will be called if an engine is in range of the fortress so that the engine can be damaged
+     * @param e The current engine that is being checked
+     */
+    public void DamageEngineIfInRange(Engine e){
+        if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
+            e.takeDamage(this.damage);
+        }
+    }
+
+
+    @Override
+    public void initialise() {
+        super.initialise();
+        setRangeCorners();
+    }
+
+    /***
      * Overriding of the update method, used to make sure an attackers health never passes below 0
      */
     public void update(){
         super.update();
         if(health <= 0) health = 0;
+    }
+
+    private void setRangeCorners() {
+        //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
+        Integer leftX = this.col - this.range;
+        Integer rightX = this.col + this.width/Tile.TILE_SIZE + this.range;
+        Integer bottomY = this.row - this.range;
+        Integer topY = this.row + this.height/Tile.TILE_SIZE + this.range;
+        this.rangeCorners.add(leftX);
+        this.rangeCorners.add(rightX);
+        this.rangeCorners.add(bottomY);
+        this.rangeCorners.add(topY);
     }
 
     //Getters
