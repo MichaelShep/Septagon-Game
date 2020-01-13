@@ -33,7 +33,7 @@ public class Fortress extends Attacker
      * @param e The current engine that is being checked
      */
     public void DamageEngineIfInRange(Engine e){
-        if (e.getX() >= this.rangeCorners.get(0) && e.getX() < this.rangeCorners.get(1) && e.getY() >= this.rangeCorners.get(2) && e.getY() < this.rangeCorners.get(3)){
+        if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
             e.takeDamage(this.damage);
         }
     }
@@ -72,10 +72,10 @@ public class Fortress extends Attacker
 
     private void setRangeCorners() {
         //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
-        Integer leftX = this.x - this.range;
-        Integer rightX = this.x + this.width + this.range;
-        Integer bottomY = this.y - this.range;
-        Integer topY = this.y + this.height + this.range;
+        Integer leftX = this.col - this.range;
+        Integer rightX = this.col + this.width/Tile.TILE_SIZE + this.range;
+        Integer bottomY = this.row - this.range;
+        Integer topY = this.row + this.height/Tile.TILE_SIZE + this.range;
         this.rangeCorners.add(leftX);
         this.rangeCorners.add(rightX);
         this.rangeCorners.add(bottomY);
