@@ -23,8 +23,6 @@ public class Game extends ApplicationAdapter
 
 	private InputManager inputManager;
 
-
-
 	@Override
 	//Initialises and creates all variables and objects in the game
 	public void create ()
@@ -62,6 +60,7 @@ public class Game extends ApplicationAdapter
 	{
 		camera.viewportWidth = width;
 		camera.viewportHeight = height;
+
 		if(stateManager.getCurrentState().getID() == State.StateID.GAME)
 		{
 			GameState state = (GameState) stateManager.getCurrentState();

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
 import com.septagon.game.UIManager;
+import com.septagon.helperClasses.StatusBarGenerator;
 
 import java.util.ArrayList;
 
@@ -26,8 +27,8 @@ public class GameState extends State
     public final static float SCALE = 32f;
     public final static float INV_SCALE = 1.f/SCALE;
     // this is our "target" resolution, note that the window can be any size, it is not bound to this one
-    public final static float VP_WIDTH = 640 * INV_SCALE;
-    public final static float VP_HEIGHT = 480 * INV_SCALE;
+    public final static float VP_WIDTH = 640;
+    public final static float VP_HEIGHT = 480;
 
     //Variable to keep track of whether it is the player or enemies turn
     private boolean playerTurn = true;
@@ -86,7 +87,7 @@ public class GameState extends State
     ArrayList<Bullet> bullets;
     private boolean shouldCreateBullets = false;
 
-    private ShapeRenderer healthBarRenderer;
+    private StatusBarGenerator statusBarGenerator;
 
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
@@ -178,12 +179,11 @@ public class GameState extends State
             }
         }
 
+        //Initialises the statusBarRenderer object
+        statusBarGenerator = new StatusBarGenerator(engines, fortresses);
+
         //Sets up all the occupied tiles on the map so they cannot be moved to
         this.setOccupiedTiles();
-
-        //Sets up the renderer that will be used to draw all the healthbars
-        healthBarRenderer = new ShapeRenderer();
-        healthBarRenderer.setProjectionMatrix(camera.combined);
     }
 
     /***
@@ -544,8 +544,6 @@ public class GameState extends State
         //Render the map and all objects for our game
         gameMap.render(camera);
         objectBatch.setProjectionMatrix(camera.combined);
-        //Update the projection matrix for the healthBarRenderer
-        healthBarRenderer.setProjectionMatrix(camera.combined);
         objectBatch.begin();
         entityManager.render(objectBatch);
         for (Bullet bullet : bullets) {
@@ -559,7 +557,7 @@ public class GameState extends State
 
         //Ends the drawing of all the objects for the current frame
         objectBatch.end();
-        this.renderHealthBars();
+        statusBarGenerator.renderBars(camera);
 
 
         //renders all the ui elements
@@ -579,42 +577,6 @@ public class GameState extends State
                 }
             }
         }
-    }
-
-    /***
-     * Method that will render the health bars for all the fortresses and engines in the game
-     */
-    private void renderHealthBars() {
-        //Render the health bar for all entities in the game
-        for(Engine e: engines){
-            renderHealthHealthBarForAttacker(e);
-        }
-        for(Fortress f: fortresses){
-            renderHealthHealthBarForAttacker(f);
-        }
-    }
-
-    private void renderHealthHealthBarForAttacker(Attacker a){
-        healthBarRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        healthBarRenderer.setColor(169.0f/255.0f, 169.0f/255.0f, 169.0f/255.0f, 1);
-        healthBarRenderer.rect(a.getX() - 2, a.getY() + a.getHeight(), a.getWidth() + 4, 9);
-
-        int healthBoundary1 = a.getMaxHealth() / 2;
-        int healthBoundary2 = a.getMaxHealth() / 4;
-
-        if(a.getHealth() >= healthBoundary1){
-            healthBarRenderer.setColor(Color.GREEN);
-        }else if(a.getHealth() >= healthBoundary2){
-            healthBarRenderer.setColor(Color.YELLOW);
-        }else{
-            healthBarRenderer.setColor(Color.RED);
-        }
-
-        float healthBarLength = ((float)a.getWidth() / (float)a.getMaxHealth()) * a.getHealth();
-        healthBarRenderer.rect(a.getX(), a.getY() + a.getHeight() + 2, healthBarLength, 5);
-
-        healthBarRenderer.end();
     }
 
     /***
