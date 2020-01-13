@@ -13,65 +13,56 @@ import static org.junit.jupiter.api.Assertions.*;
 class EntityTest {
     @Test //A test for the Entity class initialisation
     public void testEntity() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         assertEquals(testEN.col, 5);
         assertEquals(testEN.row, 10);
         assertEquals(testEN.x, 160);
         assertEquals(testEN.y, 320);
         assertEquals(testEN.width, 64);
         assertEquals(testEN.height, 64);
-        assertEquals(testEN.texture, testTexture);
+        assertEquals(testEN.texture, null);
     }
 
     @Test //A test for the Entity class' getX method
     public void testGetX() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        assertEquals(testEN.getX(), 5);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
+        assertEquals(testEN.getX(), 160);
     }
 
     @Test //A test for the Entity class' getY method
     public void testGetY() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        assertEquals(testEN.getY(), 10);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
+        assertEquals(testEN.getY(), 320);
     }
 
     @Test //A test for the Entity class' getWidth method
     public void testGetWidth() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         assertEquals(testEN.getWidth(), 64);
     }
 
     @Test //A test for the Entity class' getHeight method
     public void testGetHeight() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         assertEquals(testEN.getHeight(), 64);
     }
 
     @Test //A test for the Entity class' getTexture method
     public void testGetTexture() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        assertEquals(testEN.getTexture(), testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
+        assertEquals(testEN.getTexture(), null);
     }
-
-    /*
-    @Test //A test for the Entity class' getOrientation method
-    public void testGetOrientation() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        assertEquals(testEN.getOrientation(), 'U');
-    }
-     */
 
     @Test //A test for the Entity class' setX method
     public void testSetX() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         testEN.setX(32);
         assertEquals(testEN.x, 32);
         assertEquals(testEN.col, 1);
@@ -79,26 +70,26 @@ class EntityTest {
 
     @Test //A test for the Entity class' setY method
     public void testSetY() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         testEN.setY(32);
         assertEquals(testEN.y, 32);
         assertEquals(testEN.row, 1);
     }
 
-    @Test //A test for the Entity class' setY method
+    @Test //A test for the Entity class' setCol method
     public void testSetCol() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         testEN.setCol(1);
         assertEquals(testEN.x, 32);
-        assertEquals(testEN.row, 1);
+        assertEquals(testEN.row, 10);
     }
 
-    @Test //A test for the Entity class' setY method
+    @Test //A test for the Entity class' setRow method
     public void testSetRow() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
         testEN.setRow(1);
         assertEquals(testEN.y, 32);
         assertEquals(testEN.row, 1);
@@ -106,19 +97,10 @@ class EntityTest {
 
     @Test //A test for the Entity class' setTexture method
     public void testSetTexture() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        Texture testTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
-        testEN.setTexture(testTexture2);
-        assertEquals(testEN.texture, testTexture2);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, null);
+        //Texture testTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
+        testEN.setTexture(null);
+        assertEquals(testEN.texture, null);
     }
-    /*
-    @Test //A test for the Entity class' setOrientation method
-    public void testSetOrientation() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteEntity testEN = new ConcreteEntity(5, 10, 64, 64, testTexture);
-        testEN.setOrientation('D');
-        assertEquals(testEN.orientation, 'D');
-    }
-     */
 }

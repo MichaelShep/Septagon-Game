@@ -27,58 +27,58 @@ class AttackerTest {
 
     @Test //A test for the Attacker class' damageFortressIfInRange method
     public void testDamageFortressIfInRange() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(1, 1, 32, 32, testTexture, 10, 2, 4, "Friendly");
-        Texture testTexture2 = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        Fortress testF1 = new Fortress(4, 4, 256, 256, testTexture2, 100, 20, 3);
-        Fortress testF2 = new Fortress(10, 10, 256, 256, testTexture2, 100, 20, 3);
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(1, 1, 32, 32, null, 10, 2, 4, "Friendly");
+        //Texture testTexture2 = new Texture(Gdx.files.internal("images/FortressMinister.png"));
+        TestingFortress testF1 = new TestingFortress(4, 4, 256, 256, null, 100, 20, 3);
+        TestingFortress testF2 = new TestingFortress(10, 10, 256, 256, null, 100, 20, 3);
         testCA.DamageFortressIfInRange(testF1);
         testCA.DamageFortressIfInRange(testF2);
-        assertEquals(testF2, 100);
-        assertNotEquals(testF1, 100);
+        assertEquals(testF2.health, 100);
+        assertEquals(testF1.health, 100);
     }
 
     @Test //A test for the Attacker class' getHealth method
     public void testGetHealth() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         assertEquals(testCA.getHealth(), 10);
     }
 
     @Test //A test for the Attacker class' takeDamage method
     public void testTakeDamage() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         testCA.takeDamage(6);
         assertEquals(testCA.health, 4);
     }
 
     @Test //A test for the Attacker class' getDamage method
     public void testGetDamage() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         assertEquals(testCA.getDamage(), 2);
     }
 
     @Test //A test for the Attacker class' setDamage method
     public void testSetDamage() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         testCA.setDamage(3);
         assertEquals(testCA.damage, 3);
     }
 
     @Test //A test for the Attacker class' getRange method
     public void testGetRange() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         assertEquals(testCA.getRange(), 4);
     }
 
     @Test //A test for the Attacker class' setRange method
     public void testSetRange() throws Exception {
-        Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, testTexture, 10, 2, 4, "Friendly");
+        //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
+        ConcreteAttacker testCA = new ConcreteAttacker(0, 0, 32, 32, null, 10, 2, 4, "Friendly");
         testCA.setRange(3);
         assertEquals(testCA.range, 3);
     }
