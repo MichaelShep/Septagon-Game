@@ -155,7 +155,7 @@ public class GameState extends State
         objectBatch.setProjectionMatrix(camera.combined);
 
         //Creates instance of uiManager which will be used to render and manage all UI elements
-        uiManager = new UIManager(this);
+        uiManager = new UIManager(this, font);
 
         //Creates the gameMap instance that will be used to load the map from the tmx file
         gameMap = new TiledGameMap();
@@ -469,9 +469,9 @@ public class GameState extends State
         }
     }
 
-    public void pauseGame() {}
-
-    public void unpauseGame() {}
+    public void pauseGame() {
+        uiManager.setPaused(!uiManager.isPaused());
+    }
 
     //Getters and setters for all private attributes in the class
 

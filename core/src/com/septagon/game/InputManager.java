@@ -156,6 +156,9 @@ public class InputManager implements InputProcessor
             {
                 currentState.setShouldCreateBullets(true);
             }
+            else if(keycode == Input.Keys.ESCAPE){
+                currentState.pauseGame();
+            }
         }
         //Handle input for the game over state
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){

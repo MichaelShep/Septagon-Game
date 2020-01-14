@@ -22,6 +22,7 @@ public class UIManager
     private BitmapFont blueFont;
     private BitmapFont redFont;
     private BitmapFont smallFont;
+    private BitmapFont font;
 
     //Create the renderer for rendering all the gui shapes and the spritebatch for rendering all the gui
     private ShapeRenderer engineStatsRenderer;
@@ -38,6 +39,11 @@ public class UIManager
     private GlyphLayout speedText;
     private GlyphLayout minimiseSymbol;
 
+    //Creates objects for all pieces of text that will displayed when the game is paused
+    private GlyphLayout pauseText;
+    private GlyphLayout resumeText;
+    private GlyphLayout exitText;
+
     //Create objects of the current instance of gamestate and for the currently pressed engine
     private GameState gameState;
     private Engine currentEngine;
@@ -51,9 +57,13 @@ public class UIManager
     private int minimiseX, minimiseY, minimiseWidth, minimiseHeight;
     private float playerTurnX, playerTurnY, enemyTurnX, enemyTurnY;
 
-    public UIManager(GameState gameState)
+    private int pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight;
+    private boolean paused = false;
+
+    public UIManager(GameState gameState, BitmapFont font)
     {
         this.gameState = gameState;
+        this.font = font;
     }
 
     public void initialise()
@@ -87,6 +97,10 @@ public class UIManager
         rangeText = new GlyphLayout(smallFont, "Range: 0");
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
+
+        pauseText = new GlyphLayout(font, "Paused");
+        resumeText = new GlyphLayout(font, "Resume");
+        exitText = new GlyphLayout(font, "Exit");
 
         setupPositions();
     }
@@ -134,6 +148,9 @@ public class UIManager
             redFont.draw(uiBatch, enemyTurnText, enemyTurnX, enemyTurnY);
         }
 
+        if(paused){
+            engineStatsRenderer.rect(pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight);
+        }
         //If stats are not showing, just display button text
         if(currentEngine != null && !displayingStats) {
             smallFont.setColor(Color.WHITE);
@@ -176,6 +193,12 @@ public class UIManager
         minimiseY = statsRectY + statsRectHeight - 20;
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
+
+        pauseRectWidth = Gdx.graphics.getWidth() / 10;
+        pauseRectHeight = Gdx.graphics.getHeight() / 2;
+        pauseRectX = Gdx.graphics.getWidth() / 2 - pauseRectWidth / 2;
+        pauseRectY = Gdx.graphics.getHeight() / 2 - pauseRectHeight / 2;
+
     }
 
     //Called by InputManager when the use presses the showStats button
@@ -202,11 +225,13 @@ public class UIManager
     {
         return displayingStats;
     }
+    public boolean isPaused() { return paused; }
 
     public void setDisplayingStats(boolean stats)
     {
         this.displayingStats = displayingStats;
     }
+    public void setPaused(boolean paused) { this.paused = paused; }
 
     public void setCurrentEngine(Engine engine)
     {
