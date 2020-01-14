@@ -51,6 +51,11 @@ public abstract class Attacker extends Entity
 
     }
 
+    /***
+     * checks if any of the corners of the engines range are in the body of the fortress
+     * @param f Fortress that is being checked
+     * @return returns true if there is any overlap, false otherwise
+     */
     private Boolean checkForOverlap(Fortress f){
         for(int i=0; i<2; i++){
             for(int j=2; i<4; i++){
