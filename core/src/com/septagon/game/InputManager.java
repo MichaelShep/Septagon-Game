@@ -152,11 +152,28 @@ public class InputManager implements InputProcessor
         }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
             GameState currentState = (GameState) stateManager.getCurrentState();
 
-            if(keycode == Input.Keys.SPACE)
+            if(!currentState.isPaused())
             {
-                currentState.setShouldCreateBullets(true);
+                if (keycode == Input.Keys.SPACE)
+                {
+                    currentState.setShouldCreateBullets(true);
+                }
+            }else{
+                if(keycode == Input.Keys.DOWN && currentState.getUiManager().getPauseMenuPosition() == 1){
+                    currentState.getUiManager().setPauseMenuPosition(2);
+                }else if(keycode == Input.Keys.UP && currentState.getUiManager().getPauseMenuPosition() == 2){
+                    currentState.getUiManager().setPauseMenuPosition(1);
+                }
+
+                if(keycode == Input.Keys.ENTER){
+                    if(currentState.getUiManager().getPauseMenuPosition() == 1){
+                        currentState.getUiManager().setPaused(false);
+                    }else{
+                        stateManager.changeState(new MenuState(this, font, stateManager));
+                    }
+                }
             }
-            else if(keycode == Input.Keys.ESCAPE){
+            if(keycode == Input.Keys.ESCAPE){
                 currentState.pauseGame();
             }
         }

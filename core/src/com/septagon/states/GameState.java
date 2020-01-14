@@ -192,17 +192,24 @@ public class GameState extends State
      */
     public void update()
     {
-        //Run either the player or enemy turn depending on which turn it is
-        if(switchingTurn){
-            turnSwitchTimer++;
-            if(turnSwitchTimer >= 30){
-                switchingTurn = false;
+        paused = uiManager.isPaused();
+        if(!paused)
+        {
+            //Run either the player or enemy turn depending on which turn it is
+            if (switchingTurn)
+            {
+                turnSwitchTimer++;
+                if (turnSwitchTimer >= 30)
+                {
+                    switchingTurn = false;
+                }
+            } else if (!enemyTurn)
+            {
+                playerTurn();
+            } else
+            {
+                BattleTurn();
             }
-        }
-        else if(!enemyTurn) {
-            playerTurn();
-        }else{
-            BattleTurn();
         }
     }
 

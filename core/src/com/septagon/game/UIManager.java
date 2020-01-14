@@ -62,6 +62,7 @@ public class UIManager
 
     private int pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight;
     private boolean paused = false;
+    private int pauseMenuPosition = 1;
 
     public UIManager(GameState gameState, BitmapFont font)
     {
@@ -157,8 +158,10 @@ public class UIManager
             engineStatsRenderer.setColor(Color.LIGHT_GRAY);
             engineStatsRenderer.rect(pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight);
             font.draw(uiBatch, pauseText, pauseTextX, pauseTextY);
-            font.draw(uiBatch, resumeText, resumeTextX, resumeTextY);
-            font.draw(uiBatch, exitText, exitTextX, exitTextY);
+            drawPauseText(uiBatch, "Resume", resumeText, resumeTextX, resumeTextY, 1);
+            drawPauseText(uiBatch, "Exit",exitText, exitTextX, exitTextY, 2);
+            //font.draw(uiBatch, resumeText, resumeTextX, resumeTextY);
+            //font.draw(uiBatch, exitText, exitTextX, exitTextY);
         }
         //If stats are not showing, just display button text
         if(currentEngine != null && !displayingStats) {
@@ -178,6 +181,17 @@ public class UIManager
             smallFont.draw(uiBatch, minimiseSymbol, minimiseX + 7, minimiseY + 15);
         }
         uiBatch.end();
+    }
+
+    private void drawPauseText(SpriteBatch batch, String text, GlyphLayout layout, int xPos, int yPos, int position){
+        if(position == pauseMenuPosition){
+            font.setColor(Color.BLUE);
+            layout.setText(font, text.toString());
+        } else {
+            font.setColor(Color.WHITE);
+            layout.setText(font, text.toString());
+        }
+        font.draw(batch, layout, xPos, yPos);
     }
 
     public void setupPositions()
@@ -203,8 +217,8 @@ public class UIManager
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
 
-        pauseRectWidth = Gdx.graphics.getWidth() / 4;
-        pauseRectHeight = Gdx.graphics.getHeight() / 2;
+        pauseRectWidth = Gdx.graphics.getWidth() / 4 ;
+        pauseRectHeight = Gdx.graphics.getHeight() / 2 - 70;
         pauseRectX = Gdx.graphics.getWidth() / 2 - pauseRectWidth / 2;
         pauseRectY = Gdx.graphics.getHeight() / 2 - pauseRectHeight / 2;
 
@@ -212,9 +226,9 @@ public class UIManager
         resumeTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (resumeText.width / 2));
         exitTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (exitText.width / 2));
 
-        pauseTextY = (int)(pauseRectY + pauseRectHeight) - 25;
-        resumeTextY = (int)(pauseRectY + pauseRectHeight) - 100;
-        exitTextY = (int)(pauseRectY + pauseRectHeight) - 150;
+        pauseTextY = (int)(pauseRectY + pauseRectHeight) - 15;
+        resumeTextY = (int)(pauseRectY + pauseRectHeight) - 75;
+        exitTextY = (int)(pauseRectY + pauseRectHeight) - 125;
 
     }
 
@@ -244,10 +258,17 @@ public class UIManager
     }
     public boolean isPaused() { return paused; }
 
+    public int getPauseMenuPosition() { return pauseMenuPosition; }
+
     public void setDisplayingStats(boolean stats)
     {
         this.displayingStats = displayingStats;
     }
+
+    public void setPauseMenuPosition(int pauseMenuPosition){
+        this.pauseMenuPosition = pauseMenuPosition;
+    }
+
     public void setPaused(boolean paused) { this.paused = paused; }
 
     public void setCurrentEngine(Engine engine)
