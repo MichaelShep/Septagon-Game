@@ -7,14 +7,13 @@ package com.septagon.entites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.septagon.helperClasses.AssetManager;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fortress extends Attacker
 {
-    //Sets up texture that will be shown when a fortress is clicked on
-    private Texture boundaryImage = new Texture(Gdx.files.internal("selected fortress.png"));
     //Stores if an engine is currently active/pressed on
     private boolean selected = false;
     //ArrayList that will store the corners of the bounding box for the range of the fortress
@@ -48,7 +47,7 @@ public class Fortress extends Attacker
         //If the fortress is pressed, show its boundary image
         if(selected)
         {
-            batch.draw(boundaryImage, (col - this.getRange()) * Tile.TILE_SIZE, (row - this.getRange()) * Tile.TILE_SIZE,
+            batch.draw(AssetManager.getFortressBoundaryImage(), (col - this.getRange()) * Tile.TILE_SIZE, (row - this.getRange()) * Tile.TILE_SIZE,
                     (((int)width / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE, (((int)height / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE);
         }
         super.render(batch);

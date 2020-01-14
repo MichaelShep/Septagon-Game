@@ -13,7 +13,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
 import com.septagon.game.UIManager;
+import com.septagon.helperClasses.AssetManager;
 import com.septagon.helperClasses.StatusBarGenerator;
+import com.septagon.helperClasses.TileManager;
 
 import java.util.ArrayList;
 
@@ -49,23 +51,16 @@ public class GameState extends State
 
     //Loads textures and creates objects for the engines
     private ArrayList<Engine> engines;
-    private Texture engineTexture1 = new Texture(Gdx.files.internal("images/engine1.png"));
-    private Texture engineTexture2 = new Texture(Gdx.files.internal("images/engine2.png"));
-    private Texture moveSpaceTexture = new Texture(Gdx.files.internal("move_square.png"));
     private Engine engine1;
     private Engine engine2;
 
     //Loads textures and creates objects for the fortresses
     private ArrayList<Fortress> fortresses;
-    private Texture fortressFireTexture = new Texture(Gdx.files.internal("images/FortressFire.png"));
-    private Texture fortressMinisterTexture = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-    private Texture fortressStationTexture = new Texture(Gdx.files.internal("images/FortressStation.png"));
     private Fortress fortressFire;
     private Fortress fortressStation;
     private Fortress fortressMinister;
 
     //Loads textures and creates an object for the fire station
-    private Texture fireStationTexture = new Texture(Gdx.files.internal("images/fireStation.png"));
     private Station fireStation;
 
     //Keeps track of where in the game map the camera is currently
@@ -88,6 +83,7 @@ public class GameState extends State
     private boolean shouldCreateBullets = false;
 
     private StatusBarGenerator statusBarGenerator;
+    private TileManager tileManager;
 
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
@@ -113,12 +109,12 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines, fortress and stations in the game
-        engine1 = new Engine(0,0, engineTexture1, 100, 2, 4, 3, 20, 4, 01);
-        engine2 = new Engine(0,0, engineTexture2, 100, 2, 4, 4, 20, 4, 02);
-        fortressFire = new Fortress(4, 10, 256, 256, fortressFireTexture, 100, 20, 3);
-        fortressMinister = new Fortress(11, 41, 256, 256, fortressMinisterTexture, 100, 20, 3);
-        fortressStation = new Fortress(31, 30, 256, 256, fortressStationTexture, 100, 20, 3);
-        fireStation = new Station(42, 6, 256, 128, fireStationTexture);
+        engine1 = new Engine(0,0, AssetManager.getEngineTexture1(), 100, 2, 4, 3, 20, 4, 01);
+        engine2 = new Engine(0,0, AssetManager.getEngineTexture2(), 100, 2, 4, 4, 20, 4, 02);
+        fortressFire = new Fortress(4, 10, 256, 256, AssetManager.getFortressFireTexture(), 100, 20, 3);
+        fortressMinister = new Fortress(11, 41, 256, 256, AssetManager.getFortressMinisterTexture(), 100, 20, 3);
+        fortressStation = new Fortress(31, 30, 256, 256, AssetManager.getFortressStationTexture(), 100, 20, 3);
+        fireStation = new Station(42, 6, 256, 128, AssetManager.getFireStationTexture());
 
         //Adds all the fortresses to the ArrayList of fortresses
         fortresses = new ArrayList<Fortress>();
@@ -183,7 +179,8 @@ public class GameState extends State
         statusBarGenerator = new StatusBarGenerator(engines, fortresses);
 
         //Sets up all the occupied tiles on the map so they cannot be moved to
-        this.setOccupiedTiles();
+        tileManager = new TileManager(engines, tiles);
+        tileManager.setOccupiedTiles(gameMap);
     }
 
     /***
@@ -296,230 +293,13 @@ public class GameState extends State
                     if (t.getCol() == e.getCol() && t.getRow() == e.getRow()) {
                         currentEngine = e;
                         uiManager.setCurrentEngine(e);
-                        setMovableTiles();
+                        tileManager.setMovableTiles(currentEngine);
                         return true;
                     }
                 }
             }
         }
         return false;
-    }
-
-
-    /***
-     * Get the movable tiles for all the engines based on their positions
-     */
-    public void setMovableTiles(){
-        //Reset all moveable tiles from previous turn
-        resetMovableTiles();
-
-        //Gets all the moveable tiles in the up direction
-        for(int i = 1; i <= currentEngine.getSpeed(); i++){
-            Tile nextTile = this.getTileAtLocation(currentEngine.getCol(), currentEngine.getRow() + i);
-            if(nextTile != null) {
-                if (!nextTile.isOccupied()) {
-                    nextTile.setMovable(true);
-                } else break;
-            }else break;
-        }
-
-        //Gets all the moveable tiles in the down direction
-        for(int i = 1; i <= currentEngine.getSpeed(); i++){
-            Tile nextTile = this.getTileAtLocation(currentEngine.getCol(), currentEngine.getRow() - i);
-            if(nextTile != null) {
-                if (!nextTile.isOccupied()) {
-                    nextTile.setMovable(true);
-                } else break;
-            }else break;
-        }
-
-        //Gets all the moveable tiles in the left direction
-        for(int i = 1; i <= currentEngine.getSpeed(); i++){
-            Tile nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow());
-            if(nextTile != null) {
-                if (!nextTile.isOccupied()) {
-                    nextTile.setMovable(true);
-                } else break;
-            }else break;
-        }
-
-        //Gets all the moveable tiles in the right direction
-        for(int i = 1; i <= currentEngine.getSpeed(); i++){
-            Tile nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow());
-            if(nextTile != null) {
-                if (!nextTile.isOccupied()) {
-                    nextTile.setMovable(true);
-                } else break;
-            }else break;
-        }
-
-        //Get the diagonal moveable tiles
-        int loopCounter = 1;
-        while(loopCounter <= currentEngine.getSpeed() - 1)
-        {
-            for (int i = 1; i <= currentEngine.getSpeed() - loopCounter; i++)
-            {
-                Tile nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow() - loopCounter);
-                if (nextTile != null)
-                {
-                    if (!nextTile.isOccupied())
-                    {
-                        nextTile.setMovable(true);
-                    }
-                }
-
-                nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow() - loopCounter);
-                if (nextTile != null)
-                {
-                    if (!nextTile.isOccupied())
-                    {
-                        nextTile.setMovable(true);
-                    }
-                }
-
-                nextTile = this.getTileAtLocation(currentEngine.getCol() - i, currentEngine.getRow() + loopCounter);
-                if (nextTile != null)
-                {
-                    if (!nextTile.isOccupied())
-                    {
-                        nextTile.setMovable(true);
-                    }
-                }
-
-                nextTile = this.getTileAtLocation(currentEngine.getCol() + i, currentEngine.getRow() + loopCounter);
-                if (nextTile != null)
-                {
-                    if (!nextTile.isOccupied())
-                    {
-                        nextTile.setMovable(true);
-                    }
-                }
-            }
-            loopCounter++;
-        }
-    }
-
-    /***
-     * Clear all the current moveable tiles
-     */
-    private void resetMovableTiles(){
-        for(Tile t: tiles)
-        {
-            t.setMovable(false);
-        }
-    }
-
-    /***
-     * Sets up the tiles which contain an engine, fortress or the station to be occupied
-     */
-    public void setOccupiedTiles()
-    {
-        //Set the tiles that currently have an engine on to be occupied
-        for (Engine e : engines)
-        {
-            for (Tile t : tiles)
-            {
-                if (t.getCol() == e.getCol() && t.getRow() == e.getRow())
-                {
-                    t.setOccupied(true);
-                    break;
-                }
-            }
-        }
-
-        //Set the all the tiles within the fire station fortress bounds as occupied
-        for (int x = 4; x < 12; x++)
-        {
-            for (int y = 10; y < 15; y++)
-            {
-                Tile t = getTileAtLocation(x, y);
-                if (t != null)
-                    t.setOccupied(true);
-            }
-        }
-
-        //Sets all the tiles within the minister fortress as occupied
-        for (int x = 11; x < 19; x++)
-        {
-            for (int y = 41; y < 48; y++)
-            {
-                Tile t = getTileAtLocation(x, y);
-                if (t != null)
-                    t.setOccupied(true);
-            }
-        }
-
-        //Sets all the tiles within the station fortress as occupied
-        for (int x = 31; x < 39; x++)
-        {
-            for (int y = 30; y < 34; y++)
-            {
-                Tile t = getTileAtLocation(x, y);
-                if (t != null)
-                    t.setOccupied(true);
-            }
-        }
-
-        //Sets all the tiles in the fire station as occupied
-        for (int x = 42; x < 50; x++)
-        {
-            for (int y = 6; y < 10; y++)
-            {
-                Tile t = getTileAtLocation(x, y);
-                if (t != null)
-                    t.setOccupied(true);
-            }
-        }
-
-        //Loops through all tiles to work out if they are water tiles, and if so makes them occupied
-        for (Tile t : tiles)
-        {
-            if (gameMap.checkIfWaterTile(t.getCol(), t.getRow()))
-            {
-                t.setOccupied(true);
-            }
-        }
-
-        //Makes so that the bridge tiles are not occupied
-        for (int i = 34; i < 38; i++)
-        {
-            this.getTileAtLocation(i, 7).setOccupied(false);
-        }
-
-        for (int i = 25; i < 29; i++)
-        {
-            this.getTileAtLocation(i, 2).setOccupied(false);
-        }
-
-        for (int i = 17; i < 23; i++){
-            this.getTileAtLocation(i, 18).setOccupied(false);
-        }
-
-        for(int i = 30; i < 34; i++){
-            this.getTileAtLocation(8, i).setOccupied(false);
-            this.getTileAtLocation(9, i).setOccupied(false);
-        }
-
-        for(int i = 39; i < 43; i++){
-            this.getTileAtLocation(41, i).setOccupied(false);
-        }
-        }
-
-
-    /***
-     * Method to get the tile at a row and column
-     * @param col The column of the tile you want to get
-     * @param row The row of the tile you want to get
-     * @return The tile at the location asked for
-     */
-    private Tile getTileAtLocation(int col, int row)
-    {
-        for(Tile t: tiles)
-        {
-            if(t.getCol() == col && t.getRow() == row)
-                return t;
-        }
-        return null;
     }
 
     private void createBullets()
@@ -573,7 +353,7 @@ public class GameState extends State
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
-                    objectBatch.draw(moveSpaceTexture, t.getX(), t.getY(), Tile.TILE_SIZE, Tile.TILE_SIZE);
+                    objectBatch.draw(AssetManager.getMoveSpaceTexture(), t.getX(), t.getY(), Tile.TILE_SIZE, Tile.TILE_SIZE);
                 }
             }
         }
@@ -596,7 +376,7 @@ public class GameState extends State
      */
     public void BattleTurn(){
         //Set the moved variable to false for each engine and then check if damages can occur
-        this.resetMovableTiles();
+        tileManager.resetMovableTiles();
         for (Engine e : engines){
             e.setMoved(false);
             for (Fortress f: fortresses){
