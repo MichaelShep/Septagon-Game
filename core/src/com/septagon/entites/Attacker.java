@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.septagon.states.GameState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Attacker extends Entity
 {
@@ -42,12 +43,23 @@ public abstract class Attacker extends Entity
      * @param f The fortress we are currently checking the bounds/range of
      */
     public void DamageFortressIfInRange(Fortress f){
-        //If statement checks if the fortress is in range of the Attacker
-        if (this.x + this.range >= f.getX() && this.x +this.range < f.getX() + f.getWidth() && this.y + this.range >= f.getY() && this.y + this.range < f.getY() + f.getHeight() ||
-                this.x - this.range >= f.getX() && this.x - this.range < f.getX() + f.getWidth() && this.y - this.range >= f.getY() && this.y - this.range < f.getY() + f.getHeight()){
-            f.takeDamage(this.damage);
+            this.setRangeCorners();
+            if(checkForOverlap(f)){
+                System.out.println("Fortress Damaged");
+                f.takeDamage(this.damage);
+            }
 
+    }
+
+    private Boolean checkForOverlap(Fortress f){
+        for(int i=0; i<2; i++){
+            for(int j=2; i<4; i++){
+                if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + f.getWidth()/Tile.TILE_SIZE && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + f.getHeight()/Tile.TILE_SIZE){
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     /***
