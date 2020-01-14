@@ -24,8 +24,6 @@ public class MenuState extends State
     private String exitLabel;
     private int menuPosition;
 
-    private SpriteBatch menuBatch;
-
     private Texture backgroundImage;
 
     private GlyphLayout layout;
@@ -47,12 +45,12 @@ public class MenuState extends State
         menuPosition = 0;
         backgroundImage = null;
         layout = new GlyphLayout(font, titleLabel);
-        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2);
+        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2) - (Gdx.graphics.getWidth() / 2);
     }
 
     public void initialise()
     {
-        menuBatch = new SpriteBatch();
+
     }
 
     public void update()
@@ -62,20 +60,16 @@ public class MenuState extends State
 
     public void render(SpriteBatch batch)
     {
-        menuBatch.begin();
-
         Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         font.setColor(Color.WHITE);
-        font.draw(menuBatch, titleLabel, titleCentreX, Gdx.graphics.getHeight() - 30);
+        font.draw(batch, titleLabel, titleCentreX, (Gdx.graphics.getHeight() / 2) - 30);
 
-        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
-        drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
-        drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
-        drawString(menuBatch, 3, exitLabel, 100, (Gdx.graphics.getHeight()) - 250);
-
-        menuBatch.end();
+        drawString(batch, 0, playLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 100);
+        drawString(batch, 1, helpLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 150);
+        drawString(batch, 2, settingsLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 200);
+        drawString(batch, 3, exitLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 250);
     }
 
     /***

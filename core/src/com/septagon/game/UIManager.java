@@ -22,7 +22,6 @@ public class UIManager
     private BitmapFont blueFont;
     private BitmapFont redFont;
     private BitmapFont smallFont;
-    private BitmapFont font;
 
     //Create the renderer for rendering all the gui shapes and the spritebatch for rendering all the gui
     private ShapeRenderer engineStatsRenderer;
@@ -39,14 +38,6 @@ public class UIManager
     private GlyphLayout speedText;
     private GlyphLayout minimiseSymbol;
 
-    //Creates objects for all pieces of text that will displayed when the game is paused
-    private GlyphLayout pauseText;
-    private int pauseTextX, pauseTextY;
-    private GlyphLayout resumeText;
-    private int resumeTextX, resumeTextY;
-    private GlyphLayout exitText;
-    private int exitTextX, exitTextY;
-
     //Create objects of the current instance of gamestate and for the currently pressed engine
     private GameState gameState;
     private Engine currentEngine;
@@ -60,14 +51,9 @@ public class UIManager
     private int minimiseX, minimiseY, minimiseWidth, minimiseHeight;
     private float playerTurnX, playerTurnY, enemyTurnX, enemyTurnY;
 
-    private int pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight;
-    private boolean paused = false;
-    private int pauseMenuPosition = 1;
-
-    public UIManager(GameState gameState, BitmapFont font)
+    public UIManager(GameState gameState)
     {
         this.gameState = gameState;
-        this.font = font;
     }
 
     public void initialise()
@@ -101,12 +87,6 @@ public class UIManager
         rangeText = new GlyphLayout(smallFont, "Range: 0");
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
-
-        font.setColor(Color.GREEN);
-        pauseText = new GlyphLayout(font, "Paused");
-        font.setColor(Color.WHITE);
-        resumeText = new GlyphLayout(font, "Resume");
-        exitText = new GlyphLayout(font, "Exit");
 
         setupPositions();
     }
@@ -148,21 +128,12 @@ public class UIManager
         engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         //Draws the text that tells the player who's turn it is
-        if (!gameState.isEnemyTurn()){
+        if (gameState.isPlayerTurn()){
             blueFont.draw(uiBatch, playerTurnText, playerTurnX, playerTurnY);
         }else{
             redFont.draw(uiBatch, enemyTurnText, enemyTurnX, enemyTurnY);
         }
 
-        if(paused){
-            engineStatsRenderer.setColor(Color.LIGHT_GRAY);
-            engineStatsRenderer.rect(pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight);
-            font.draw(uiBatch, pauseText, pauseTextX, pauseTextY);
-            drawPauseText(uiBatch, "Resume", resumeText, resumeTextX, resumeTextY, 1);
-            drawPauseText(uiBatch, "Exit",exitText, exitTextX, exitTextY, 2);
-            //font.draw(uiBatch, resumeText, resumeTextX, resumeTextY);
-            //font.draw(uiBatch, exitText, exitTextX, exitTextY);
-        }
         //If stats are not showing, just display button text
         if(currentEngine != null && !displayingStats) {
             smallFont.setColor(Color.WHITE);
@@ -181,17 +152,6 @@ public class UIManager
             smallFont.draw(uiBatch, minimiseSymbol, minimiseX + 7, minimiseY + 15);
         }
         uiBatch.end();
-    }
-
-    private void drawPauseText(SpriteBatch batch, String text, GlyphLayout layout, int xPos, int yPos, int position){
-        if(position == pauseMenuPosition){
-            font.setColor(Color.BLUE);
-            layout.setText(font, text.toString());
-        } else {
-            font.setColor(Color.WHITE);
-            layout.setText(font, text.toString());
-        }
-        font.draw(batch, layout, xPos, yPos);
     }
 
     public void setupPositions()
@@ -216,20 +176,6 @@ public class UIManager
         minimiseY = statsRectY + statsRectHeight - 20;
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
-
-        pauseRectWidth = Gdx.graphics.getWidth() / 4 ;
-        pauseRectHeight = Gdx.graphics.getHeight() / 2 - 70;
-        pauseRectX = Gdx.graphics.getWidth() / 2 - pauseRectWidth / 2;
-        pauseRectY = Gdx.graphics.getHeight() / 2 - pauseRectHeight / 2;
-
-        pauseTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (pauseText.width / 2));
-        resumeTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (resumeText.width / 2));
-        exitTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (exitText.width / 2));
-
-        pauseTextY = (int)(pauseRectY + pauseRectHeight) - 15;
-        resumeTextY = (int)(pauseRectY + pauseRectHeight) - 75;
-        exitTextY = (int)(pauseRectY + pauseRectHeight) - 125;
-
     }
 
     //Called by InputManager when the use presses the showStats button
@@ -256,20 +202,11 @@ public class UIManager
     {
         return displayingStats;
     }
-    public boolean isPaused() { return paused; }
-
-    public int getPauseMenuPosition() { return pauseMenuPosition; }
 
     public void setDisplayingStats(boolean stats)
     {
         this.displayingStats = displayingStats;
     }
-
-    public void setPauseMenuPosition(int pauseMenuPosition){
-        this.pauseMenuPosition = pauseMenuPosition;
-    }
-
-    public void setPaused(boolean paused) { this.paused = paused; }
 
     public void setCurrentEngine(Engine engine)
     {

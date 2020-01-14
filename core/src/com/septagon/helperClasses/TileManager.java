@@ -6,10 +6,6 @@ import com.septagon.entites.TiledGameMap;
 
 import java.util.ArrayList;
 
-/***
- * Class is used to handle a lot of operations involved with tile managment and map management (such as setting occupied tiles each turn)
- */
-
 public class TileManager {
 
     private ArrayList<Engine> engines;
