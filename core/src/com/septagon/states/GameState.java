@@ -85,6 +85,12 @@ public class GameState extends State
     private StatusBarGenerator statusBarGenerator;
     private TileManager tileManager;
 
+    //Variables that are used to manage the enemy turn
+    private boolean enemyTurn = false;
+    private boolean currentlyAtFortress = false;
+    private int currentFortressIndex = -1;
+    private int counter = 0;
+
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
      * @param inputManager The games input manager that handles all the games input
@@ -188,11 +194,19 @@ public class GameState extends State
      */
     public void update()
     {
-        if(shouldCreateBullets)
-        {
+        //Run either the player or enemy turn depending on which turn it is
+        if(!enemyTurn) {
+            playerTurn();
+        }else{
+            System.out.println("Battle turn");
+            BattleTurn();
+        }
+    }
+
+    public void playerTurn(){
+        if (shouldCreateBullets) {
             this.createBullets();
         }
-
         //Call the update method for all entities in our game
         entityManager.update();
 
@@ -206,11 +220,12 @@ public class GameState extends State
         bullets.removeAll(bulletToRemove);
 
         //If all the engines have been moved on the current turn, make it the enemies turn
-        if(allEnginesMoved()){
+        if (allEnginesMoved()) {
             this.playerTurn = false;
-            BattleTurn();
-        }else{
-            this.playerTurn = true;
+            enemyTurn = true;
+            currentlyAtFortress = false;
+            currentFortressIndex = -1;
+            counter = 0;
         }
 
         //Updates the pointers to the current x and y positions of the camera
@@ -219,22 +234,56 @@ public class GameState extends State
 
         //Checks if the player has destroyed all the fortresses
         boolean hasWon = true;
-        for(Fortress f: fortresses){
-            if(f.getHealth() > 0) hasWon = false;
+        for (Fortress f : fortresses) {
+            if (f.getHealth() > 0) hasWon = false;
         }
-        if(hasWon){
+        if (hasWon) {
             stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
         }
 
         //Checks if all the players fire engines have been destroyed
         boolean hasLost = true;
-        for(Engine e: engines){
-            if(e.getHealth() > 0) hasLost = false;
+        for (Engine e : engines) {
+            if (e.getHealth() > 0) hasLost = false;
         }
-        if(hasLost){
+        if (hasLost) {
             stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
         }
     }
+
+    /***
+     * Method that is run for the enemies turn
+     */
+    public void BattleTurn(){
+        //If needing to swap which fortress we are looking at, move camera to next fortress and perform damage where possible
+        if(!currentlyAtFortress){
+            currentFortressIndex++;
+            //If we have been through all fortresses, switch back to a player turn
+            if(currentFortressIndex >= fortresses.size()){
+                this.snapCameraToEntity(engines.get(0));
+                for(Engine e: engines){
+                    e.setMoved(false);
+                }
+                enemyTurn = false;
+                tileManager.resetMovableTiles();
+                return;
+            }
+            this.snapCameraToEntity(fortresses.get(currentFortressIndex));
+            for(Engine e: engines){
+                e.DamageFortressIfInRange(fortresses.get(currentFortressIndex));
+                fortresses.get(currentFortressIndex).DamageEngineIfInRange(e);
+            }
+            counter = 0;
+
+            currentlyAtFortress = true;
+        }else {
+            counter++;
+            if(counter >= 180){
+                currentlyAtFortress = false;
+            }
+        }
+    }
+
 
     /***
      * Check if the user has pressed on a fortress and display a bounding box if they have
@@ -307,7 +356,6 @@ public class GameState extends State
         // shooting bullet
         bullets.add(new Bullet(40));
         bullets.add(new Bullet(44));
-        System.out.println("Bullet has been created");
         shouldCreateBullets = false;
     }
 
@@ -372,19 +420,29 @@ public class GameState extends State
     }
 
     /***
-     * Method that is run for the enemies turn
+     * Method that will be used when it is the enemy turn to snap to each fortress one at a time and perform damage
      */
-    public void BattleTurn(){
-        //Set the moved variable to false for each engine and then check if damages can occur
-        tileManager.resetMovableTiles();
-        for (Engine e : engines){
-            e.setMoved(false);
-            for (Fortress f: fortresses){
-                e.DamageFortressIfInRange(f);
-                f.DamageEngineIfInRange(e);
-            }
+    private void snapCameraToEntity(Entity e) {
+        int newXPosition = e.getX() + (e.getWidth() / 2);
+        int newYPosition = e.getY() + (e.getHeight() / 2);
 
+        if(newXPosition >= ((gameMap.getMapWidth() * Tile.TILE_SIZE) - (Gdx.graphics.getWidth() / 2))){
+            newXPosition = ((gameMap.getMapWidth() * Tile.TILE_SIZE) - (Gdx.graphics.getWidth() / 2));
         }
+        if(newYPosition >= ((gameMap.getMapHeight() * Tile.TILE_SIZE) - (Gdx.graphics.getHeight() / 2))){
+            newYPosition = ((gameMap.getMapHeight() * Tile.TILE_SIZE) - (Gdx.graphics.getHeight() / 2));
+        }
+        if(newXPosition <= Gdx.graphics.getWidth() / 2){
+            newXPosition = Gdx.graphics.getWidth() / 2;
+        }
+        if(newYPosition <= Gdx.graphics.getHeight() / 2){
+            newYPosition = Gdx.graphics.getHeight() / 2;
+        }
+
+
+        camera.position.x = newXPosition;
+        camera.position.y = newYPosition;
+        camera.update();
     }
 
     /***
