@@ -41,8 +41,11 @@ public class UIManager
 
     //Creates objects for all pieces of text that will displayed when the game is paused
     private GlyphLayout pauseText;
+    private int pauseTextX, pauseTextY;
     private GlyphLayout resumeText;
+    private int resumeTextX, resumeTextY;
     private GlyphLayout exitText;
+    private int exitTextX, exitTextY;
 
     //Create objects of the current instance of gamestate and for the currently pressed engine
     private GameState gameState;
@@ -98,7 +101,9 @@ public class UIManager
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
 
+        font.setColor(Color.GREEN);
         pauseText = new GlyphLayout(font, "Paused");
+        font.setColor(Color.WHITE);
         resumeText = new GlyphLayout(font, "Resume");
         exitText = new GlyphLayout(font, "Exit");
 
@@ -149,7 +154,11 @@ public class UIManager
         }
 
         if(paused){
+            engineStatsRenderer.setColor(Color.LIGHT_GRAY);
             engineStatsRenderer.rect(pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight);
+            font.draw(uiBatch, pauseText, pauseTextX, pauseTextY);
+            font.draw(uiBatch, resumeText, resumeTextX, resumeTextY);
+            font.draw(uiBatch, exitText, exitTextX, exitTextY);
         }
         //If stats are not showing, just display button text
         if(currentEngine != null && !displayingStats) {
@@ -194,10 +203,18 @@ public class UIManager
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
 
-        pauseRectWidth = Gdx.graphics.getWidth() / 10;
+        pauseRectWidth = Gdx.graphics.getWidth() / 4;
         pauseRectHeight = Gdx.graphics.getHeight() / 2;
         pauseRectX = Gdx.graphics.getWidth() / 2 - pauseRectWidth / 2;
         pauseRectY = Gdx.graphics.getHeight() / 2 - pauseRectHeight / 2;
+
+        pauseTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (pauseText.width / 2));
+        resumeTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (resumeText.width / 2));
+        exitTextX = (int)(pauseRectX + (pauseRectWidth / 2) - (exitText.width / 2));
+
+        pauseTextY = (int)(pauseRectY + pauseRectHeight) - 25;
+        resumeTextY = (int)(pauseRectY + pauseRectHeight) - 100;
+        exitTextY = (int)(pauseRectY + pauseRectHeight) - 150;
 
     }
 
