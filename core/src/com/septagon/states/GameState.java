@@ -119,9 +119,9 @@ public class GameState extends State
         fortresses.add(fortressStation);
 
         //Sets the engines positions so that they start from the fireStation
-        engine1.setCol(fireStation.getCol() + 5);
+        engine1.setCol(fireStation.getCol() + 5 - 40);
         engine1.setRow(fireStation.getRow() - 1);
-        engine2.setCol(fireStation.getCol() + 3);
+        engine2.setCol(fireStation.getCol() + 3 - 40);
         engine2.setRow(fireStation.getRow() - 1);
 
         //Adds all the engines to the ArrayList of engines

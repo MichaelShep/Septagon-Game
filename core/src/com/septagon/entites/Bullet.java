@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Bullet {
 
     //public static final int SPEED = 500;
-    public static float ySPEED = 500;
-    public static float xSPEED = 500;
+    public static double ySPEED = 500;
+    public static double xSPEED = 500;
     public static Texture texture;
+    private static double deltaY, deltaX;
 
     float x, y, targetX, targetY;
     public boolean remove = false;
@@ -19,25 +20,24 @@ public class Bullet {
         this.y = attackerY;
         this.targetX = targetX;
         this.targetY = targetY;
-        float deltaY = attackerY - targetY;
-        float deltaX = attackerX - targetX;
+        deltaY = targetY - attackerY;
+        deltaX = targetX - attackerX;
 
         //calculate relative speed in both x and y directions in order to move from attacker to target
-        ySPEED = deltaY/(deltaX+deltaY);
-        xSPEED = deltaX/(deltaX+deltaY);
+        ySPEED = deltaY / (deltaX*deltaX + deltaY*deltaY);
+        xSPEED = deltaX / (deltaX*deltaX + deltaY*deltaY);
         if (texture == null) {
             texture = new Texture("bullet.png");
         }
-        System.out.println("xspeed:" + xSPEED);
-        System.out.println("yspeed:" + ySPEED);
     }
 
     //move bullet appropriately in both directions
     public void update (float deltaTime) {
-        y += ySPEED * deltaTime * 500;
-        x += xSPEED * deltaTime * 500;
-        if (x * (x + xSPEED * deltaTime * 500) < 0)
+        y += ySPEED * deltaTime * 50000;
+        x += xSPEED * deltaTime * 50000;
+        if ((deltaX* (targetX - x) < 0)&&(deltaY* (targetY - y) < 0))
             remove = true;
+        System.out.println(deltaX* (targetX - x));
     }
 
     public void render (SpriteBatch batch){
