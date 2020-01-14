@@ -4,7 +4,6 @@ package com.septagon.entites;
  * Class that will be used to define all the fortresses in the game
  */
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

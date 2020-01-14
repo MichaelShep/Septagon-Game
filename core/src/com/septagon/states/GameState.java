@@ -1,14 +1,10 @@
 package com.septagon.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
@@ -79,8 +75,8 @@ public class GameState extends State
     private UIManager uiManager;
 
     //Creates an array of bullets
-    ArrayList<Bullet> bullets;
-    private boolean shouldCreateBullets = false;
+    public static ArrayList<Bullet> bullets;
+    //private boolean shouldCreateBullets = false;
 
     private StatusBarGenerator statusBarGenerator;
     private TileManager tileManager;
@@ -123,9 +119,9 @@ public class GameState extends State
         fortresses.add(fortressStation);
 
         //Sets the engines positions so that they start from the fireStation
-        engine1.setCol(fireStation.getCol() + 3);
+        engine1.setCol(fireStation.getCol() + 5 - 40);
         engine1.setRow(fireStation.getRow() - 1);
-        engine2.setCol(fireStation.getCol() + 5);
+        engine2.setCol(fireStation.getCol() + 3 - 40);
         engine2.setRow(fireStation.getRow() - 1);
 
         //Adds all the engines to the ArrayList of engines
@@ -188,10 +184,12 @@ public class GameState extends State
      */
     public void update()
     {
-        if(shouldCreateBullets)
+        /*        if(shouldCreateBullets)
         {
-            this.createBullets();
+            this.createBullets(44,44);
         }
+
+         */
 
         //Call the update method for all entities in our game
         entityManager.update();
@@ -199,7 +197,8 @@ public class GameState extends State
         //Update the bullets
         ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
         for (Bullet bullet : bullets) {
-            bullet.update(currentCameraX);
+            float deltaTime = 1/60f;
+            bullet.update(deltaTime);
             if (bullet.remove)
                 bulletToRemove.add(bullet);
         }
@@ -301,15 +300,16 @@ public class GameState extends State
         }
         return false;
     }
-
-    private void createBullets()
+/*
+    public void createBullets()
     {
         // shooting bullet
-        bullets.add(new Bullet(40));
-        bullets.add(new Bullet(44));
+        bullets.add(new Bullet(40, 40));
         System.out.println("Bullet has been created");
-        shouldCreateBullets = false;
+        //shouldCreateBullets = false;
     }
+
+ */
 
     /***
      * Method that will render everything in the game each frame
@@ -439,7 +439,7 @@ public class GameState extends State
         return playerTurn;
     }
 
-    public boolean isShouldCreateBullets() { return shouldCreateBullets; }
+    //public boolean isShouldCreateBullets() { return shouldCreateBullets; }
 
     public boolean isPaused()
     {
@@ -462,7 +462,7 @@ public class GameState extends State
         this.timePassed = timePassed;
     }
 
-    public void setShouldCreateBullets(boolean shouldCreateBullets) { this.shouldCreateBullets = shouldCreateBullets; }
+    //public void setShouldCreateBullets(boolean shouldCreateBullets) { this.shouldCreateBullets = shouldCreateBullets; }
 
     public int getMapWidth() { return gameMap.getMapWidth(); }
     public int getMapHeight() { return gameMap.getMapHeight(); }

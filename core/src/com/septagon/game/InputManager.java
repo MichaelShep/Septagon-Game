@@ -151,11 +151,12 @@ public class InputManager implements InputProcessor
             }
         }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
             GameState currentState = (GameState) stateManager.getCurrentState();
-
+/*
             if(keycode == Input.Keys.SPACE)
             {
                 currentState.setShouldCreateBullets(true);
             }
+ */
         }
         //Handle input for the game over state
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){

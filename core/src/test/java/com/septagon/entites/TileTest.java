@@ -1,6 +1,5 @@
 package com.septagon.entites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

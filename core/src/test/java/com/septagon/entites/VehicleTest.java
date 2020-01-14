@@ -4,7 +4,6 @@ package com.septagon.entites;
  * A class used to test the Vehicle class
  */
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

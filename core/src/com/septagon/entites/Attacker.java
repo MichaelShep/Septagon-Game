@@ -1,11 +1,11 @@
 package com.septagon.entites;
-
 /*
  * Abstract class that provides features that extend upon entities features
  * for all entities in the game that will be able to attack other entities
  */
 
 import com.badlogic.gdx.graphics.Texture;
+import com.septagon.states.GameState;
 
 import java.util.ArrayList;
 
@@ -46,6 +46,7 @@ public abstract class Attacker extends Entity
         if (this.x + this.range >= f.getX() && this.x +this.range < f.getX() + f.getWidth() && this.y + this.range >= f.getY() && this.y + this.range < f.getY() + f.getHeight() ||
                 this.x - this.range >= f.getX() && this.x - this.range < f.getX() + f.getWidth() && this.y - this.range >= f.getY() && this.y - this.range < f.getY() + f.getHeight()){
             f.takeDamage(this.damage);
+
         }
     }
 
@@ -56,6 +57,7 @@ public abstract class Attacker extends Entity
     public void DamageEngineIfInRange(Engine e){
         if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
             e.takeDamage(this.damage);
+            GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.x + 20, e.y + 10));
         }
     }
 
