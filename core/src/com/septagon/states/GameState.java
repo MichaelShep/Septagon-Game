@@ -25,15 +25,9 @@ Child class of the State class that will manage the system when the user is in t
 
 public class GameState extends State
 {
-    // we will use 32px/unit in world
-    public final static float SCALE = 32f;
-    public final static float INV_SCALE = 1.f/SCALE;
     // this is our "target" resolution, note that the window can be any size, it is not bound to this one
     public final static float VP_WIDTH = 640;
     public final static float VP_HEIGHT = 480;
-
-    //Variable to keep track of whether it is the player or enemies turn
-    private boolean playerTurn = true;
 
     //Camera that control the viewport of the game depending on input
     private OrthographicCamera camera;
@@ -90,6 +84,10 @@ public class GameState extends State
     private boolean currentlyAtFortress = false;
     private int currentFortressIndex = -1;
     private int counter = 0;
+
+    //Timer to add a buffer between switching between the player and enemy turn
+    private int turnSwitchTimer = 0;
+    private boolean switchingTurn = false;
 
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
@@ -195,10 +193,15 @@ public class GameState extends State
     public void update()
     {
         //Run either the player or enemy turn depending on which turn it is
-        if(!enemyTurn) {
+        if(switchingTurn){
+            turnSwitchTimer++;
+            if(turnSwitchTimer >= 30){
+                switchingTurn = false;
+            }
+        }
+        else if(!enemyTurn) {
             playerTurn();
         }else{
-            System.out.println("Battle turn");
             BattleTurn();
         }
     }
@@ -221,10 +224,11 @@ public class GameState extends State
 
         //If all the engines have been moved on the current turn, make it the enemies turn
         if (allEnginesMoved()) {
-            this.playerTurn = false;
-            enemyTurn = true;
+            this.enemyTurn = true;
             currentlyAtFortress = false;
             currentFortressIndex = -1;
+            turnSwitchTimer = 0;
+            switchingTurn = true;
             counter = 0;
         }
 
@@ -264,6 +268,8 @@ public class GameState extends State
                 for(Engine e: engines){
                     e.setMoved(false);
                 }
+                turnSwitchTimer = 0;
+                switchingTurn = true;
                 enemyTurn = false;
                 tileManager.resetMovableTiles();
                 return;
@@ -306,7 +312,6 @@ public class GameState extends State
         }
     }
 
-
     /***
      * Called when the InputManager detects an input and is used to work out what tile was pressed and what should occur as a result
      * @param x X position of the input
@@ -317,7 +322,6 @@ public class GameState extends State
     {
         //Loops through all tiles to see if it has been pressed
         for(Tile t: tiles) {
-            //WANT TO ADD SOME EFFICIENCY CODE HERE THAT FIRSTLY CHECKS IF TILE ON SCREEN BEFORE PROCESSING
             //When we have found the tile that has been pressed, perform neccessary processing
             if(t.checkIfClickedInside(x, y)) {
                 //updated the pointers to the current and previous tiles
@@ -379,7 +383,7 @@ public class GameState extends State
         }
 
         //Renderers the movement grid for the currently touched engine
-        if (inputManager.isHasBeenTouched() && this.playerTurn){
+        if (inputManager.isHasBeenTouched() && !this.enemyTurn){
             this.renderMovementGrid();
         }
 
@@ -426,6 +430,7 @@ public class GameState extends State
         int newXPosition = e.getX() + (e.getWidth() / 2);
         int newYPosition = e.getY() + (e.getHeight() / 2);
 
+        //Makes sure the new camera position is on the screen - if not will update it so that it is
         if(newXPosition >= ((gameMap.getMapWidth() * Tile.TILE_SIZE) - (Gdx.graphics.getWidth() / 2))){
             newXPosition = ((gameMap.getMapWidth() * Tile.TILE_SIZE) - (Gdx.graphics.getWidth() / 2));
         }
@@ -438,8 +443,6 @@ public class GameState extends State
         if(newYPosition <= Gdx.graphics.getHeight() / 2){
             newYPosition = Gdx.graphics.getHeight() / 2;
         }
-
-
         camera.position.x = newXPosition;
         camera.position.y = newYPosition;
         camera.update();
@@ -492,9 +495,8 @@ public class GameState extends State
         return uiManager;
     }
 
-    public boolean isPlayerTurn()
-    {
-        return playerTurn;
+    public boolean isEnemyTurn(){
+        return enemyTurn;
     }
 
     public boolean isShouldCreateBullets() { return shouldCreateBullets; }

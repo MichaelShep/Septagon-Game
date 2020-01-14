@@ -128,7 +128,7 @@ public class UIManager
         engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         //Draws the text that tells the player who's turn it is
-        if (gameState.isPlayerTurn()){
+        if (!gameState.isEnemyTurn()){
             blueFont.draw(uiBatch, playerTurnText, playerTurnX, playerTurnY);
         }else{
             redFont.draw(uiBatch, enemyTurnText, enemyTurnX, enemyTurnY);
