@@ -55,6 +55,19 @@ public class Engine extends Vehicle
 
     }
 
+    /***
+     * Method that will check if the Attacker is in range of the fortress and if so will damage it
+     * @param f The fortress we are currently checking the bounds/range of
+     */
+    public void DamageFortressIfInRange(Fortress f){
+        this.setRangeCorners();
+        System.out.println(getRangeCorners());
+        if(checkForOverlap(f)){
+            f.takeDamage(this.damage);
+        }
+
+    }
+
     //Getters and Setters
     public int getMaxVolume()
     {

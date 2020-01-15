@@ -39,27 +39,15 @@ public abstract class Attacker extends Entity
     private ArrayList<Integer> rangeCorners = new ArrayList<Integer>();
 
     /***
-     * Method that will check if the Attacker is in range of the fortress and if so will damage it
-     * @param f The fortress we are currently checking the bounds/range of
-     */
-    public void DamageFortressIfInRange(Fortress f){
-            this.setRangeCorners();
-            if(checkForOverlap(f)){
-                System.out.println("Fortress Damaged");
-                f.takeDamage(this.damage);
-            }
-
-    }
-
-    /***
-     * checks if any of the corners of the engines range are in the body of the fortress
+     * Checks if any of the corners of the engines range are in the body of the fortress
      * @param f Fortress that is being checked
      * @return returns true if there is any overlap, false otherwise
      */
-    private Boolean checkForOverlap(Fortress f){
+    protected Boolean checkForOverlap(Fortress f){
         for(int i=0; i<2; i++){
             for(int j=2; i<4; i++){
-                if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + f.getWidth()/Tile.TILE_SIZE && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + f.getHeight()/Tile.TILE_SIZE){
+                if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + (f.getWidth()/Tile.TILE_SIZE)
+                        && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + (f.getHeight()/Tile.TILE_SIZE)){
                     return true;
                 }
             }
@@ -67,16 +55,6 @@ public abstract class Attacker extends Entity
         return false;
     }
 
-    /***
-     * Method that will be called if an engine is in range of the fortress so that the engine can be damaged
-     * @param e The current engine that is being checked
-     */
-    public void DamageEngineIfInRange(Engine e){
-        if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
-            e.takeDamage(this.damage);
-            GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.x + 20, e.y + 10));
-        }
-    }
 
 
     @Override
@@ -93,8 +71,9 @@ public abstract class Attacker extends Entity
         if(health <= 0) health = 0;
     }
 
-    private void setRangeCorners() {
+    protected void setRangeCorners() {
         //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
+        rangeCorners.clear();
         Integer leftX = this.col - this.range;
         Integer rightX = this.col + this.width/Tile.TILE_SIZE + this.range;
         Integer bottomY = this.row - this.range;
@@ -117,6 +96,10 @@ public abstract class Attacker extends Entity
     }
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public ArrayList getRangeCorners(){
+        return rangeCorners;
     }
 
     //Setters

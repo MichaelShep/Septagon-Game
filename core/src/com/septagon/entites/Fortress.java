@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.septagon.helperClasses.AssetManager;
+import com.septagon.states.GameState;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -35,6 +36,17 @@ public class Fortress extends Attacker
     public void initialise()
     {
         super.initialise();
+    }
+
+    /***
+     * Method that will be called if an engine is in range of the fortress so that the engine can be damaged
+     * @param e The current engine that is being checked
+     */
+    public void DamageEngineIfInRange(Engine e){
+        if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
+            e.takeDamage(this.damage);
+            GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.x + 20, e.y + 10));
+        }
     }
 
     /***
