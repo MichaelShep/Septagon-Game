@@ -17,8 +17,6 @@ public class Fortress extends Attacker
 {
     //Stores if an engine is currently active/pressed on
     private boolean selected = false;
-    //ArrayList that will store the corners of the bounding box for the range of the fortress
-    private ArrayList<Integer> rangeCorners = new ArrayList<Integer>();
 
     /***
      * Constructor that calls the Entity constructor to set up all the member variables
@@ -36,6 +34,7 @@ public class Fortress extends Attacker
     public void initialise()
     {
         super.initialise();
+        setRangeCorners();
     }
 
     /***

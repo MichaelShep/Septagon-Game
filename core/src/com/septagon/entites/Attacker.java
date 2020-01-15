@@ -36,7 +36,7 @@ public abstract class Attacker extends Entity
         this.range = range;
     }
 
-    private ArrayList<Integer> rangeCorners = new ArrayList<Integer>();
+    protected ArrayList<Integer> rangeCorners = new ArrayList<Integer>();
 
     /***
      * Checks if any of the corners of the engines range are in the body of the fortress

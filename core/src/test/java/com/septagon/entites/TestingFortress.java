@@ -68,7 +68,7 @@ public class TestingFortress extends Attacker
     //Setters
     public void setSelected(boolean selected) { this.selected = selected; }
 
-    private void setRangeCorners() {
+    protected void setRangeCorners() {
         //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
         Integer leftX = this.x - this.range;
         Integer rightX = this.x + this.width + this.range;
