@@ -46,35 +46,38 @@ public class InputManager implements InputProcessor
         //makes sure the current state is the game state then handles what needs to be done on a touch down
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
-            // ignore if its not left mouse button or first touch pointer
-            if (button != Input.Buttons.LEFT || pointer > 0) return false;
-            //camera.unproject(tp.set(screenX, screenY, 0));
-            hasBeenTouched = true;
-            xCoord = Gdx.input.getX();
-            yCoord = Gdx.input.getY();
-
-            //Convert input coords to screen coords
-            xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
-            yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
-
-            System.out.println(xCoord / Tile.TILE_SIZE + " y: " + yCoord / Tile.TILE_SIZE);
-
-            float onScreenXCoord = Gdx.input.getX();
-            float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-            GameState currentState = (GameState) stateManager.getCurrentState();
-
-            if(currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
+            GameState currentState = (GameState)stateManager.getCurrentState();
+            if(!currentState.isPaused())
             {
-                currentState.getUiManager().pressedShowStatsButton();
-            }
-            if(currentState.getUiManager().getMinimiseRect().contains(onScreenXCoord, onScreenYCoord))
-            {
-                currentState.getUiManager().pressedMinimiseButton();
-            }
-            currentState.touchedTile(xCoord, yCoord);
+                // ignore if its not left mouse button or first touch pointer
+                if (button != Input.Buttons.LEFT || pointer > 0) return false;
+                //camera.unproject(tp.set(screenX, screenY, 0));
+                hasBeenTouched = true;
+                xCoord = Gdx.input.getX();
+                yCoord = Gdx.input.getY();
 
-            dragging = true;
+                //Convert input coords to screen coords
+                xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
+                yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
+
+                System.out.println(xCoord / Tile.TILE_SIZE + " y: " + yCoord / Tile.TILE_SIZE);
+
+                float onScreenXCoord = Gdx.input.getX();
+                float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+
+                if (currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
+                {
+                    currentState.getUiManager().pressedShowStatsButton();
+                }
+                if (currentState.getUiManager().getMinimiseRect().contains(onScreenXCoord, onScreenYCoord))
+                {
+                    currentState.getUiManager().pressedMinimiseButton();
+                }
+                currentState.touchedTile(xCoord, yCoord);
+
+                dragging = true;
+            }
         }
         return true;
     }
@@ -84,19 +87,22 @@ public class InputManager implements InputProcessor
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
             GameState currentState = (GameState) stateManager.getCurrentState();
-            if (!dragging) return false;
+            if(!currentState.isPaused())
+            {
+                if (!dragging) return false;
 
-            float newX = camera.position.x - Gdx.input.getDeltaX();
-            float newY = camera.position.y + Gdx.input.getDeltaY();
+                float newX = camera.position.x - Gdx.input.getDeltaX();
+                float newY = camera.position.y + Gdx.input.getDeltaY();
 
-            if(newX >= Gdx.graphics.getWidth() / 2 && newX <= currentState.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2)
-                camera.translate(-Gdx.input.getDeltaX(), 0, 0);
+                if (newX >= Gdx.graphics.getWidth() / 2 && newX <= currentState.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2)
+                    camera.translate(-Gdx.input.getDeltaX(), 0, 0);
 
-            if(newY >= Gdx.graphics.getHeight()/2 && newY <= currentState.getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2)
-                camera.translate(0, Gdx.input.getDeltaY(), 0);
+                if (newY >= Gdx.graphics.getHeight() / 2 && newY <= currentState.getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2)
+                    camera.translate(0, Gdx.input.getDeltaY(), 0);
 
-            camera.update();
-            camera.unproject(tp.set(screenX, screenY, 0));
+                camera.update();
+                camera.unproject(tp.set(screenX, screenY, 0));
+            }
         }
         return true;
     }
@@ -151,6 +157,25 @@ public class InputManager implements InputProcessor
             }
         }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
             GameState currentState = (GameState) stateManager.getCurrentState();
+
+            if(keycode == Input.Keys.ESCAPE){
+                currentState.setPaused(!currentState.isPaused());
+            }
+            if(currentState.isPaused()){
+                if(keycode == Input.Keys.DOWN && currentState.getUiManager().getPausePosition() == 1){
+                    currentState.getUiManager().setPausePosition(2);
+                }else if(keycode == Input.Keys.UP && currentState.getUiManager().getPausePosition() == 2){
+                    currentState.getUiManager().setPausePosition(1);
+                }
+
+                if(keycode == Input.Keys.ENTER){
+                    if(currentState.getUiManager().getPausePosition() == 1){
+                        currentState.setPaused(false);
+                    }else{
+                        stateManager.changeState(new MenuState(this, font, stateManager));
+                    }
+                }
+            }
 /*
             if(keycode == Input.Keys.SPACE)
             {

@@ -29,6 +29,8 @@ public class MenuState extends State
     private GlyphLayout layout;
     private int titleCentreX;
 
+    private SpriteBatch menuBatch;
+
     /***
      * Constructor that set initial values for all class member variables
      * @param inputManager The games InputManager class so that this class can also handle input
@@ -45,12 +47,12 @@ public class MenuState extends State
         menuPosition = 0;
         backgroundImage = null;
         layout = new GlyphLayout(font, titleLabel);
-        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2) - (Gdx.graphics.getWidth() / 2);
+        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2);
     }
 
     public void initialise()
     {
-
+        menuBatch = new SpriteBatch();
     }
 
     public void update()
@@ -63,13 +65,17 @@ public class MenuState extends State
         Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        font.setColor(Color.WHITE);
-        font.draw(batch, titleLabel, titleCentreX, (Gdx.graphics.getHeight() / 2) - 30);
+        menuBatch.begin();
 
-        drawString(batch, 0, playLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 100);
-        drawString(batch, 1, helpLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 150);
-        drawString(batch, 2, settingsLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 200);
-        drawString(batch, 3, exitLabel, -(Gdx.graphics.getWidth() / 2) + 100, (Gdx.graphics.getHeight() / 2) - 250);
+        font.setColor(Color.WHITE);
+        font.draw(menuBatch, titleLabel, titleCentreX, (Gdx.graphics.getHeight()) - 30);
+
+        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
+        drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
+        drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
+        drawString(menuBatch, 3, exitLabel,  100, (Gdx.graphics.getHeight()) - 250);
+
+        menuBatch.end();
     }
 
     /***

@@ -19,8 +19,7 @@ import java.awt.*;
 public class UIManager
 {
     //Create variables for all the different font varients that will be used
-    private BitmapFont blueFont;
-    private BitmapFont redFont;
+    private BitmapFont font;
     private BitmapFont smallFont;
 
     //Create the renderer for rendering all the gui shapes and the spritebatch for rendering all the gui
@@ -37,6 +36,9 @@ public class UIManager
     private GlyphLayout rangeText;
     private GlyphLayout speedText;
     private GlyphLayout minimiseSymbol;
+    private GlyphLayout pauseText;
+    private GlyphLayout resumeText;
+    private GlyphLayout exitText;
 
     //Create objects of the current instance of gamestate and for the currently pressed engine
     private GameState gameState;
@@ -50,10 +52,16 @@ public class UIManager
     private int statsRectX, statsRectY, statsRectWidth, statsRectHeight;
     private int minimiseX, minimiseY, minimiseWidth, minimiseHeight;
     private float playerTurnX, playerTurnY, enemyTurnX, enemyTurnY;
+    private int pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight;
+    private int pauseTextX, pauseTextY, resumeTextX, resumeTextY, exitTextX, exitTextY;
 
-    public UIManager(GameState gameState)
+    private boolean paused = false;
+    private int pausePosition = 1;
+
+    public UIManager(GameState gameState, BitmapFont font)
     {
         this.gameState = gameState;
+        this.font = font;
     }
 
     public void initialise()
@@ -68,16 +76,13 @@ public class UIManager
         parameter.color = Color.GREEN;
         parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:-";
         smallFont = generator.generateFont(parameter);
-        parameter.size = 32;
-        parameter.color = Color.BLUE;
-        blueFont = generator.generateFont(parameter);
-        parameter.color = Color.RED;
-        redFont = generator.generateFont(parameter);
         generator.dispose();
 
         //Just a temporary fix as cannot work out how to change colours properly yet
-        playerTurnText = new GlyphLayout(blueFont, "Your Turn");
-        enemyTurnText = new GlyphLayout(redFont, "Enemy Turn");
+        font.setColor(Color.BLUE);
+        playerTurnText = new GlyphLayout(font, "Your Turn");
+        font.setColor(Color.RED);
+        enemyTurnText = new GlyphLayout(font, "Enemy Turn");
 
         //Set up all the text objects
         showEngineStatsText = new GlyphLayout(smallFont, "Show Stats");
@@ -88,70 +93,101 @@ public class UIManager
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
 
+        font.setColor(Color.RED);
+        pauseText = new GlyphLayout(font, "Paused");
+        font.setColor(Color.WHITE);
+        resumeText = new GlyphLayout(font, "Resume");
+        exitText = new GlyphLayout(font, "Exit");
+
         setupPositions();
     }
 
     public void render()
     {
         uiBatch.begin();
-        //Draws either the button to open the stats menu or the stats menu itself
-        if(currentEngine != null && !displayingStats)
-        {
-            engineStatsRenderer.setColor(Color.GRAY);
-            engineStatsRenderer.rect(showRectX, showRectY, showRectWidth, showRectHeight);
-        }
-        else if(currentEngine != null && displayingStats)
-        {
-            engineStatsRenderer.setColor(Color.GRAY);
-            engineStatsRenderer.rect(statsRectX, statsRectY, statsRectWidth, statsRectHeight);
-        }
-        engineStatsRenderer.end();
 
-        //Draws the outline for the button/menu
-        engineStatsRenderer.begin(ShapeRenderer.ShapeType.Line);
-        if(currentEngine != null && !displayingStats)
+        if(!paused)
         {
-            engineStatsRenderer.setColor(Color.BLACK);
-            engineStatsRenderer.rect(showRectX, showRectY, showRectWidth, showRectHeight);
+            //Draws either the button to open the stats menu or the stats menu itself
+            if (currentEngine != null && !displayingStats)
+            {
+                engineStatsRenderer.setColor(Color.GRAY);
+                engineStatsRenderer.rect(showRectX, showRectY, showRectWidth, showRectHeight);
+            } else if (currentEngine != null && displayingStats)
+            {
+                engineStatsRenderer.setColor(Color.GRAY);
+                engineStatsRenderer.rect(statsRectX, statsRectY, statsRectWidth, statsRectHeight);
+            }
+            engineStatsRenderer.end();
+
+            //Draws the outline for the button/menu
+            engineStatsRenderer.begin(ShapeRenderer.ShapeType.Line);
+            if (currentEngine != null && !displayingStats)
+            {
+                engineStatsRenderer.setColor(Color.BLACK);
+                engineStatsRenderer.rect(showRectX, showRectY, showRectWidth, showRectHeight);
+            } else if (currentEngine != null && displayingStats)
+            {
+                engineStatsRenderer.setColor(Color.BLACK);
+                engineStatsRenderer.rect(statsRectX, statsRectY, statsRectWidth, statsRectHeight);
+                engineStatsRenderer.rect(minimiseX, minimiseY, minimiseWidth, minimiseHeight);
+            }
+            engineStatsRenderer.end();
+            uiBatch.end();
+
+            //Draws all the text to the screen in its correct place
+            uiBatch.begin();
+            engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+            //Draws the text that tells the player who's turn it is
+            if (gameState.isPlayerTurn())
+            {
+                font.draw(uiBatch, playerTurnText, playerTurnX, playerTurnY);
+            } else
+            {
+                font.draw(uiBatch, enemyTurnText, enemyTurnX, enemyTurnY);
+            }
+
+            //If stats are not showing, just display button text
+            if (currentEngine != null && !displayingStats)
+            {
+                smallFont.setColor(Color.WHITE);
+                smallFont.draw(uiBatch, showEngineStatsText, showRectX + 5, showRectY + 20);
+            }
+            //If stats are showing, draw all the text relating to them
+            else if (currentEngine != null && displayingStats)
+            {
+                smallFont.setColor(Color.WHITE);
+                uiBatch.draw(currentEngine.getTexture(), statsRectX + 50, statsRectY + statsRectHeight - 70);
+                smallFont.draw(uiBatch, maxVolumeText, statsRectX + 10, statsRectY + statsRectHeight - 90);
+                smallFont.draw(uiBatch, healthText, statsRectX + 10, statsRectY + statsRectHeight - 120);
+                smallFont.draw(uiBatch, damageText, statsRectX + 10, statsRectY + statsRectHeight - 150);
+                smallFont.draw(uiBatch, rangeText, statsRectX + 10, statsRectY + statsRectHeight - 180);
+                smallFont.draw(uiBatch, speedText, statsRectX + 10, statsRectY + statsRectHeight - 210);
+                smallFont.draw(uiBatch, minimiseSymbol, minimiseX + 7, minimiseY + 15);
+            }
+
+            engineStatsRenderer.end();
         }
-        else if(currentEngine != null && displayingStats)
-        {
-            engineStatsRenderer.setColor(Color.BLACK);
-            engineStatsRenderer.rect(statsRectX, statsRectY, statsRectWidth, statsRectHeight);
-            engineStatsRenderer.rect(minimiseX, minimiseY, minimiseWidth, minimiseHeight);
+        else{
+
+            font.draw(uiBatch, pauseText, pauseTextX, pauseTextY);
+            drawPauseString(1, "Resume", resumeTextX, resumeTextY, resumeText);
+            drawPauseString(2, "Exit", exitTextX, exitTextY, exitText);
         }
-        engineStatsRenderer.end();
         uiBatch.end();
+    }
 
-        //Draws all the text to the screen in its correct place
-        uiBatch.begin();
-        engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        //Draws the text that tells the player who's turn it is
-        if (gameState.isPlayerTurn()){
-            blueFont.draw(uiBatch, playerTurnText, playerTurnX, playerTurnY);
+    public void drawPauseString(int position, String text, int x, int y, GlyphLayout layout){
+        if(position == this.pausePosition){
+            font.setColor(Color.BLUE);
+            layout.setText(font, text);
         }else{
-            redFont.draw(uiBatch, enemyTurnText, enemyTurnX, enemyTurnY);
+            font.setColor(Color.WHITE);
+            layout.setText(font, text);
         }
 
-        //If stats are not showing, just display button text
-        if(currentEngine != null && !displayingStats) {
-            smallFont.setColor(Color.WHITE);
-            smallFont.draw(uiBatch, showEngineStatsText, showRectX + 5, showRectY + 20);
-        }
-        //If stats are showing, draw all the text relating to them
-        else if(currentEngine != null && displayingStats)
-        {
-            smallFont.setColor(Color.WHITE);
-            uiBatch.draw(currentEngine.getTexture(), statsRectX + 50, statsRectY + statsRectHeight - 70);
-            smallFont.draw(uiBatch, maxVolumeText, statsRectX + 10, statsRectY + statsRectHeight - 90);
-            smallFont.draw(uiBatch, healthText, statsRectX + 10, statsRectY + statsRectHeight - 120);
-            smallFont.draw(uiBatch, damageText, statsRectX + 10, statsRectY + statsRectHeight - 150);
-            smallFont.draw(uiBatch, rangeText, statsRectX + 10, statsRectY + statsRectHeight - 180);
-            smallFont.draw(uiBatch, speedText, statsRectX + 10, statsRectY + statsRectHeight - 210);
-            smallFont.draw(uiBatch, minimiseSymbol, minimiseX + 7, minimiseY + 15);
-        }
-        uiBatch.end();
+        font.draw(uiBatch, layout, x, y);
     }
 
     public void setupPositions()
@@ -176,6 +212,20 @@ public class UIManager
         minimiseY = statsRectY + statsRectHeight - 20;
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
+
+        pauseRectWidth = Gdx.graphics.getWidth() / 4;
+        pauseRectHeight = Gdx.graphics.getHeight() / 2;
+        pauseRectX = Gdx.graphics.getWidth() / 2 - pauseRectWidth / 2;
+        pauseRectY = Gdx.graphics.getHeight() / 2 - pauseRectHeight / 2;
+
+        pauseTextX = (int)(Gdx.graphics.getWidth() / 2 - pauseText.width / 2);
+        pauseTextY = (int)(pauseRectY + pauseRectHeight - 25);
+
+        resumeTextX = (int)(Gdx.graphics.getWidth() / 2 - resumeText.width / 2);
+        resumeTextY = (int)(pauseRectY + pauseRectHeight - 75);
+
+        exitTextX = (int)(Gdx.graphics.getWidth() / 2 - exitText.width / 2);
+        exitTextY = (int)(pauseRectY + pauseRectHeight - 125);
     }
 
     //Called by InputManager when the use presses the showStats button
@@ -201,6 +251,23 @@ public class UIManager
     public boolean isDisplayingStats()
     {
         return displayingStats;
+    }
+
+    public boolean isPaused()
+    {
+        return paused;
+    }
+
+    public int getPausePosition(){
+        return pausePosition;
+    }
+
+    public void setPausePosition(int pausePosition){
+        this.pausePosition = pausePosition;
+    }
+
+    public void setPaused(boolean paused){
+        this.paused = paused;
     }
 
     public void setDisplayingStats(boolean stats)

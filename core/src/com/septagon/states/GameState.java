@@ -147,7 +147,7 @@ public class GameState extends State
         objectBatch.setProjectionMatrix(camera.combined);
 
         //Creates instance of uiManager which will be used to render and manage all UI elements
-        uiManager = new UIManager(this);
+        uiManager = new UIManager(this, font);
 
         //Creates the gameMap instance that will be used to load the map from the tmx file
         gameMap = new TiledGameMap();
@@ -190,48 +190,58 @@ public class GameState extends State
         }
 
          */
+        this.paused = uiManager.isPaused();
+        if(!paused)
+        {
+            //Call the update method for all entities in our game
+            entityManager.update();
 
-        //Call the update method for all entities in our game
-        entityManager.update();
+            //Update the bullets
+            ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
+            for (Bullet bullet : bullets)
+            {
+                float deltaTime = 1 / 60f;
+                bullet.update(deltaTime);
+                if (bullet.remove)
+                    bulletToRemove.add(bullet);
+            }
+            bullets.removeAll(bulletToRemove);
 
-        //Update the bullets
-        ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
-        for (Bullet bullet : bullets) {
-            float deltaTime = 1/60f;
-            bullet.update(deltaTime);
-            if (bullet.remove)
-                bulletToRemove.add(bullet);
-        }
-        bullets.removeAll(bulletToRemove);
+            //If all the engines have been moved on the current turn, make it the enemies turn
+            if (allEnginesMoved())
+            {
+                this.playerTurn = false;
+                BattleTurn();
+            } else
+            {
+                this.playerTurn = true;
+            }
 
-        //If all the engines have been moved on the current turn, make it the enemies turn
-        if(allEnginesMoved()){
-            this.playerTurn = false;
-            BattleTurn();
-        }else{
-            this.playerTurn = true;
-        }
+            //Updates the pointers to the current x and y positions of the camera
+            currentCameraX = camera.position.x;
+            currentCameraY = camera.position.y;
 
-        //Updates the pointers to the current x and y positions of the camera
-        currentCameraX = camera.position.x;
-        currentCameraY = camera.position.y;
+            //Checks if the player has destroyed all the fortresses
+            boolean hasWon = true;
+            for (Fortress f : fortresses)
+            {
+                if (f.getHealth() > 0) hasWon = false;
+            }
+            if (hasWon)
+            {
+                stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
+            }
 
-        //Checks if the player has destroyed all the fortresses
-        boolean hasWon = true;
-        for(Fortress f: fortresses){
-            if(f.getHealth() > 0) hasWon = false;
-        }
-        if(hasWon){
-            stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
-        }
-
-        //Checks if all the players fire engines have been destroyed
-        boolean hasLost = true;
-        for(Engine e: engines){
-            if(e.getHealth() > 0) hasLost = false;
-        }
-        if(hasLost){
-            stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
+            //Checks if all the players fire engines have been destroyed
+            boolean hasLost = true;
+            for (Engine e : engines)
+            {
+                if (e.getHealth() > 0) hasLost = false;
+            }
+            if (hasLost)
+            {
+                stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
+            }
         }
     }
 
@@ -456,6 +466,7 @@ public class GameState extends State
 
     public void setPaused(boolean paused) {
         this.paused = paused;
+        uiManager.setPaused(paused);
     }
 
     public void setTimePassed(int timePassed) {
