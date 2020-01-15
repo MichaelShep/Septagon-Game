@@ -81,6 +81,10 @@ public class GameState extends State
     private StatusBarGenerator statusBarGenerator;
     private TileManager tileManager;
 
+    private int currentFortressIndex = 0;
+    private int counter = 0;
+    private boolean hasChangedFortress = false;
+
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
      * @param inputManager The games input manager that handles all the games input
@@ -191,7 +195,7 @@ public class GameState extends State
 
          */
         this.paused = uiManager.isPaused();
-        if(!paused)
+        if(!paused && playerTurn)
         {
             //Call the update method for all entities in our game
             entityManager.update();
@@ -212,9 +216,6 @@ public class GameState extends State
             {
                 this.playerTurn = false;
                 BattleTurn();
-            } else
-            {
-                this.playerTurn = true;
             }
 
             //Updates the pointers to the current x and y positions of the camera
@@ -242,7 +243,43 @@ public class GameState extends State
             {
                 stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
             }
+        }else if(!paused){
+            System.out.println("Running");
+            if(!hasChangedFortress){
+                this.snapToAttacker(fortresses.get(currentFortressIndex));
+                hasChangedFortress = true;
+                currentFortressIndex++;
+                if(currentFortressIndex >= fortresses.size()){
+                    playerTurn = true;
+                }
+                counter = 0;
+            }else
+            {
+                counter++;
+                if(counter >= 180){
+                    hasChangedFortress = false;
+                }
+            }
         }
+    }
+
+    private void snapToAttacker(Attacker a){
+        int newCameraX = a.getX() + (a.getWidth() / 2);
+        int newCameraY = a.getY() + (a.getHeight() / 2);
+
+        if(newCameraX <= Gdx.graphics.getWidth() / 2)
+            newCameraX = Gdx.graphics.getWidth() / 2;
+        else if(newCameraX >= (gameMap.getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth() / 2)
+            newCameraX = (gameMap.getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth() / 2;
+
+        if(newCameraY <= Gdx.graphics.getHeight() / 2)
+            newCameraY = Gdx.graphics.getHeight() / 2;
+        else if(newCameraY >= (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2)
+            newCameraY = (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2;
+
+        camera.position.x = newCameraX;
+        camera.position.y = newCameraY;
+        camera.update();
     }
 
     /***
@@ -395,6 +432,7 @@ public class GameState extends State
             }
 
         }
+        playerTurn = true;
     }
 
     /***

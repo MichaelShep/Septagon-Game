@@ -45,7 +45,7 @@ public abstract class Attacker extends Entity
      */
     protected Boolean checkForOverlap(Fortress f){
         for(int i=0; i<2; i++){
-            for(int j=2; i<4; i++){
+            for(int j=2; j<4; j++){
                 if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + (f.getWidth()/Tile.TILE_SIZE)
                         && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + (f.getHeight()/Tile.TILE_SIZE)){
                     return true;

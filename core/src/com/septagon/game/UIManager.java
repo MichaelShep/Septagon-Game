@@ -108,6 +108,7 @@ public class UIManager
 
         if(!paused)
         {
+            engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
             //Draws either the button to open the stats menu or the stats menu itself
             if (currentEngine != null && !displayingStats)
             {
