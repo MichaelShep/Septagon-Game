@@ -59,6 +59,25 @@ public class Engine extends Vehicle
         this.volume -= this.damage;
     }
 
+
+
+    /***
+     * Checks if any of the corners of the engines range are in the body of the fortress
+     * @param f Fortress that is being checked
+     * @return returns true if there is any overlap, false otherwise
+     */
+    public Boolean checkForOverlap(Fortress f){
+        for(int i=0; i<2; i++){
+            for(int j=2; j<4; j++){
+                if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + (f.getWidth()/Tile.TILE_SIZE)
+                        && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + (f.getHeight()/Tile.TILE_SIZE)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /***
      * Method that will check if the Attacker is in range of the fortress and if so will damage it
      * @param f The fortress we are currently checking the bounds/range of
