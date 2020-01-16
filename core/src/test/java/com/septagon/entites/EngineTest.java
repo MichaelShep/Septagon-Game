@@ -78,4 +78,22 @@ class EngineTest {
         assertEquals(testE.getFillSpeed(), 4);
     }
 
+    @Test //A test for the Engine class' fire method
+    public void testFire() throws Exception {
+        testE.fire();
+        assertEquals(testE.getVolume(), 18);
+    }
+
+    @Test //A test for the Engine class' setVolume method
+    public void testSetVolume() throws Exception {
+        testE.setVolume(18);
+        assertEquals(testE.getVolume(), 18);
+    }
+
+    @Test //A test for the Engine class' setFillSpeed method
+    public void testSetFillSpeed() throws Exception {
+        testE.setFillSpeed(6);
+        assertEquals(testE.getFillSpeed(), 6);
+    }
+
 }

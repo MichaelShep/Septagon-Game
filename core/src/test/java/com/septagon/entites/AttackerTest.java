@@ -18,7 +18,7 @@ class AttackerTest {
     @BeforeEach //A set up function for the tests
     public void setUp() {
         //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        testCA = new ConcreteAttacker(1, 1, 32, 32, null, 10, 2, 4, "Friendly");
+        testCA = new ConcreteAttacker(1, 1, 32, 32, null, 10, 2, 4);
     }
 
     @Test //A test for the Attacker class initialisation
@@ -36,15 +36,14 @@ class AttackerTest {
     }
 
     @Test //A test for the Attacker class' damageFortressIfInRange method
-    public void testDamageFortressIfInRange() throws Exception {
+    public void testCheckForOverlap() throws Exception {
         //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
         //Texture testTexture2 = new Texture(Gdx.files.internal("images/FortressMinister.png"));
-        TestingFortress testF1 = new TestingFortress(4, 4, 256, 256, null, 100, 20, 3);
-        TestingFortress testF2 = new TestingFortress(10, 10, 256, 256, null, 100, 20, 3);
-        testCA.DamageFortressIfInRange(testF1);
-        testCA.DamageFortressIfInRange(testF2);
-        assertEquals(testF2.health, 100);
-        assertEquals(testF1.health, 100);
+        Fortress testF1 = new Fortress(2, 2, 256, 256, null, 100, 20, 3);
+        Fortress testF2 = new Fortress(10, 10, 256, 256, null, 100, 20, 3);
+        testCA.setRangeCorners();
+        assertTrue(testCA.checkForOverlap(testF1));
+        assertFalse(testCA.checkForOverlap(testF2));
     }
 
     @Test //A test for the Attacker class' getHealth method
@@ -79,5 +78,23 @@ class AttackerTest {
         testCA.setRange(3);
         assertEquals(testCA.range, 3);
     }
+
+    @Test //A test for the Attacker class' getRangeCorners method
+    public void testGetRangeCorners() throws Exception {
+        testCA.setRangeCorners();
+        assertNotNull(testCA.getRangeCorners());
+    }
+
+    @Test //A test for the Attacker class' setMaxHealth method
+    public void testSetMaxHealth() throws Exception {
+        testCA.setMaxHealth(15);
+        assertEquals(testCA.maxHealth, 15);
+    }
+
+    @Test //A test for the Attacker class' getMaxHealth method
+    public void testGetMaxHealth() throws Exception {
+        assertEquals(testCA.getMaxHealth(), 10);
+    }
+
 }
 

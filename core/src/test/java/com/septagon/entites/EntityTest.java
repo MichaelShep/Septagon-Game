@@ -42,6 +42,16 @@ class EntityTest {
         assertEquals(testEN.getY(), 320);
     }
 
+    @Test //A test for the Entity class' getRow method
+    public void testGetRow() throws Exception {
+        assertEquals(testEN.getRow(), 10);
+    }
+
+    @Test //A test for the Entity class' getCol method
+    public void testGetCol() throws Exception {
+        assertEquals(testEN.getCol(), 5);
+    }
+
     @Test //A test for the Entity class' getWidth method
     public void testGetWidth() throws Exception {
         assertEquals(testEN.getWidth(), 64);
