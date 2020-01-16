@@ -31,9 +31,8 @@ public class Engine extends Vehicle
      * @param fillSpeed The fill speed of the engine - unique to engine
      * @param id The id of the engine - unique to engine
      */
-    public Engine(int col, int row, Texture texture, int health, int damage, int range, int speed, int maxVolume, int fillSpeed, Integer id)
-    {
-        super(col,row,texture,health,damage,range,speed);
+    public Engine(int col, int row, Texture texture, int health, int damage, int range, int speed, int maxVolume, int fillSpeed, Integer id) {
+        super(col, row, texture, health, damage, range, speed);
         this.volume = maxVolume;
         this.maxVolume = maxVolume;
         this.fillSpeed = fillSpeed;
@@ -45,14 +44,21 @@ public class Engine extends Vehicle
      */
     public void fill()
     {
-        if (this.volume <= (this.maxVolume - this.fillSpeed))
-        {
-            this.volume += this.fillSpeed;
-        }else
-        {
-            this.volume = this.maxVolume;
-        }
+            if (this.volume <= (this.maxVolume - this.fillSpeed)) {
+                this.volume += this.fillSpeed;
+            }else {
+                this.volume = this.maxVolume;
+            }
+    }
 
+    /***
+     * Checks if the engine is in range to fill and calls the fill method if it is
+     * @param s The Fire Station
+     */
+    public void ifInRangeFill(Station s){
+        if(checkForOverlap(s)){
+            fill();
+        }
     }
 
     public void fire(){
@@ -63,14 +69,14 @@ public class Engine extends Vehicle
 
     /***
      * Checks if any of the corners of the engines range are in the body of the fortress
-     * @param f Fortress that is being checked
+     * @param e Fortress that is being checked
      * @return returns true if there is any overlap, false otherwise
      */
-    public Boolean checkForOverlap(Fortress f){
+    public Boolean checkForOverlap(Entity e){
         for(int i=0; i<2; i++){
             for(int j=2; j<4; j++){
-                if (rangeCorners.get(i) >= f.getCol() && rangeCorners.get(i) < f.getCol() + (f.getWidth()/Tile.TILE_SIZE)
-                        && rangeCorners.get(j) >= f.getRow() && rangeCorners.get(j) < f.getRow() + (f.getHeight()/Tile.TILE_SIZE)){
+                if (rangeCorners.get(i) >= e.getCol() && rangeCorners.get(i) < e.getCol() + (e.getWidth()/Tile.TILE_SIZE)
+                        && rangeCorners.get(j) >= e.getRow() && rangeCorners.get(j) < e.getRow() + (e.getHeight()/Tile.TILE_SIZE)){
                     return true;
                 }
             }
