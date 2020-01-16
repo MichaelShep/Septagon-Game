@@ -85,6 +85,9 @@ public class GameState extends State
     private int counter = 0;
     private boolean hasChangedFortress = false;
 
+    private int changeTurnCounter = 0;
+    private boolean changingTurn = false;
+
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
      * @param inputManager The games input manager that handles all the games input
@@ -195,27 +198,35 @@ public class GameState extends State
 
          */
         this.paused = uiManager.isPaused();
-        if(!paused && playerTurn)
+        //Update the bullets
+        ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
+        for (Bullet bullet : bullets)
+        {
+            float deltaTime = 1 / 60f;
+            bullet.update(deltaTime);
+            if (bullet.remove)
+                bulletToRemove.add(bullet);
+        }
+        bullets.removeAll(bulletToRemove);
+
+        if(changingTurn){
+            changeTurnCounter++;
+            if(changeTurnCounter >= 30){
+                changeTurnCounter = 0;
+                playerTurn = !playerTurn;
+                changingTurn = false;
+            }
+        }
+        else if(!paused && playerTurn)
         {
             //Call the update method for all entities in our game
             entityManager.update();
 
-            //Update the bullets
-            ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
-            for (Bullet bullet : bullets)
-            {
-                float deltaTime = 1 / 60f;
-                bullet.update(deltaTime);
-                if (bullet.remove)
-                    bulletToRemove.add(bullet);
-            }
-            bullets.removeAll(bulletToRemove);
-
             //If all the engines have been moved on the current turn, make it the enemies turn
             if (allEnginesMoved())
             {
-                this.playerTurn = false;
-                BattleTurn();
+                this.changingTurn = true;
+                changeTurnCounter = 0;
             }
 
             //Updates the pointers to the current x and y positions of the camera
@@ -244,20 +255,21 @@ public class GameState extends State
                 stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
             }
         }else if(!paused){
-            System.out.println("Running");
             if(!hasChangedFortress){
                 this.snapToAttacker(fortresses.get(currentFortressIndex));
+                BattleTurn(fortresses.get(currentFortressIndex));
                 hasChangedFortress = true;
-                currentFortressIndex++;
-                if(currentFortressIndex >= fortresses.size()){
-                    playerTurn = true;
-                }
-                counter = 0;
             }else
             {
                 counter++;
                 if(counter >= 180){
                     hasChangedFortress = false;
+                    currentFortressIndex++;
+                    if(currentFortressIndex >= fortresses.size()){
+                        this.snapToAttacker(engines.get(0));
+                        playerTurn = true;
+                    }
+                    counter = 0;
                 }
             }
         }
@@ -421,18 +433,16 @@ public class GameState extends State
     /***
      * Method that is run for the enemies turn
      */
-    public void BattleTurn(){
+    public void BattleTurn(Fortress f){
         //Set the moved variable to false for each engine and then check if damages can occur
         tileManager.resetMovableTiles();
         for (Engine e : engines){
             e.setMoved(false);
-            for (Fortress f: fortresses){
-                e.DamageFortressIfInRange(f);
-                f.DamageEngineIfInRange(e);
-            }
+            e.DamageFortressIfInRange(f);
+            f.DamageEngineIfInRange(e);
 
         }
-        playerTurn = true;
+        //playerTurn = true;
     }
 
     /***

@@ -47,7 +47,7 @@ public class InputManager implements InputProcessor
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
             GameState currentState = (GameState)stateManager.getCurrentState();
-            if(!currentState.isPaused())
+            if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 // ignore if its not left mouse button or first touch pointer
                 if (button != Input.Buttons.LEFT || pointer > 0) return false;
@@ -87,7 +87,7 @@ public class InputManager implements InputProcessor
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
             GameState currentState = (GameState) stateManager.getCurrentState();
-            if(!currentState.isPaused())
+            if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 if (!dragging) return false;
 

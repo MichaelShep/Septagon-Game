@@ -3,6 +3,7 @@ package com.septagon.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -30,6 +31,7 @@ public class MenuState extends State
     private int titleCentreX;
 
     private SpriteBatch menuBatch;
+    private OrthographicCamera menuCamera;
 
     /***
      * Constructor that set initial values for all class member variables
@@ -47,17 +49,21 @@ public class MenuState extends State
         menuPosition = 0;
         backgroundImage = null;
         layout = new GlyphLayout(font, titleLabel);
-        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2);
     }
 
     public void initialise()
     {
         menuBatch = new SpriteBatch();
+        menuCamera = new OrthographicCamera();
+        menuCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        menuCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+        menuCamera.update();
+        menuBatch.setProjectionMatrix(menuCamera.combined);
     }
 
     public void update()
     {
-
+        menuBatch.setProjectionMatrix(menuCamera.combined);
     }
 
     public void render(SpriteBatch batch)
@@ -68,9 +74,10 @@ public class MenuState extends State
         menuBatch.begin();
 
         font.setColor(Color.WHITE);
+        titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2);
         font.draw(menuBatch, titleLabel, titleCentreX, (Gdx.graphics.getHeight()) - 30);
 
-        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
+        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - ((Gdx.graphics.getHeight() / 10) * 2));
         drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
         drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
         drawString(menuBatch, 3, exitLabel,  100, (Gdx.graphics.getHeight()) - 250);
@@ -109,4 +116,5 @@ public class MenuState extends State
     }
 
     public int getMenuPosition() { return menuPosition; }
+    public OrthographicCamera getMenuCamera() { return menuCamera; }
 }

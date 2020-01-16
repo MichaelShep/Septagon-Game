@@ -37,7 +37,7 @@ public class Bullet {
         x += xSPEED * deltaTime * 50000;
         if ((deltaX* (targetX - x) < 0)&&(deltaY* (targetY - y) < 0))
             remove = true;
-        System.out.println(deltaX* (targetX - x));
+        //System.out.println(deltaX* (targetX - x));
     }
 
     public void render (SpriteBatch batch){
