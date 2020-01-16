@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module version="4">
-  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="Septagon-Game" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.0" linkedProjectId=":desktop:test" linkedProjectPath="$MODULE_DIR$/../../../desktop" rootProjectPath="$MODULE_DIR$/../../.." />
-</module>
