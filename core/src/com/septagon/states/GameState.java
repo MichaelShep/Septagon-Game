@@ -165,7 +165,6 @@ public class GameState extends State
 
         //Sets up the camera parameters and moves it to its inital position
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.x = Gdx.graphics.getWidth() / 2 + (getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth();
         camera.update();
 
         //Create objects referring to all tiles in game
@@ -256,8 +255,24 @@ public class GameState extends State
             }
         }else if(!paused){
             if(!hasChangedFortress){
-                this.snapToAttacker(fortresses.get(currentFortressIndex));
-                BattleTurn(fortresses.get(currentFortressIndex));
+                boolean shouldShowFortress = false;
+                Fortress nextFortress = fortresses.get(currentFortressIndex);
+                for(Engine e: engines){
+                    int xPosition = e.getX() + (e.getWidth() / 2) - (Gdx.graphics.getWidth() / 2);
+                    int yPosition = e.getY() + (e.getHeight() / 2) - (Gdx.graphics.getHeight() / 2);
+                    if(nextFortress.getX() >= xPosition && nextFortress.getX() <= xPosition + Gdx.graphics.getWidth() &&
+                    nextFortress.getY() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
+                        shouldShowFortress = true;
+                    }
+                }
+                if(shouldShowFortress)
+                {
+                    this.snapToAttacker(nextFortress);
+                    BattleTurn(nextFortress);
+                }
+                else{
+                    counter = 179;
+                }
                 hasChangedFortress = true;
             }else
             {
@@ -266,6 +281,7 @@ public class GameState extends State
                     hasChangedFortress = false;
                     currentFortressIndex++;
                     if(currentFortressIndex >= fortresses.size()){
+                        currentFortressIndex = 0;
                         this.snapToAttacker(engines.get(0));
                         playerTurn = true;
                     }

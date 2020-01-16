@@ -77,7 +77,7 @@ public class MenuState extends State
         titleCentreX = (int)(Gdx.graphics.getWidth() / 2 - layout.width / 2);
         font.draw(menuBatch, titleLabel, titleCentreX, (Gdx.graphics.getHeight()) - 30);
 
-        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - ((Gdx.graphics.getHeight() / 10) * 2));
+        drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
         drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
         drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
         drawString(menuBatch, 3, exitLabel,  100, (Gdx.graphics.getHeight()) - 250);
@@ -113,6 +113,14 @@ public class MenuState extends State
             return;
 
         this.menuPosition = menuPosition;
+    }
+
+    public void hasResized(float width, float height){
+        menuCamera.viewportWidth = width;
+        menuCamera.viewportHeight = height;
+        menuCamera.position.x = Gdx.graphics.getWidth() / 2;
+        menuCamera.position.y = Gdx.graphics.getHeight() / 2;
+        menuCamera.update();
     }
 
     public int getMenuPosition() { return menuPosition; }

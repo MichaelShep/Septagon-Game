@@ -69,9 +69,7 @@ public class Game extends ApplicationAdapter
 		else if(stateManager.getCurrentState().getID() == State.StateID.MENU)
 		{
 			MenuState state = (MenuState) stateManager.getCurrentState();
-			state.getMenuCamera().viewportWidth = width;
-			state.getMenuCamera().viewportHeight = height;
-			state.getMenuCamera().update();
+			state.hasResized(width, height);
 		}
 		camera.update();
 	}

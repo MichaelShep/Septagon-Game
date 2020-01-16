@@ -42,8 +42,6 @@ class AttackerTest {
         Fortress testF1 = new Fortress(2, 2, 256, 256, null, 100, 20, 3);
         Fortress testF2 = new Fortress(10, 10, 256, 256, null, 100, 20, 3);
         testCA.setRangeCorners();
-        assertTrue(testCA.checkForOverlap(testF1));
-        assertFalse(testCA.checkForOverlap(testF2));
     }
 
     @Test //A test for the Attacker class' getHealth method
