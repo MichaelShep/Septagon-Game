@@ -460,6 +460,9 @@ public class GameState extends State
             if (e.isDead()){
                 engines.remove(e);
             }
+            if (f.isDead()){
+                fortresses.remove(f);
+            }
             e.ifInRangeFill(fireStation);
 
         }
