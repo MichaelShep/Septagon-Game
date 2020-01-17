@@ -79,6 +79,11 @@ public class InputManager implements InputProcessor
                 dragging = true;
             }
         }
+        else if(stateManager.getCurrentState().getID() == State.StateID.MENU){
+            MenuState currentState = (MenuState) stateManager.getCurrentState();
+
+            currentState.checkIfClickedOption(screenX, Gdx.graphics.getHeight() - screenY);
+        }
         return true;
     }
 
@@ -117,12 +122,6 @@ public class InputManager implements InputProcessor
         return true;
     }
 
-	/*@Override public void resize (int width, int height) {
-		// viewport must be updated for it to work properly
-		viewport.update(width, height, true);
-	}*/
-
-
     @Override public boolean keyDown (int keycode)
     {
         if(stateManager.getCurrentState().getID() == State.StateID.MENU)
@@ -142,12 +141,6 @@ public class InputManager implements InputProcessor
                         stateManager.changeState(new GameState(this, font, stateManager, camera));
                         break;
                     case 1:
-                        stateManager.changeState(new HelpState(this, font, stateManager));
-                        break;
-                    case 2:
-                        stateManager.changeState(new SettingsState(this, font, stateManager));
-                        break;
-                    case 3:
                         Gdx.app.exit();
                         break;
                     default:
@@ -172,16 +165,10 @@ public class InputManager implements InputProcessor
                     if(currentState.getUiManager().getPausePosition() == 1){
                         currentState.setPaused(false);
                     }else{
-                        stateManager.changeState(new MenuState(this, font, stateManager));
+                        stateManager.changeState(new MenuState(this, font, stateManager, camera));
                     }
                 }
             }
-/*
-            if(keycode == Input.Keys.SPACE)
-            {
-                currentState.setShouldCreateBullets(true);
-            }
- */
         }
         //Handle input for the game over state
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
@@ -224,4 +211,5 @@ public class InputManager implements InputProcessor
     public boolean isHasBeenTouched() { return hasBeenTouched; }
     public float getXCoord() { return xCoord; }
     public float getYCoord() { return yCoord; }
+    public OrthographicCamera getCamera() { return camera; }
 }

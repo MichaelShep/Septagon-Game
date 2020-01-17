@@ -45,10 +45,9 @@ public class Game extends ApplicationAdapter
 
 		//Intialise all variables with default values
 		stateManager = new StateManager();
-		startState = new MenuState(inputManager, font, stateManager);
-
 		inputManager = new InputManager(camera, stateManager, font, batch);
 		Gdx.input.setInputProcessor(inputManager);
+		startState = new MenuState(inputManager, font, stateManager, camera);
 
 		//Set the current state of the game to be the GameState and 
 		//initialise this state

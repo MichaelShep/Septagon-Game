@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.septagon.game.InputManager;
 
+import java.awt.*;
+
 /*
 Child of the State class that will be used to manage the system when the user is in the menu
  */
@@ -20,8 +22,6 @@ public class MenuState extends State
 
     private String titleLabel;
     private String playLabel;
-    private String helpLabel;
-    private String settingsLabel;
     private String exitLabel;
     private int menuPosition;
 
@@ -33,18 +33,21 @@ public class MenuState extends State
     private SpriteBatch menuBatch;
     private OrthographicCamera menuCamera;
 
+    private Rectangle playBox;
+    private Rectangle exitBox;
+    private OrthographicCamera gameCamera;
+
     /***
      * Constructor that set initial values for all class member variables
      * @param inputManager The games InputManager class so that this class can also handle input
      * @param font The games font so that the class can draw text to the screen
      */
-    public MenuState(InputManager inputManager, BitmapFont font, StateManager stateManager)
+    public MenuState(InputManager inputManager, BitmapFont font, StateManager stateManager, OrthographicCamera camera)
     {
         super(inputManager, font, StateID.MENU, stateManager);
+        this.gameCamera = camera;
         titleLabel = "Kroy - Septagon";
         playLabel = "Play";
-        helpLabel = "Help";
-        settingsLabel = "Settings";
         exitLabel = "Exit";
         menuPosition = 0;
         backgroundImage = null;
@@ -59,6 +62,8 @@ public class MenuState extends State
         menuCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
         menuCamera.update();
         menuBatch.setProjectionMatrix(menuCamera.combined);
+
+        setupRectanglePositions();
     }
 
     public void update()
@@ -78,9 +83,7 @@ public class MenuState extends State
         font.draw(menuBatch, titleLabel, titleCentreX, (Gdx.graphics.getHeight()) - 30);
 
         drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
-        drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
-        drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
-        drawString(menuBatch, 3, exitLabel,  100, (Gdx.graphics.getHeight()) - 250);
+        drawString(menuBatch, 1, exitLabel,  100, (Gdx.graphics.getHeight()) - 150);
 
         menuBatch.end();
     }
@@ -121,6 +124,24 @@ public class MenuState extends State
         menuCamera.position.x = Gdx.graphics.getWidth() / 2;
         menuCamera.position.y = Gdx.graphics.getHeight() / 2;
         menuCamera.update();
+    }
+
+    private void setupRectanglePositions(){
+        playBox = new Rectangle();
+        playBox.setBounds(80, Gdx.graphics.getHeight() - 130, 100, 50);
+
+        exitBox = new Rectangle();
+        exitBox.setBounds(180, Gdx.graphics.getHeight() - 180, 100,50);
+    }
+
+    public void checkIfClickedOption(float x, float y){
+        if(x >= playBox.x && x <= playBox.x + playBox.width){
+            if(y >= playBox.y && y <= playBox.y + playBox.height){
+                stateManager.changeState(new GameState(inputManager, font, stateManager, gameCamera));
+            }else if(y >= exitBox.y && y <= exitBox.y + exitBox.height){
+                Gdx.app.exit();
+            }
+        }
     }
 
     public int getMenuPosition() { return menuPosition; }
