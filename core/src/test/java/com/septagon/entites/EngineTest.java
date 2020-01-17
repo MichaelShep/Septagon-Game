@@ -17,13 +17,15 @@ class EngineTest {
     @BeforeEach //A set up function for the tests
     public void setUp() {
         //Texture testTexture = new Texture(Gdx.files.internal("images/engine1.png"));
-        testE = new Engine(0,0, null, 10, 2, 4, 2, 20, 4, 01);
+        testE = new Engine(1,1, null, 10, 2, 4, 2, 20, 4, 01);
     }
 
     @Test  //A test for the Engine class initialisation
     public void testEngine() throws Exception {
-        assertEquals(testE.x, 0);
-        assertEquals(testE.y, 0);
+        assertEquals(testE.x, 32);
+        assertEquals(testE.y, 32);
+        assertEquals(testE.col, 1);
+        assertEquals(testE.row, 1);
         assertEquals(testE.width, 32);
         assertEquals(testE.height, 32);
         assertEquals(testE.texture, null);
@@ -38,14 +40,14 @@ class EngineTest {
 
     }
 
-    /*@Test //A test for the Engine class' testFill method
-    public void testFill() throws Exception {
+    @Test //A test for the Engine class' ifInRangeFill method
+    public void testIfInRangeFill() throws Exception {
         testE.setVolume(10);
-        testE.fill();
-        assertEquals(testE.getVolume(), 14);
-        testE = new Engine(0,0,null, 10, 2, 4, 2, 20, 4, 01);
-        assertEquals(testE.getVolume(), 20);
-    }*/
+        testE.setRangeCorners();
+        Station testS = new Station(1, 1, 256, 128, null);
+        testE.ifInRangeFill(testS);
+        assertEquals(testE.getVolume(), 10);
+    }
 
     @Test //A test for the Engine class' getMaxVolume method
     public void testGetMaxVolume() throws Exception {
