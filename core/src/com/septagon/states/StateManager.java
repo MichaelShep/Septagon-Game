@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class StateManager 
 {
+    //List that keeps track of all the states that have been seen in the game so far
     private ArrayList<State> states;
     private int currentIndex = 0;
 
@@ -18,22 +19,36 @@ public class StateManager
     {
         states = new ArrayList<State>();
     }
-    
+
+    /**
+     * Intialises the current state of the game
+     */
     public void initialise()
     {
     	states.get(currentIndex).initialise();
     }
-    
+
+    /**
+     * Updates the current state of the game
+     */
     public void update()
     {
     	states.get(currentIndex).update();
     }
-    
+
+    /**
+     * Renders the current state of the game
+     * @param batch The batch that is used for rendering all entities in the game
+     */
     public void render(SpriteBatch batch)
     {
     	states.get(currentIndex).render(batch);
     }
 
+    /**
+     * Changes the current state of the game
+     * @param newState the state that is going to become the current state
+     */
     public void changeState(State newState)
     {
         newState.initialise();
@@ -41,10 +56,7 @@ public class StateManager
     	currentIndex = states.indexOf(newState);
     }
 
-    public void removeState(State stateToRemove)
-    {
-    }
-    
+    //Getters
     public int getCurrentIndex() { return currentIndex; }
     public State getCurrentState() { return states.get(currentIndex); }
 }

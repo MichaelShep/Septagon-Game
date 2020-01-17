@@ -10,6 +10,7 @@ Abstract class that defines what all states within the game should contain
 
 public abstract class State
 {
+    //Enum used to keep track of what type of state each state is
     public enum StateID { GAME_OVER, GAME, HELP, MENU, MINIGAME, SETTINGS };
 
     protected StateID id;
@@ -25,6 +26,7 @@ public abstract class State
         this.stateManager = stateManager;
     }
 
+    //Abstract methods that are used to handle all actions within a state
     public abstract void initialise();
     public abstract void update();
     public abstract void render(SpriteBatch batch);

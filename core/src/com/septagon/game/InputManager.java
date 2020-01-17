@@ -24,6 +24,7 @@ public class InputManager implements InputProcessor
     private BitmapFont font;
     private SpriteBatch batch;
 
+    //Variables that keep track of what input has occurred and where
     private boolean hasBeenTouched = false;
     private float xCoord;
     private float yCoord;
@@ -36,22 +37,33 @@ public class InputManager implements InputProcessor
         this.batch = batch;
     }
 
+    /**
+     * Usused method that is required since we are implementing InputProcessor
+     */
     @Override public boolean mouseMoved (int screenX, int screenY) {
-        // we can also handle mouse movement without anything pressed
-//		camera.unproject(tp.set(screenX, screenY, 0));
         return false;
     }
 
+    /**
+     * Called when the user presses the screen with the mouse
+     * @param screenX The x position of the touch
+     * @param screenY The y position of the touch
+     * @param button The button that the input occurred with
+     * @return
+     */
     @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        //makes sure the current state is the game state then handles what needs to be done on a touch down
+        //checks if the game is in the main game state
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
+            //Cast the currentState to a gameState so that gameState specific methods can be used
             GameState currentState = (GameState)stateManager.getCurrentState();
+
             if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 // ignore if its not left mouse button or first touch pointer
                 if (button != Input.Buttons.LEFT || pointer > 0) return false;
-                //camera.unproject(tp.set(screenX, screenY, 0));
+
+                //Get the positions of the input in terms of screen coords
                 hasBeenTouched = true;
                 xCoord = Gdx.input.getX();
                 yCoord = Gdx.input.getY();
@@ -60,12 +72,11 @@ public class InputManager implements InputProcessor
                 xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
                 yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
 
-                System.out.println(xCoord / Tile.TILE_SIZE + " y: " + yCoord / Tile.TILE_SIZE);
-
+                //Create versions of the input that are kept in terms of screen coords
                 float onScreenXCoord = Gdx.input.getX();
                 float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-
+                //Check if any of the UI elements have been pressed
                 if (currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
                 {
                     currentState.getUiManager().pressedShowStatsButton();
@@ -74,42 +85,58 @@ public class InputManager implements InputProcessor
                 {
                     currentState.getUiManager().pressedMinimiseButton();
                 }
+
+                //call gamestate method that handles when places on the map are pressed
                 currentState.touchedTile(xCoord, yCoord);
 
                 dragging = true;
             }
         }
         else if(stateManager.getCurrentState().getID() == State.StateID.MENU){
+            //Cast the currentState to menuState so menuState specific methods can be used
             MenuState currentState = (MenuState) stateManager.getCurrentState();
 
+            //Call menustate method that processes a mouse press
             currentState.checkIfClickedOption(screenX, Gdx.graphics.getHeight() - screenY);
         }
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
+            //Casts the currentState to a gameOverState so gameOverState specific methods can be used
             GameOverState currentState = (GameOverState) stateManager.getCurrentState();
 
+            //Call gameOverState method that processes a mouse press
             currentState.checkIfButtonPressed(screenX, Gdx.graphics.getHeight() - screenY);
         }
         return true;
     }
 
+    /**
+     * Checks if the user has performed a drag action on the screen
+     * @param screenX The x position of where the drag finished
+     * @param screenY The y position of where the drag finished
+     * @return
+     */
     @Override public boolean touchDragged (int screenX, int screenY, int pointer)
     {
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
+            //Convert currentState to gameState so that gameState specific methods can be used
             GameState currentState = (GameState) stateManager.getCurrentState();
             if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 if (!dragging) return false;
 
+                //Get the positions of where the camera should be moved to
                 float newX = camera.position.x - Gdx.input.getDeltaX();
                 float newY = camera.position.y + Gdx.input.getDeltaY();
 
+                //Check the new positions of the camera are within the screen bounds before performing the translation
                 if (newX >= Gdx.graphics.getWidth() / 2 && newX <= currentState.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2)
                     camera.translate(-Gdx.input.getDeltaX(), 0, 0);
 
                 if (newY >= Gdx.graphics.getHeight() / 2 && newY <= currentState.getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2)
                     camera.translate(0, Gdx.input.getDeltaY(), 0);
 
+                //Refresh the camera
                 camera.update();
                 camera.unproject(tp.set(screenX, screenY, 0));
             }
@@ -117,6 +144,12 @@ public class InputManager implements InputProcessor
         return true;
     }
 
+    /**
+     * Method called when the user releases the mouse button
+     * @param screenX The x position of the input
+     * @param screenY The y position of the input
+     * @param button The mouse button that performed the input
+     */
     @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
@@ -127,18 +160,27 @@ public class InputManager implements InputProcessor
         return true;
     }
 
+    /**
+     * Method calls when the user presses a key on the keyboard
+     * @param keycode The code of the key that is pressed
+     */
     @Override public boolean keyDown (int keycode)
     {
         if(stateManager.getCurrentState().getID() == State.StateID.MENU)
         {
+            //Casts the currentState to a menuState so menuState specific methods can be used
             MenuState currentState = (MenuState) stateManager.getCurrentState();
+
+            //If up or down pressed, move the menuPosition accordingly
             if(keycode == Input.Keys.DOWN)
             {
                 currentState.setMenuPosition(currentState.getMenuPosition() + 1);
             }else if(keycode == Input.Keys.UP)
             {
                 currentState.setMenuPosition(currentState.getMenuPosition() - 1);
-            }else if(keycode == Input.Keys.ENTER)
+            }
+            //If enter pressed, perform action depending on the position of the menu
+            else if(keycode == Input.Keys.ENTER)
             {
                 switch(currentState.getMenuPosition())
                 {
@@ -154,18 +196,22 @@ public class InputManager implements InputProcessor
                 }
             }
         }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
+            //Cast currentState to a gameState so gameState specific methods can be used
             GameState currentState = (GameState) stateManager.getCurrentState();
 
+            //If user presses escape, flip whether the game is paused or not
             if(keycode == Input.Keys.ESCAPE){
                 currentState.setPaused(!currentState.isPaused());
             }
             if(currentState.isPaused()){
+                //If up or down pressed, move pause position accordingly
                 if(keycode == Input.Keys.DOWN && currentState.getUiManager().getPausePosition() == 1){
                     currentState.getUiManager().setPausePosition(2);
                 }else if(keycode == Input.Keys.UP && currentState.getUiManager().getPausePosition() == 2){
                     currentState.getUiManager().setPausePosition(1);
                 }
 
+                //If enter pressed, perform action depending on where in the pause menu the user is
                 if(keycode == Input.Keys.ENTER){
                     if(currentState.getUiManager().getPausePosition() == 1){
                         currentState.setPaused(false);
@@ -175,6 +221,7 @@ public class InputManager implements InputProcessor
                 }
             }
         }
+
         //Handle input for the game over state
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
             //Convert the currentState variable to an instance of GameOverState
@@ -201,6 +248,7 @@ public class InputManager implements InputProcessor
         return true;
     }
 
+    //Unused override methods that are required since we are implementing InputProcessor
     @Override public boolean keyUp (int keycode) {
         return false;
     }
@@ -213,6 +261,7 @@ public class InputManager implements InputProcessor
         return false;
     }
 
+    //Getters
     public boolean isHasBeenTouched() { return hasBeenTouched; }
     public float getXCoord() { return xCoord; }
     public float getYCoord() { return yCoord; }

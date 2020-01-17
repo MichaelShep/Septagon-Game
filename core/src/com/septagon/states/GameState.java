@@ -245,19 +245,20 @@ public class GameState extends State
 
             //Checks if all the players fire engines have been destroyed
             boolean hasLost = true;
-            for (Engine e : engines)
-            {
-                if (e.getHealth() > 0) hasLost = false;
-            }
+            hasLost = checkIfAllEnginesDead();
             if (hasLost)
             {
                 stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
             }
         }else if(!paused){
+            boolean shouldShowFortress = false;
             if(!hasChangedFortress){
-                boolean shouldShowFortress = false;
                 if(currentFortressIndex >= fortresses.size()){
                     currentFortressIndex = 0;
+                    if(checkIfAllEnginesDead()){
+                        stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
+                        return;
+                    }
                     this.snapToAttacker(engines.get(0));
                     tileManager.resetMovableTiles();
                     for(Engine e: engines){
@@ -273,6 +274,11 @@ public class GameState extends State
                     int yPosition = e.getY() + (e.getHeight() / 2) - (Gdx.graphics.getHeight() / 2);
                     if(nextFortress.getX() >= xPosition && nextFortress.getX() <= xPosition + Gdx.graphics.getWidth() &&
                     nextFortress.getY() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
+                        shouldShowFortress = true;
+                    }
+                    else if(nextFortress.getX() + nextFortress.getWidth() >= xPosition && nextFortress.getX() +
+                    nextFortress.getWidth() <= xPosition + Gdx.graphics.getWidth() && nextFortress.getY() +
+                    nextFortress.getHeight() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
                         shouldShowFortress = true;
                     }
                 }
@@ -296,6 +302,13 @@ public class GameState extends State
                 }
             }
         }
+    }
+
+    private boolean checkIfAllEnginesDead(){
+        for(Engine e: engines){
+            if(!e.isDead()) return false;
+        }
+        return true;
     }
 
     private void snapToAttacker(Attacker a){
@@ -450,18 +463,18 @@ public class GameState extends State
     public void BattleTurn(Fortress f){
         //Set the moved variable to false for each engine and then check if damages can occur
         tileManager.resetMovableTiles();
-        for (Engine e : engines){
-            e.setMoved(false);
-            e.DamageFortressIfInRange(f);
-            f.DamageEngineIfInRange(e);
-            if (e.isDead()){
-                engines.remove(e);
+        for (int i = 0; i < engines.size(); i++){
+            engines.get(i).setMoved(false);
+            engines.get(i).DamageFortressIfInRange(f);
+            f.DamageEngineIfInRange(engines.get(i));
+            if (engines.get(i).isDead()){
+                engines.remove(engines.get(i));
+                break;
             }
             if (f.isDead()){
                 fortresses.remove(f);
             }
-            e.ifInRangeFill(fireStation);
-
+            engines.get(i).ifInRangeFill(fireStation);
         }
     }
 

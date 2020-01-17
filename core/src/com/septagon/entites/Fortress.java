@@ -44,6 +44,7 @@ public class Fortress extends Attacker
      * @param e The current engine that is being checked
      */
     public void DamageEngineIfInRange(Engine e) {
+        System.out.println("Checking if should damage engine");
         if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
             e.takeDamage(this.damage);
             GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.getX() + 20, e.getY() + 10, false));

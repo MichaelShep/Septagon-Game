@@ -55,6 +55,7 @@ public class UIManager
     private int pauseRectX, pauseRectY, pauseRectWidth, pauseRectHeight;
     private int pauseTextX, pauseTextY, resumeTextX, resumeTextY, exitTextX, exitTextY;
 
+    //Variables to keep track of the pause state
     private boolean paused = false;
     private int pausePosition = 1;
 
@@ -64,6 +65,9 @@ public class UIManager
         this.font = font;
     }
 
+    /***
+     * Sets up all the variables
+     */
     public void initialise()
     {
         engineStatsRenderer = new ShapeRenderer();
@@ -78,7 +82,6 @@ public class UIManager
         smallFont = generator.generateFont(parameter);
         generator.dispose();
 
-        //Just a temporary fix as cannot work out how to change colours properly yet
         font.setColor(Color.BLUE);
         playerTurnText = new GlyphLayout(font, "Your Turn");
         font.setColor(Color.RED);
@@ -93,19 +96,25 @@ public class UIManager
         speedText = new GlyphLayout(smallFont, "Speed: 0");
         minimiseSymbol = new GlyphLayout(smallFont, "-");
 
+        //Sets up text for the pause menu text
         font.setColor(Color.RED);
         pauseText = new GlyphLayout(font, "Paused");
         font.setColor(Color.WHITE);
         resumeText = new GlyphLayout(font, "Resume");
         exitText = new GlyphLayout(font, "Exit");
 
+        //Sets up positions for all text on the screen
         setupPositions();
     }
 
+    /***
+     * Render method that draws all objects to the screen
+     */
     public void render()
     {
         uiBatch.begin();
 
+        //If not paused, render all UI elements
         if(!paused)
         {
             engineStatsRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -170,6 +179,7 @@ public class UIManager
 
             engineStatsRenderer.end();
         }
+        //If the game is paused, draw the pause menu
         else{
 
             font.draw(uiBatch, pauseText, pauseTextX, pauseTextY);
@@ -179,7 +189,16 @@ public class UIManager
         uiBatch.end();
     }
 
+    /***
+     * Method that is run for each string in the pause menu to set up its colour and position
+     * @param position The position in the menu of the string
+     * @param text The actual string that should be drawn
+     * @param x the x position of the text
+     * @param y the y position of the text
+     * @param layout the layout that is used to store and render the text
+     */
     public void drawPauseString(int position, String text, int x, int y, GlyphLayout layout){
+        //If you are currently on this piece of text, draw it in blue, otherwise in white
         if(position == this.pausePosition){
             font.setColor(Color.BLUE);
             layout.setText(font, text);
@@ -191,6 +210,9 @@ public class UIManager
         font.draw(uiBatch, layout, x, y);
     }
 
+    /***
+     * Sets up positions for all text and UI elements on the screen
+     */
     public void setupPositions()
     {
         //Set up all positions for gui objects
