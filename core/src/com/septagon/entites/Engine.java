@@ -40,17 +40,6 @@ public class Engine extends Vehicle
         this.id = id;
     }
 
-    /***
-     * Method that will be called when the engine is at a station so that it can increase its volume
-     */
-    public void fill()
-    {
-            if (this.volume <= (this.maxVolume - this.fillSpeed)) {
-                this.volume += this.fillSpeed;
-            }else {
-                this.volume = this.maxVolume;
-            }
-    }
 
     /***
      * Checks if the engine is in range to fill and calls the fill method if it is
@@ -58,7 +47,8 @@ public class Engine extends Vehicle
      */
     public void ifInRangeFill(Station s){
         if(checkForOverlap(s)){
-            fill();
+            System.out.println("filling");
+            this.volume = this.maxVolume;
         }
     }
 

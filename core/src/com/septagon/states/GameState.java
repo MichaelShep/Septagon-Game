@@ -456,6 +456,7 @@ public class GameState extends State
             e.setMoved(false);
             e.DamageFortressIfInRange(f);
             f.DamageEngineIfInRange(e);
+            e.ifInRangeFill(fireStation);
 
         }
         //playerTurn = true;
