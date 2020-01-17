@@ -256,6 +256,11 @@ public class GameState extends State
         }else if(!paused){
             if(!hasChangedFortress){
                 boolean shouldShowFortress = false;
+                if(currentFortressIndex >= fortresses.size()){
+                    currentFortressIndex = 0;
+                    this.snapToAttacker(engines.get(0));
+                    playerTurn = true;
+                }
                 Fortress nextFortress = fortresses.get(currentFortressIndex);
                 for(Engine e: engines){
                     int xPosition = e.getX() + (e.getWidth() / 2) - (Gdx.graphics.getWidth() / 2);
@@ -269,22 +274,18 @@ public class GameState extends State
                 {
                     this.snapToAttacker(nextFortress);
                     BattleTurn(nextFortress);
+                    hasChangedFortress = true;
                 }
                 else{
-                    counter = 179;
+                    hasChangedFortress = false;
+                    currentFortressIndex++;
                 }
-                hasChangedFortress = true;
             }else
             {
                 counter++;
                 if(counter >= 180){
                     hasChangedFortress = false;
                     currentFortressIndex++;
-                    if(currentFortressIndex >= fortresses.size()){
-                        currentFortressIndex = 0;
-                        this.snapToAttacker(engines.get(0));
-                        playerTurn = true;
-                    }
                     counter = 0;
                 }
             }
@@ -375,16 +376,6 @@ public class GameState extends State
         }
         return false;
     }
-/*
-    public void createBullets()
-    {
-        // shooting bullet
-        bullets.add(new Bullet(40, 40));
-        System.out.println("Bullet has been created");
-        //shouldCreateBullets = false;
-    }
-
- */
 
     /***
      * Method that will render everything in the game each frame
@@ -452,13 +443,16 @@ public class GameState extends State
     public void BattleTurn(Fortress f){
         //Set the moved variable to false for each engine and then check if damages can occur
         tileManager.resetMovableTiles();
-        for (Engine e : engines){
-            e.setMoved(false);
-            e.DamageFortressIfInRange(f);
-            f.DamageEngineIfInRange(e);
-
+        for (int i = 0; i < engines.size(); i++){
+            engines.get(i).setMoved(false);
+            engines.get(i).DamageFortressIfInRange(f);
+            f.DamageEngineIfInRange(engines.get(i));
+            if(engines.get(i).getHealth() <= 0){
+                engines.get(i).setDestroyed(true);
+                entityManager.removeEntity(engines.get(i));
+                engines.remove(engines.get(i));
+            }
         }
-        //playerTurn = true;
     }
 
     /***
