@@ -16,12 +16,10 @@ Child of the State class that will be used to manage the system when the user is
 
 public class MenuState extends State
 {
-    public static final int NUM_MENU_ITEMS = 4;
+    public static final int NUM_MENU_ITEMS = 2;
 
     private String titleLabel;
     private String playLabel;
-    private String helpLabel;
-    private String settingsLabel;
     private String exitLabel;
     private int menuPosition;
 
@@ -43,8 +41,6 @@ public class MenuState extends State
         super(inputManager, font, StateID.MENU, stateManager);
         titleLabel = "Kroy - Septagon";
         playLabel = "Play";
-        helpLabel = "Help";
-        settingsLabel = "Settings";
         exitLabel = "Exit";
         menuPosition = 0;
         backgroundImage = null;
@@ -78,9 +74,7 @@ public class MenuState extends State
         font.draw(menuBatch, titleLabel, titleCentreX, (Gdx.graphics.getHeight()) - 30);
 
         drawString(menuBatch, 0, playLabel, 100, (Gdx.graphics.getHeight()) - 100);
-        drawString(menuBatch, 1, helpLabel, 100, (Gdx.graphics.getHeight()) - 150);
-        drawString(menuBatch, 2, settingsLabel, 100, (Gdx.graphics.getHeight()) - 200);
-        drawString(menuBatch, 3, exitLabel,  100, (Gdx.graphics.getHeight()) - 250);
+        drawString(menuBatch, 1, exitLabel,  100, (Gdx.graphics.getHeight()) - 150);
 
         menuBatch.end();
     }
