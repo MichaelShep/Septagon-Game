@@ -351,7 +351,7 @@ public class GameState extends State
                 //if an engine has been previously pressed on, check on if a valid move has been pressed
                 //and if so perform that move
                 if (currentEngine != null) {
-                    if (currentlyTouchedTile.isMovable() && !currentEngine.isMoved()) {
+                    if (currentlyTouchedTile.isMovable() && !currentEngine.isMoved() && !currentEngine.isDead()) {
                         currentlyTouchedTile.setOccupied(true);
                         previouslyTouchedTile.setOccupied(false);
                         currentEngine.setX(currentlyTouchedTile.getX());
@@ -424,7 +424,7 @@ public class GameState extends State
      */
     public void renderMovementGrid(){
         //If there is a engine that has been pressed and that engine has not yet moved this turn
-        if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved()) {
+        if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved() && !currentEngine.isDead()) {
             //Draw grid around engine with all the movable spaces
             for(Tile t: tiles) {
                 if (t.isMovable()) {
@@ -443,11 +443,12 @@ public class GameState extends State
             if(!e.isMoved()){
                 return false;
             }
-        } return true;
+        }
+        return true;
     }
 
     /***
-     * Method that is run for the enemies turn
+     * Method that is run for the phase of the game where damage events occur (damage, filling etc) turn
      */
     public void BattleTurn(Fortress f){
         //Set the moved variable to false for each engine and then check if damages can occur
@@ -456,6 +457,9 @@ public class GameState extends State
             e.setMoved(false);
             e.DamageFortressIfInRange(f);
             f.DamageEngineIfInRange(e);
+            if (e.isDead()){
+                engines.remove(e);
+            }
             e.ifInRangeFill(fireStation);
 
         }

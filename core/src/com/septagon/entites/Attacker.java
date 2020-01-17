@@ -85,7 +85,13 @@ public abstract class Attacker extends Entity
 
     //Setters
     public void takeDamage(int damage) {
-        this.health -= damage;
+        if(this.health - damage > 0){
+            this.health -= damage;
+        }else{
+            this.health = 0;
+            this.setDead();
+        }
+
     }
     public void setDamage(int damage) {
         this.damage = damage;

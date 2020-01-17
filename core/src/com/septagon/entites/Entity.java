@@ -17,6 +17,8 @@ public abstract class Entity
     protected int width, height;
     //Creates variables to store the texture of the entity
     protected Texture texture;
+    //boolean value for if the entity is dead
+    protected boolean dead = false;
 
     /***
      * Constructor that sets inital values for class members based on given input
@@ -67,6 +69,9 @@ public abstract class Entity
     public int getHeight(){ return this.height;}
     public Texture getTexture() { return this.texture;}
 
+    public boolean isDead() {
+        return dead;
+    }
 
     //Setters
     public void setX(int x)
@@ -90,4 +95,8 @@ public abstract class Entity
         this.y = row * Tile.TILE_SIZE;
     }
     public void setTexture(Texture texture){ this.texture = texture; }
+
+    public void setDead(){
+        dead = true;
+    }
 }
