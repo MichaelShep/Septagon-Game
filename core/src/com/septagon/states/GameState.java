@@ -256,6 +256,14 @@ public class GameState extends State
         }else if(!paused){
             if(!hasChangedFortress){
                 boolean shouldShowFortress = false;
+                if(currentFortressIndex >= fortresses.size()){
+                    currentFortressIndex = 0;
+                    this.snapToAttacker(engines.get(0));
+                    tileManager.resetMovableTiles();
+                    for(Engine e: engines) e.setMoved(false);
+                    playerTurn = true;
+                    return;
+                }
                 Fortress nextFortress = fortresses.get(currentFortressIndex);
                 for(Engine e: engines){
                     int xPosition = e.getX() + (e.getWidth() / 2) - (Gdx.graphics.getWidth() / 2);
@@ -271,7 +279,8 @@ public class GameState extends State
                     BattleTurn(nextFortress);
                 }
                 else{
-                    counter = 179;
+                    currentFortressIndex++;
+                    hasChangedFortress = false;
                 }
                 hasChangedFortress = true;
             }else
@@ -280,11 +289,6 @@ public class GameState extends State
                 if(counter >= 180){
                     hasChangedFortress = false;
                     currentFortressIndex++;
-                    if(currentFortressIndex >= fortresses.size()){
-                        currentFortressIndex = 0;
-                        this.snapToAttacker(engines.get(0));
-                        playerTurn = true;
-                    }
                     counter = 0;
                 }
             }
@@ -375,16 +379,6 @@ public class GameState extends State
         }
         return false;
     }
-/*
-    public void createBullets()
-    {
-        // shooting bullet
-        bullets.add(new Bullet(40, 40));
-        System.out.println("Bullet has been created");
-        //shouldCreateBullets = false;
-    }
-
- */
 
     /***
      * Method that will render everything in the game each frame

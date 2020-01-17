@@ -84,6 +84,11 @@ public class InputManager implements InputProcessor
 
             currentState.checkIfClickedOption(screenX, Gdx.graphics.getHeight() - screenY);
         }
+        else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
+            GameOverState currentState = (GameOverState) stateManager.getCurrentState();
+
+            currentState.checkIfButtonPressed(screenX, Gdx.graphics.getHeight() - screenY);
+        }
         return true;
     }
 

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.septagon.game.InputManager;
 
+import java.awt.*;
+
 /*
 Child of the State class that will be used to manage the system when the user has reached game over
  */
@@ -29,6 +31,8 @@ public class GameOverState extends State
     private BitmapFont blueFont;
 
     private int position = 1;
+    private Rectangle yesBox;
+    private Rectangle noBox;
 
     public GameOverState(InputManager inputManager, BitmapFont font, StateManager stateManager, boolean didWin)
     {
@@ -74,6 +78,8 @@ public class GameOverState extends State
         yesY = (int)((Gdx.graphics.getHeight() / 2) - 60);
         noX = (int)((Gdx.graphics.getWidth() / 2) - noLabel.width / 2);
         noY = (int)((Gdx.graphics.getHeight() / 2) - 110);
+
+        setupRectangles();
     }
 
     public void update()
@@ -119,12 +125,25 @@ public class GameOverState extends State
         }
     }
 
-    private void quitGame()
-    {
+    private void setupRectangles(){
+        yesX = (int)((Gdx.graphics.getWidth() / 2) - yesLabel.width / 2);
+        yesY = (int)((Gdx.graphics.getHeight() / 2) - 60);
+        noX = (int)((Gdx.graphics.getWidth() / 2) - noLabel.width / 2);
+        noY = (int)((Gdx.graphics.getHeight() / 2) - 110);
+
+        yesBox = new Rectangle();
+        noBox = new Rectangle();
+
+        yesBox.setBounds(yesX - 20, yesY - 20, 100, 30);
+        noBox.setBounds(noX - 20, noY - 20, 100, 30);
     }
 
-    private void playAgain()
-    {
+    public void checkIfButtonPressed(float x, float y){
+        if(x >= yesBox.x && x <= yesBox.x + yesBox.width && y >= yesBox.y && y <= yesBox.y + yesBox.height){
+            System.out.println("YES BUTTON PRESSED");
+        }else if(x >= noBox.x && x <= noBox.x + noBox.width && y >= noBox.y && y <= noBox.y + noBox.height){
+            System.out.println("NO BUTTON PRESSED");
+        }
     }
 
     public int getPosition(){ return position; }
