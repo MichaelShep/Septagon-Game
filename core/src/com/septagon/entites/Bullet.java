@@ -20,9 +20,6 @@ public class Bullet {
         this.targetY = targetY;
         deltaY = this.targetY - this.y;
         deltaX = this.targetX - this.x;
-        //System.out.println("attackerX: " + (attackerX));
-        //System.out.println("targetX: " + (this.targetX));
-        //System.out.println("deltaX: " + (this.targetX - attackerX));
 
         //calculate relative speed in both x and y directions in order to move from attacker to target
         ySPEED = deltaY / (deltaX*deltaX + deltaY*deltaY);
@@ -38,10 +35,8 @@ public class Bullet {
     public void update (float deltaTime) {
         y += this.ySPEED * deltaTime * 25000;
         x += this.xSPEED * deltaTime * 25000;
-        System.out.println("ySPEED: " + ySPEED);
         if ((deltaX* (targetX - x) < 0)&&(deltaY* (targetY - y) < 0))
             remove = true;
-        System.out.println("x: " + this.x);
     }
 
     public void render (SpriteBatch batch){

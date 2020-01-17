@@ -46,6 +46,7 @@ public class Engine extends Vehicle
      * @param s The Fire Station
      */
     public void ifInRangeFill(Station s){
+        System.out.println("Checking if should fill");
         if(checkForOverlap(s)){
             System.out.println("filling");
             this.volume = this.maxVolume;
@@ -81,7 +82,6 @@ public class Engine extends Vehicle
      */
     public void DamageFortressIfInRange(Fortress f){
         this.setRangeCorners();
-        System.out.println(getRangeCorners());
         if(checkForOverlap(f)){
             if (this.volume >= this.damage){
                 this.fire();

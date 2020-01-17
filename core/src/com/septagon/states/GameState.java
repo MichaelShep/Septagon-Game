@@ -260,7 +260,10 @@ public class GameState extends State
                     currentFortressIndex = 0;
                     this.snapToAttacker(engines.get(0));
                     tileManager.resetMovableTiles();
-                    for(Engine e: engines) e.setMoved(false);
+                    for(Engine e: engines){
+                        e.setMoved(false);
+                        e.ifInRangeFill(fireStation);
+                    }
                     playerTurn = true;
                     return;
                 }
@@ -460,7 +463,6 @@ public class GameState extends State
             e.ifInRangeFill(fireStation);
 
         }
-        //playerTurn = true;
     }
 
     /***
