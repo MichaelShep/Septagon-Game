@@ -41,10 +41,14 @@ public class Fortress extends Attacker
      * Method that will be called if an engine is in range of the fortress so that the engine can be damaged
      * @param e The current engine that is being checked
      */
-    public void DamageEngineIfInRange(Engine e){
+    public void DamageEngineIfInRange(Engine e) {
         if (e.getCol() >= this.rangeCorners.get(0) && e.getCol() < this.rangeCorners.get(1) && e.getRow() >= this.rangeCorners.get(2) && e.getRow() < this.rangeCorners.get(3)){
             e.takeDamage(this.damage);
-            GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.x + 20, e.y + 10));
+            System.out.println(GameState.bullets);
+            //GameState.bullets.add(new Bullet(this.x + 150 + 100, this.y + 50, e.x + 20, e.y + 10));
+            GameState.bullets.add(new Bullet(this.x + 150, this.y + 50, e.getX() + 20, e.getY() + 10, false));
+            GameState.bullets.add(new Bullet(this.x + 100, this.y + 25, e.getX() + 20, e.getY() + 10, false));
+            GameState.bullets.add(new Bullet(this.x + 200, this.y + 75, e.getX() + 20, e.getY() + 10, false));
         }
     }
 

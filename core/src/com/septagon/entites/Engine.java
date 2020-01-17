@@ -6,6 +6,7 @@ package com.septagon.entites;
  */
 
 import com.badlogic.gdx.graphics.Texture;
+import com.septagon.states.GameState;
 
 public class Engine extends Vehicle
 {
@@ -95,6 +96,9 @@ public class Engine extends Vehicle
             if (this.volume >= this.damage){
                 this.fire();
                 f.takeDamage(this.damage);
+                GameState.bullets.add(new Bullet(this.x + 20, this.y + 10, f.x + 150, f.y + 50, true));
+                GameState.bullets.add(new Bullet(this.x, this.y, f.x + 150, f.y + 50, true));
+                GameState.bullets.add(new Bullet(this.x + 40, this.y + 20, f.x + 150, f.y + 50, true));
             }
         }
 

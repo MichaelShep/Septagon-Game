@@ -6,38 +6,42 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Bullet {
 
-    //public static final int SPEED = 500;
-    public static double ySPEED = 500;
-    public static double xSPEED = 500;
-    public static Texture texture;
-    private static double deltaY, deltaX;
+    private double ySPEED = 500, xSPEED = 500;
+    public Texture texture;
+    private double deltaY, deltaX;
 
     float x, y, targetX, targetY;
     public boolean remove = false;
     //creates a bullet with attacker and target positions
-    public Bullet (float attackerX, float attackerY, float targetX, float targetY) {
+    public Bullet (float attackerX, float attackerY, float targetX, float targetY, boolean water) {
         this.x = attackerX;
         this.y = attackerY;
         this.targetX = targetX;
         this.targetY = targetY;
-        deltaY = targetY - attackerY;
-        deltaX = targetX - attackerX;
+        deltaY = this.targetY - this.y;
+        deltaX = this.targetX - this.x;
+        //System.out.println("attackerX: " + (attackerX));
+        //System.out.println("targetX: " + (this.targetX));
+        //System.out.println("deltaX: " + (this.targetX - attackerX));
 
         //calculate relative speed in both x and y directions in order to move from attacker to target
         ySPEED = deltaY / (deltaX*deltaX + deltaY*deltaY);
         xSPEED = deltaX / (deltaX*deltaX + deltaY*deltaY);
+
         if (texture == null) {
-            texture = new Texture("bullet.png");
+            if (water == true) texture = new Texture("water.png");
+            else texture = new Texture("gunge.png");
         }
     }
 
     //move bullet appropriately in both directions
     public void update (float deltaTime) {
-        y += ySPEED * deltaTime * 50000;
-        x += xSPEED * deltaTime * 50000;
+        y += this.ySPEED * deltaTime * 25000;
+        x += this.xSPEED * deltaTime * 25000;
+        System.out.println("ySPEED: " + ySPEED);
         if ((deltaX* (targetX - x) < 0)&&(deltaY* (targetY - y) < 0))
             remove = true;
-        //System.out.println(deltaX* (targetX - x));
+        System.out.println("x: " + this.x);
     }
 
     public void render (SpriteBatch batch){
