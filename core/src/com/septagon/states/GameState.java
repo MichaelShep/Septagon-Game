@@ -260,6 +260,7 @@ public class GameState extends State
                     currentFortressIndex = 0;
                     this.snapToAttacker(engines.get(0));
                     playerTurn = true;
+                    return;
                 }
                 Fortress nextFortress = fortresses.get(currentFortressIndex);
                 for(Engine e: engines){
