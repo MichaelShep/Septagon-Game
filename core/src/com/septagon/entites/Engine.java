@@ -34,7 +34,7 @@ public class Engine extends Vehicle
      */
     public Engine(int col, int row, Texture texture, int health, int damage, int range, int speed, int maxVolume, int fillSpeed, Integer id) {
         super(col, row, texture, health, damage, range, speed);
-        this.volume = maxVolume - 30;
+        this.volume = maxVolume;
         this.maxVolume = maxVolume;
         this.fillSpeed = fillSpeed;
         this.id = id;

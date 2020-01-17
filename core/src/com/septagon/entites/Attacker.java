@@ -17,7 +17,6 @@ public abstract class Attacker extends Entity
     protected int maxHealth;
     protected int damage;
     protected int range;
-    protected boolean destroyed = false;
 
     /***
      * Constructor that sets up values based on inputs (also refers to Entity constructor)
@@ -50,11 +49,7 @@ public abstract class Attacker extends Entity
      */
     public void update(){
         super.update();
-        if(health <= 0) {
-            health = 0;
-            if(!destroyed)
-                destroyed = true;
-        }
+        if(health <= 0) health = 0;
     }
 
     protected void setRangeCorners() {
@@ -83,7 +78,6 @@ public abstract class Attacker extends Entity
     public int getMaxHealth() {
         return maxHealth;
     }
-    public boolean getDestroyed() { return destroyed; }
 
     public ArrayList getRangeCorners(){
         return rangeCorners;
@@ -102,7 +96,6 @@ public abstract class Attacker extends Entity
     public void setMaxHealth(int maxHealth){
         this.maxHealth = maxHealth;
     }
-    public void setDestroyed(boolean destroyed) { this.destroyed = destroyed; }
 
     public void setHealth(int health){
         this.health = health;

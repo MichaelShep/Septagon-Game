@@ -29,17 +29,11 @@ public class StatusBarGenerator
 
         //Render the health bar for all entities in the game
         for(Engine e: engines){
-            if(!e.getDestroyed())
-            {
-                renderHealthBarForAttacker(e);
-                renderWaterBarForEngine(e);
-            }
+            renderHealthBarForAttacker(e);
+            renderWaterBarForEngine(e);
         }
         for(Fortress f: fortresses){
-            if(!f.getDestroyed())
-            {
-                renderHealthBarForAttacker(f);
-            }
+            renderHealthBarForAttacker(f);
         }
     }
 

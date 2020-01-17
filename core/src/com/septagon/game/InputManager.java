@@ -24,14 +24,10 @@ public class InputManager implements InputProcessor
     private BitmapFont font;
     private SpriteBatch batch;
 
-    //Variables to keep track of when and where a touch occured on the screen
     private boolean hasBeenTouched = false;
     private float xCoord;
     private float yCoord;
 
-    /**
-     * Constructor to pass all values of neccessary variables to the InputManager
-     */
     public InputManager(OrthographicCamera camera, StateManager stateManager, BitmapFont font, SpriteBatch batch)
     {
         this.camera = camera;
@@ -40,47 +36,36 @@ public class InputManager implements InputProcessor
         this.batch = batch;
     }
 
-    //Unused method that is required since we implementing InputProcessor
-    @Override
-    public boolean mouseMoved(int screenX, int screenY)
-    {
+    @Override public boolean mouseMoved (int screenX, int screenY) {
+        // we can also handle mouse movement without anything pressed
+//		camera.unproject(tp.set(screenX, screenY, 0));
         return false;
     }
 
-    /***
-     * Method that will be called when the user presses with their mouse on the screen
-     * @param screenX The x position of the input
-     * @param screenY The y position of the input
-     * @param pointer
-     * @param button The button on the mouse that was used to perform the input
-     * @return
-     */
     @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        //checks if the currentState is a GameState, and if so performs neccessary operations
+        //makes sure the current state is the game state then handles what needs to be done on a touch down
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
-            //Cast the currentState to a GameState so that GameState specific methods can be used
             GameState currentState = (GameState)stateManager.getCurrentState();
-
             if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 // ignore if its not left mouse button or first touch pointer
                 if (button != Input.Buttons.LEFT || pointer > 0) return false;
-
-                //Get the details of the input
+                //camera.unproject(tp.set(screenX, screenY, 0));
                 hasBeenTouched = true;
                 xCoord = Gdx.input.getX();
                 yCoord = Gdx.input.getY();
 
-                //Convert input coords to world coordinates
+                //Convert input coords to screen coords
                 xCoord = xCoord + camera.position.x - (Gdx.graphics.getWidth() / 2);
                 yCoord = (Gdx.graphics.getHeight() - yCoord) + camera.position.y - (Gdx.graphics.getHeight() / 2);
 
-                //Create version of input variables where they are still in term of screen coords
+                System.out.println(xCoord / Tile.TILE_SIZE + " y: " + yCoord / Tile.TILE_SIZE);
+
                 float onScreenXCoord = Gdx.input.getX();
                 float onScreenYCoord = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-                //Check if the user has pressed any of the UI elements on the screen
+
                 if (currentState.getUiManager().getShowStatsRect().contains(onScreenXCoord, onScreenYCoord))
                 {
                     currentState.getUiManager().pressedShowStatsButton();
@@ -89,45 +74,32 @@ public class InputManager implements InputProcessor
                 {
                     currentState.getUiManager().pressedMinimiseButton();
                 }
-
-                //Call gameState method that handles a press on the gameMap with the x and y positions
                 currentState.touchedTile(xCoord, yCoord);
+
                 dragging = true;
             }
         }
         return true;
     }
 
-    /**
-     * Check whether the user has performed a dragging action on the screen
-     * @param screenX The x position of the input
-     * @param screenY The y position of the input
-     * @param pointer
-     * @return
-     */
     @Override public boolean touchDragged (int screenX, int screenY, int pointer)
     {
-        //Check if the currentState is the gameState
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
-            //Cast the currentState to a GameState so GameState specific methods can be used
             GameState currentState = (GameState) stateManager.getCurrentState();
             if(!currentState.isPaused() && currentState.isPlayerTurn())
             {
                 if (!dragging) return false;
 
-                //Get the position of where the camera should move to on the map
                 float newX = camera.position.x - Gdx.input.getDeltaX();
                 float newY = camera.position.y + Gdx.input.getDeltaY();
 
-                //Check that the movement is within the bounds of the map before moving the camera
                 if (newX >= Gdx.graphics.getWidth() / 2 && newX <= currentState.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2)
                     camera.translate(-Gdx.input.getDeltaX(), 0, 0);
 
                 if (newY >= Gdx.graphics.getHeight() / 2 && newY <= currentState.getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2)
                     camera.translate(0, Gdx.input.getDeltaY(), 0);
 
-                //Update position of the camera
                 camera.update();
                 camera.unproject(tp.set(screenX, screenY, 0));
             }
@@ -135,16 +107,7 @@ public class InputManager implements InputProcessor
         return true;
     }
 
-    /***
-     * Checks if the user has let go of an input button
-     * @param screenX The x position of the input
-     * @param screenY The y position of the input
-     * @param pointer
-     * @param button Which button the input was performed with
-     * @return
-     */
     @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-        //Checks if the currentState is a GameState
         if(stateManager.getCurrentState().getID() == State.StateID.GAME)
         {
             if (button != Input.Buttons.LEFT || pointer > 0) return false;
@@ -154,30 +117,24 @@ public class InputManager implements InputProcessor
         return true;
     }
 
-    /***
-     * Method that checks whether the user has pressed a key on the keyboard
-     * @param keycode The code of which key was pressed
-     * @return
-     */
+	/*@Override public void resize (int width, int height) {
+		// viewport must be updated for it to work properly
+		viewport.update(width, height, true);
+	}*/
+
+
     @Override public boolean keyDown (int keycode)
     {
-        //Checks if the currentState is a menuState
         if(stateManager.getCurrentState().getID() == State.StateID.MENU)
         {
-            //Casts the currentState to a menuState so MenuState specific operations can be performed
             MenuState currentState = (MenuState) stateManager.getCurrentState();
-
-            //Check whether the user is moving around in the menu
             if(keycode == Input.Keys.DOWN)
             {
                 currentState.setMenuPosition(currentState.getMenuPosition() + 1);
             }else if(keycode == Input.Keys.UP)
             {
                 currentState.setMenuPosition(currentState.getMenuPosition() - 1);
-            }
-
-            //Checks whether the user has pressed enter, if so will perform action based on where user is in menu
-            else if(keycode == Input.Keys.ENTER)
+            }else if(keycode == Input.Keys.ENTER)
             {
                 switch(currentState.getMenuPosition())
                 {
@@ -185,6 +142,12 @@ public class InputManager implements InputProcessor
                         stateManager.changeState(new GameState(this, font, stateManager, camera));
                         break;
                     case 1:
+                        stateManager.changeState(new HelpState(this, font, stateManager));
+                        break;
+                    case 2:
+                        stateManager.changeState(new SettingsState(this, font, stateManager));
+                        break;
+                    case 3:
                         Gdx.app.exit();
                         break;
                     default:
@@ -192,17 +155,12 @@ public class InputManager implements InputProcessor
                         break;
                 }
             }
-        }
-        //If the user is in the gameState
-        else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
-            //Cast the currentState to a GameState so gamestate specific methods can be used
+        }else if(stateManager.getCurrentState().getID() == State.StateID.GAME){
             GameState currentState = (GameState) stateManager.getCurrentState();
 
-            //If the user presses escape, invert whether the game is paused or not
             if(keycode == Input.Keys.ESCAPE){
                 currentState.setPaused(!currentState.isPaused());
             }
-            //If the user is paused, check wether they are moving through the menu or pressing on an option
             if(currentState.isPaused()){
                 if(keycode == Input.Keys.DOWN && currentState.getUiManager().getPausePosition() == 1){
                     currentState.getUiManager().setPausePosition(2);
@@ -218,8 +176,13 @@ public class InputManager implements InputProcessor
                     }
                 }
             }
+/*
+            if(keycode == Input.Keys.SPACE)
+            {
+                currentState.setShouldCreateBullets(true);
+            }
+ */
         }
-
         //Handle input for the game over state
         else if(stateManager.getCurrentState().getID() == State.StateID.GAME_OVER){
             //Convert the currentState variable to an instance of GameOverState
@@ -246,7 +209,6 @@ public class InputManager implements InputProcessor
         return true;
     }
 
-    //Unused methods that are required since we are overriding InputManager
     @Override public boolean keyUp (int keycode) {
         return false;
     }
@@ -259,7 +221,6 @@ public class InputManager implements InputProcessor
         return false;
     }
 
-    //Getters
     public boolean isHasBeenTouched() { return hasBeenTouched; }
     public float getXCoord() { return xCoord; }
     public float getYCoord() { return yCoord; }
