@@ -60,7 +60,7 @@ public class Fortress extends Attacker
     public void render(SpriteBatch batch)
     {
         //If the fortress is pressed, show its boundary image
-        if(selected)
+        if(selected && !dead)
         {
             batch.draw(AssetManager.getFortressBoundaryImage(), (col - this.getRange()) * Tile.TILE_SIZE, (row - this.getRange()) * Tile.TILE_SIZE,
                     (((int)width / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE, (((int)height / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE);
@@ -69,7 +69,7 @@ public class Fortress extends Attacker
     }
 
     //Getters
-    public boolean isSelected() {return selected; }
+    public boolean isSelected() { return selected; }
 
     //Setters
     public void setSelected(boolean selected) { this.selected = selected; }
