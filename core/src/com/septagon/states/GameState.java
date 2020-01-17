@@ -114,9 +114,9 @@ public class GameState extends State
         //Initialises all engines, fortress and stations in the game
         engine1 = new Engine(0,0, AssetManager.getEngineTexture1(), 100, 15, 4, 3, 60, 4, 01);
         engine2 = new Engine(0,0, AssetManager.getEngineTexture2(), 100, 10, 4, 4, 40, 4, 02);
-        fortressFire = new Fortress(4, 10, 256, 256, AssetManager.getFortressFireTexture(), 100, 20, 3);
-        fortressMinister = new Fortress(11, 41, 256, 256, AssetManager.getFortressMinisterTexture(), 100, 20, 3);
-        fortressStation = new Fortress(31, 30, 256, 256, AssetManager.getFortressStationTexture(), 100, 20, 3);
+        fortressFire = new Fortress(4, 10, 256, 256, AssetManager.getFortressFireTexture(), AssetManager.getDefeatedFireTexture(), 100, 20, 3);
+        fortressMinister = new Fortress(11, 41, 256, 256, AssetManager.getFortressMinisterTexture(), AssetManager.getDefeatedMinsterTexture(), 100, 20, 3);
+        fortressStation = new Fortress(31, 30, 256, 256, AssetManager.getFortressStationTexture(), AssetManager.getDefeatedStationTexture(), 100, 20, 3);
         fireStation = new Station(42, 6, 256, 128, AssetManager.getFireStationTexture());
 
         //Adds all the fortresses to the ArrayList of fortresses

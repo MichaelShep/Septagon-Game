@@ -17,13 +17,15 @@ public class Fortress extends Attacker
 {
     //Stores if an engine is currently active/pressed on
     private boolean selected = false;
+    private Texture defeatedTexture;
 
     /***
      * Constructor that calls the Entity constructor to set up all the member variables
      */
-    public Fortress(int col, int row, int width, int height, Texture texture, int health, int damage, int range)
+    public Fortress(int col, int row, int width, int height, Texture texture, Texture defeatedTexture, int health, int damage, int range)
     {
         super(col,row, width, height, texture, health, damage, range);
+        this.defeatedTexture = defeatedTexture;
     }
 
 
@@ -64,7 +66,11 @@ public class Fortress extends Attacker
         {
             batch.draw(AssetManager.getFortressBoundaryImage(), (col - this.getRange()) * Tile.TILE_SIZE, (row - this.getRange()) * Tile.TILE_SIZE,
                     (((int)width / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE, (((int)height / Tile.TILE_SIZE) + range * 2) * Tile.TILE_SIZE);
-        }
+        }else if(dead){
+            this.texture = this.defeatedTexture;
+    }
+
+
         super.render(batch);
     }
 
