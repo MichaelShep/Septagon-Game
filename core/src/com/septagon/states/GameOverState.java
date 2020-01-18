@@ -163,9 +163,9 @@ public class GameOverState extends State
      */
     public void checkIfButtonPressed(float x, float y){
         if(x >= yesBox.x && x <= yesBox.x + yesBox.width && y >= yesBox.y && y <= yesBox.y + yesBox.height){
-            System.out.println("YES BUTTON PRESSED");
+            stateManager.changeState(new GameState(inputManager, font, stateManager, inputManager.getCamera()));
         }else if(x >= noBox.x && x <= noBox.x + noBox.width && y >= noBox.y && y <= noBox.y + noBox.height){
-            System.out.println("NO BUTTON PRESSED");
+            Gdx.app.exit();
         }
     }
 
