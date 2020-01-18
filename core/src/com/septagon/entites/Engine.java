@@ -37,9 +37,10 @@ public class Engine extends Vehicle
      */
     public void ifInRangeFill(Station s){
         System.out.println("Checking if should fill");
-        if(checkForOverlap(s)){
+        if(this.col <= s.getCol() + s.getWidth()/Tile.TILE_SIZE && this.col > s.getCol() && this.row >= s.getRow()-5 && this.row <= s.getRow()-1){
             System.out.println("filling");
             this.volume = this.maxVolume;
+            this.health = this.maxHealth;
         }
     }
 
@@ -53,8 +54,8 @@ public class Engine extends Vehicle
 
 
     /***
-     * Checks if any of the corners of the engines range are in the body of the fortress
-     * @param e Fortress that is being checked
+     * Checks if any of the corners of the engines range are in the body of the fortress or station
+     * @param e Entity that is being checked
      * @return returns true if there is any overlap, false otherwise
      */
     public Boolean checkForOverlap(Entity e){
