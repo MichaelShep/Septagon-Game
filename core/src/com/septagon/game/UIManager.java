@@ -81,6 +81,7 @@ public class UIManager
         parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:-";
         smallFont = generator.generateFont(parameter);
         generator.dispose();
+        smallFont.getData().setScale(Gdx.graphics.getWidth() / GameState.VP_WIDTH, Gdx.graphics.getHeight() / GameState.VP_HEIGHT);
 
         font.setColor(Color.BLUE);
         playerTurnText = new GlyphLayout(font, "Your Turn");
@@ -226,15 +227,15 @@ public class UIManager
         showRectWidth = Gdx.graphics.getWidth() / 5;
         showRectHeight = Gdx.graphics.getHeight() / 16;
 
-        statsRectX = Gdx.graphics.getWidth() - 200;
-        statsRectY = 200;
-        statsRectWidth = 180;
-        statsRectHeight = 250;
+        statsRectX = Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4) - 20;
+        statsRectY = (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 2) - 50);
+        statsRectWidth = Gdx.graphics.getWidth() / 4;
+        statsRectHeight = Gdx.graphics.getHeight() / 2;
 
-        minimiseX = statsRectX + statsRectWidth - 20;
-        minimiseY = statsRectY + statsRectHeight - 20;
         minimiseWidth = Gdx.graphics.getWidth() / 32;
         minimiseHeight = Gdx.graphics.getHeight() / 24;
+        minimiseX = statsRectX + statsRectWidth - minimiseWidth;
+        minimiseY = statsRectY + statsRectHeight - minimiseHeight;
 
         pauseRectWidth = Gdx.graphics.getWidth() / 4;
         pauseRectHeight = Gdx.graphics.getHeight() / 2;
@@ -316,8 +317,8 @@ public class UIManager
 
     public Rectangle getMinimiseRect()
     {
-        return new Rectangle(getShowStatsRect().x + getShowStatsRect().width - 20,
-                getShowStatsRect().y + getShowStatsRect().height - 20,
+        return new Rectangle(getShowStatsRect().x + getShowStatsRect().width - (Gdx.graphics.getWidth() / 32),
+                getShowStatsRect().y + getShowStatsRect().height - (Gdx.graphics.getHeight() / 24),
                 Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight() / 24);
     }
 }

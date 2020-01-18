@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.septagon.entites.*;
 import com.septagon.game.InputManager;
@@ -114,8 +115,8 @@ public class GameState extends State
     public void initialise()
     {
         //Initialises all engines, fortress and stations in the game
-        engine1 = new Engine(0,0, AssetManager.getEngineTexture1(), 100, 15, 4, 20, 60, 4, 01);
-        engine2 = new Engine(0,0, AssetManager.getEngineTexture2(), 100, 10, 4, 10, 40, 4, 02);
+        engine1 = new Engine(0,0, AssetManager.getEngineTexture1(), 100, 15, 4, 6, 100, 4, 01);
+        engine2 = new Engine(0,0, AssetManager.getEngineTexture2(), 100, 10, 4, 8, 100, 4, 02);
         fortressFire = new Fortress(4, 10, 256, 256, AssetManager.getFortressFireTexture(), AssetManager.getDefeatedFireTexture(), 100, 20, 3);
         fortressMinister = new Fortress(11, 41, 256, 256, AssetManager.getFortressMinisterTexture(), AssetManager.getDefeatedMinsterTexture(), 100, 20, 3);
         fortressStation = new Fortress(31, 30, 256, 256, AssetManager.getFortressStationTexture(), AssetManager.getDefeatedStationTexture(), 100, 20, 3);
@@ -137,6 +138,8 @@ public class GameState extends State
         engines = new ArrayList<Engine>();
         engines.add(engine1);
         engines.add(engine2);
+
+        font.getData().setScale(Gdx.graphics.getWidth() / VP_WIDTH, Gdx.graphics.getHeight() / VP_HEIGHT);
 
         //Adds all the entities to the entity manager so all their updating and rendering can be handled
         entityManager = new EntityManager();
@@ -387,6 +390,8 @@ public class GameState extends State
         if(camera.position.y >= getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2){
             camera.position.x = getMapHeight() * Tile.TILE_SIZE - Gdx.graphics.getHeight() / 2;
         }
+
+        //uiManager.setupPositions();
     }
 
     //Getters and setters
