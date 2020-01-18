@@ -88,7 +88,7 @@ public class InputManager implements InputProcessor
                 }
 
                 //call gamestate method that handles when places on the map are pressed
-                currentState.touchedTile(xCoord, yCoord);
+                currentState.getAttackerManager().touchedTile(xCoord, yCoord);
 
                 dragging = true;
             }

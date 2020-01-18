@@ -10,6 +10,7 @@ import com.septagon.entites.*;
 import com.septagon.game.InputManager;
 import com.septagon.game.UIManager;
 import com.septagon.helperClasses.AssetManager;
+import com.septagon.helperClasses.AttackerManager;
 import com.septagon.helperClasses.StatusBarGenerator;
 import com.septagon.helperClasses.TileManager;
 
@@ -67,9 +68,6 @@ public class GameState extends State
 
     //These are used to help manage the input of the user when clicking our objects
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private Tile currentlyTouchedTile = null;
-    private Tile previouslyTouchedTile = null;
-    private Engine currentEngine = null;
 
     //Creates instance of class that controls all the ui elements that stay on the screen
     private UIManager uiManager;
@@ -89,6 +87,8 @@ public class GameState extends State
     //Adds a slight delay between switching turns so that it doesn't just happen straight away
     private int changeTurnCounter = 0;
     private boolean changingTurn = false;
+
+    private AttackerManager attackerManager;
 
     /***
      * Constructor that sets inital values for all variables and gets values of variables that are used throughout full program
@@ -185,6 +185,9 @@ public class GameState extends State
         //Sets up all the occupied tiles on the map so they cannot be moved to
         tileManager = new TileManager(engines, tiles);
         tileManager.setOccupiedTiles(gameMap);
+
+        //Initialise the AttackerManager
+        attackerManager = new AttackerManager(engines, tiles, fortresses, this);
     }
 
     /***
@@ -231,7 +234,7 @@ public class GameState extends State
         entityManager.update();
 
         //If all the engines have been moved on the current turn, make it the enemies turn
-        if (allEnginesMoved())
+        if (attackerManager.allEnginesMoved())
         {
             this.changingTurn = true;
             changeTurnCounter = 0;
@@ -254,7 +257,7 @@ public class GameState extends State
 
         //Checks if all the players fire engines have been destroyed
         boolean hasLost = true;
-        hasLost = checkIfAllEnginesDead();
+        hasLost = attackerManager.checkIfAllEnginesDead();
         if (hasLost)
         {
             stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
@@ -273,11 +276,11 @@ public class GameState extends State
             if(currentFortressIndex >= fortresses.size()){
                 currentFortressIndex = 0;
                 //If the fortresses have destroyed all engines, finish the game
-                if(checkIfAllEnginesDead()){
+                if(attackerManager.checkIfAllEnginesDead()){
                     stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
                     return;
                 }
-                this.snapToAttacker(engines.get(0));
+                attackerManager.snapToAttacker(engines.get(0), gameMap, camera);
                 tileManager.resetMovableTiles();
                 for(Engine e: engines){
                     e.setMoved(false);
@@ -306,8 +309,8 @@ public class GameState extends State
             //If there is an engine near the fortress, show it and perform the fortresses attack
             if(shouldShowFortress)
             {
-                this.snapToAttacker(nextFortress);
-                BattleTurn(nextFortress);
+                attackerManager.snapToAttacker(nextFortress, gameMap, camera);
+                attackerManager.BattleTurn(nextFortress);
             }
             else{
                 currentFortressIndex++;
@@ -325,107 +328,6 @@ public class GameState extends State
                 counter = 0;
             }
         }
-    }
-
-    /**
-     * Method that works out is all the engines have been destroyed by the fortresses
-     * @return Returns true if all engines are destroyed, false otherwise
-     */
-    private boolean checkIfAllEnginesDead(){
-        for(Engine e: engines){
-            if(!e.isDead()) return false;
-        }
-        return true;
-    }
-
-    /**
-     * Method that will move the camera position to one of the attackers
-     * @param a The attacker which the camera should be moved to
-     */
-    private void snapToAttacker(Attacker a){
-        //Get the positions of where the camera should move to
-        int newCameraX = a.getX() + (a.getWidth() / 2);
-        int newCameraY = a.getY() + (a.getHeight() / 2);
-
-        //Make sure the new camera position is within the bounds of the screen
-        if(newCameraX <= Gdx.graphics.getWidth() / 2)
-            newCameraX = Gdx.graphics.getWidth() / 2;
-        else if(newCameraX >= (gameMap.getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth() / 2)
-            newCameraX = (gameMap.getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth() / 2;
-
-        if(newCameraY <= Gdx.graphics.getHeight() / 2)
-            newCameraY = Gdx.graphics.getHeight() / 2;
-        else if(newCameraY >= (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2)
-            newCameraY = (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2;
-
-        //Move the camera to its new position
-        camera.position.x = newCameraX;
-        camera.position.y = newCameraY;
-        camera.update();
-    }
-
-    /***
-     * Check if the user has pressed on a fortress and display a bounding box if they have
-     * @param x The x position of the input - in world coordinates
-     * @param y The y position of the input - in world coordinates
-     */
-    public void checkIfTouchingFortress(float x, float y)
-    {
-        //Loops through all fortresses to check if any have been pressed
-        for(Fortress f: fortresses)
-        {
-            //If the clicked on tile is within the bounds of the fortress make it selected, if not make not selected
-            if(x >= f.getX() && x <= f.getX() + f.getWidth() &&
-                    y >= f.getY() && y <= f.getY() + f.getHeight()) {
-                f.setSelected(true);
-            }
-            else {
-                f.setSelected(false);
-            }
-        }
-    }
-
-    /***
-     * Called when the InputManager detects an input and is used to work out what tile was pressed and what should occur as a result
-     * @param x X position of the input
-     * @param y Y position of the input
-     * @return boolean that will say if a tile has been pressed or not (true if it has been pressed)
-     */
-    public Boolean touchedTile(float x, float y)
-    {
-        //Loops through all tiles to see if it has been pressed
-        for(Tile t: tiles) {
-            //When we have found the tile that has been pressed, perform neccessary processing
-            if(t.checkIfClickedInside(x, y)) {
-                //updated the pointers to the current and previous tiles
-                previouslyTouchedTile = currentlyTouchedTile;
-                currentlyTouchedTile = t;
-                //if an engine has been previously pressed on, check on if a valid move has been pressed
-                //and if so perform that move
-                if (currentEngine != null) {
-                    if (currentlyTouchedTile.isMovable() && !currentEngine.isMoved() && !currentEngine.isDead()) {
-                        currentlyTouchedTile.setOccupied(true);
-                        previouslyTouchedTile.setOccupied(false);
-                        currentEngine.setX(currentlyTouchedTile.getX());
-                        currentEngine.setY(currentlyTouchedTile.getY());
-                        currentEngine.setMoved(true);
-                        break;
-                    }
-                }
-
-                //If not a moveable tile pressed, check if a fortress tile has been pressed
-                checkIfTouchingFortress(x, y);
-                for (Engine e: engines){
-                    if (t.getCol() == e.getCol() && t.getRow() == e.getRow()) {
-                        currentEngine = e;
-                        uiManager.setCurrentEngine(e);
-                        tileManager.setMovableTiles(currentEngine);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /***
@@ -449,7 +351,7 @@ public class GameState extends State
 
         //Renderers the movement grid for the currently touched engine
         if (inputManager.isHasBeenTouched() && this.playerTurn){
-            this.renderMovementGrid();
+            attackerManager.renderMovementGrid(objectBatch);
         }
 
         //Ends the drawing of all the objects for the current frame
@@ -459,55 +361,6 @@ public class GameState extends State
 
         //renders all the ui elements
         uiManager.render();
-    }
-
-    /***
-     * Renders a grid showing the player where the engine that they have pressed on can move to
-     */
-    public void renderMovementGrid(){
-        //If there is a engine that has been pressed and that engine has not yet moved this turn
-        if(currentlyTouchedTile != null && currentEngine != null && !currentEngine.isMoved() && !currentEngine.isDead()) {
-            //Draw grid around engine with all the movable spaces
-            for(Tile t: tiles) {
-                if (t.isMovable()) {
-                    objectBatch.draw(AssetManager.getMoveSpaceTexture(), t.getX(), t.getY(), Tile.TILE_SIZE, Tile.TILE_SIZE);
-                }
-            }
-        }
-    }
-
-    /***
-     * Checks if all engines have been moved or not so that the game knows when to end the players turn
-     * @return boolean of whether all the engines have been moved or not
-     */
-    public boolean allEnginesMoved(){
-        for(Engine e : engines){
-            if(!e.isMoved()){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /***
-     * Method that is run for the phase of the game where damage events occur (damage, filling etc) turn
-     */
-    public void BattleTurn(Fortress f){
-        //Set the moved variable to false for each engine and then check if damages can occur
-        tileManager.resetMovableTiles();
-        for (int i = 0; i < engines.size(); i++){
-            engines.get(i).setMoved(false);
-            engines.get(i).DamageFortressIfInRange(f);
-            f.DamageEngineIfInRange(engines.get(i));
-            if (engines.get(i).isDead()){
-                engines.remove(engines.get(i));
-                break;
-            }
-            if (f.isDead()){
-                fortresses.remove(f);
-            }
-            engines.get(i).ifInRangeFill(fireStation);
-        }
     }
 
     //Unused method that is required since this is a child of State
@@ -556,6 +409,18 @@ public class GameState extends State
     public UIManager getUiManager()
     {
         return uiManager;
+    }
+
+    public TileManager getTileManager(){
+        return tileManager;
+    }
+
+    public AttackerManager getAttackerManager(){
+        return attackerManager;
+    }
+
+    public Station getStation(){
+        return fireStation;
     }
 
     public boolean isPlayerTurn()

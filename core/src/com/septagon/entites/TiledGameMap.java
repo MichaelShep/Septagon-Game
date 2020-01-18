@@ -24,7 +24,7 @@ public class TiledGameMap
 	 */
 	public TiledGameMap()
 	{
-		tiledMap = new TmxMapLoader().load("FirstMap.tmx");
+		tiledMap = new TmxMapLoader().load("FinalMap.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 	}
 
