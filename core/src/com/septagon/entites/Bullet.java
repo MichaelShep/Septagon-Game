@@ -1,5 +1,9 @@
 package com.septagon.entites;
 
+/**
+ * Class that is used to create animations when the engines and fortresses are attacking each other
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,9 +13,9 @@ public class Bullet {
     private double ySPEED = 500, xSPEED = 500;
     public Texture texture;
     private double deltaY, deltaX;
-
     float x, y, targetX, targetY;
     public boolean remove = false;
+
     //creates a bullet with attacker and target positions
     public Bullet (float attackerX, float attackerY, float targetX, float targetY, boolean water) {
         this.x = attackerX;
@@ -31,7 +35,9 @@ public class Bullet {
         }
     }
 
-    //move bullet appropriately in both directions
+    /**
+     * Move bullets in required directions
+     */
     public void update (float deltaTime) {
         y += this.ySPEED * deltaTime * 25000;
         x += this.xSPEED * deltaTime * 25000;
@@ -39,6 +45,10 @@ public class Bullet {
             remove = true;
     }
 
+    /**
+     * Draws the bullet to the screen
+     * @param batch The batch which is used for drawing objects to the screen
+     */
     public void render (SpriteBatch batch){
         batch.draw(texture, x, y);
     }

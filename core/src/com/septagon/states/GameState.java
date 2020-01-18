@@ -81,10 +81,12 @@ public class GameState extends State
     private StatusBarGenerator statusBarGenerator;
     private TileManager tileManager;
 
+    //Used to keep track of which fortress to move to when it is the enemies turn
     private int currentFortressIndex = 0;
     private int counter = 0;
     private boolean hasChangedFortress = false;
 
+    //Adds a slight delay between switching turns so that it doesn't just happen straight away
     private int changeTurnCounter = 0;
     private boolean changingTurn = false;
 
@@ -190,12 +192,6 @@ public class GameState extends State
      */
     public void update()
     {
-        /*        if(shouldCreateBullets)
-        {
-            this.createBullets(44,44);
-        }
-
-         */
         this.paused = uiManager.isPaused();
         //Update the bullets
         ArrayList<Bullet> bulletToRemove = new ArrayList<Bullet>();
@@ -208,6 +204,7 @@ public class GameState extends State
         }
         bullets.removeAll(bulletToRemove);
 
+        //If we are in the process of waiting to change turn, just wait until the timer says we swap turns
         if(changingTurn){
             changeTurnCounter++;
             if(changeTurnCounter >= 30){
@@ -218,92 +215,122 @@ public class GameState extends State
         }
         else if(!paused && playerTurn)
         {
-            //Call the update method for all entities in our game
-            entityManager.update();
+            playerTurnUpdate();
+        //If it is the enemies turn
+        }else if(!paused)
+        {
+            enemyTurnUpdate();
+        }
+    }
 
-            //If all the engines have been moved on the current turn, make it the enemies turn
-            if (allEnginesMoved())
-            {
-                this.changingTurn = true;
-                changeTurnCounter = 0;
-            }
+    /**
+     * Method that handles all of the updating for the player turn
+     */
+    private void playerTurnUpdate(){
+        //Call the update method for all entities in our game
+        entityManager.update();
 
-            //Updates the pointers to the current x and y positions of the camera
-            currentCameraX = camera.position.x;
-            currentCameraY = camera.position.y;
+        //If all the engines have been moved on the current turn, make it the enemies turn
+        if (allEnginesMoved())
+        {
+            this.changingTurn = true;
+            changeTurnCounter = 0;
+        }
 
-            //Checks if the player has destroyed all the fortresses
-            boolean hasWon = true;
-            for (Fortress f : fortresses)
-            {
-                if (f.getHealth() > 0) hasWon = false;
-            }
-            if (hasWon)
-            {
-                stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
-            }
+        //Updates the pointers to the current x and y positions of the camera
+        currentCameraX = camera.position.x;
+        currentCameraY = camera.position.y;
 
-            //Checks if all the players fire engines have been destroyed
-            boolean hasLost = true;
-            hasLost = checkIfAllEnginesDead();
-            if (hasLost)
-            {
-                stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
-            }
-        }else if(!paused){
-            boolean shouldShowFortress = false;
-            if(!hasChangedFortress){
-                if(currentFortressIndex >= fortresses.size()){
-                    currentFortressIndex = 0;
-                    if(checkIfAllEnginesDead()){
-                        stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
-                        return;
-                    }
-                    this.snapToAttacker(engines.get(0));
-                    tileManager.resetMovableTiles();
-                    for(Engine e: engines){
-                        e.setMoved(false);
-                        e.ifInRangeFill(fireStation);
-                    }
-                    playerTurn = true;
+        //Checks if the player has destroyed all the fortresses
+        boolean hasWon = true;
+        for (Fortress f : fortresses)
+        {
+            if (f.getHealth() > 0) hasWon = false;
+        }
+        if (hasWon)
+        {
+            stateManager.changeState(new GameOverState(inputManager, font, stateManager, true));
+        }
+
+        //Checks if all the players fire engines have been destroyed
+        boolean hasLost = true;
+        hasLost = checkIfAllEnginesDead();
+        if (hasLost)
+        {
+            stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
+        }
+    }
+
+    /**
+     * Method that handles all the updating that should happen on an enemies turn
+     */
+    private void enemyTurnUpdate(){
+        boolean shouldShowFortress = false;
+
+        //Work out what should happen if we need to display a new fortress
+        if(!hasChangedFortress){
+            //If all fortresses have been displayed, go back to the player turn
+            if(currentFortressIndex >= fortresses.size()){
+                currentFortressIndex = 0;
+                //If the fortresses have destroyed all engines, finish the game
+                if(checkIfAllEnginesDead()){
+                    stateManager.changeState(new GameOverState(inputManager, font, stateManager, false));
                     return;
                 }
-                Fortress nextFortress = fortresses.get(currentFortressIndex);
+                this.snapToAttacker(engines.get(0));
+                tileManager.resetMovableTiles();
                 for(Engine e: engines){
-                    int xPosition = e.getX() + (e.getWidth() / 2) - (Gdx.graphics.getWidth() / 2);
-                    int yPosition = e.getY() + (e.getHeight() / 2) - (Gdx.graphics.getHeight() / 2);
-                    if(nextFortress.getX() >= xPosition && nextFortress.getX() <= xPosition + Gdx.graphics.getWidth() &&
-                    nextFortress.getY() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
-                        shouldShowFortress = true;
-                    }
-                    else if(nextFortress.getX() + nextFortress.getWidth() >= xPosition && nextFortress.getX() +
-                    nextFortress.getWidth() <= xPosition + Gdx.graphics.getWidth() && nextFortress.getY() +
-                    nextFortress.getHeight() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
-                        shouldShowFortress = true;
-                    }
+                    e.setMoved(false);
+                    e.ifInRangeFill(fireStation);
                 }
-                if(shouldShowFortress)
-                {
-                    this.snapToAttacker(nextFortress);
-                    BattleTurn(nextFortress);
+                playerTurn = true;
+                return;
+            }
+            //Get the current fortress that should be displayed
+            Fortress nextFortress = fortresses.get(currentFortressIndex);
+
+            //Work out if there is an engine near to the current fortress so we can display the fortress
+            for(Engine e: engines){
+                int xPosition = e.getX() + (e.getWidth() / 2) - (Gdx.graphics.getWidth() / 2);
+                int yPosition = e.getY() + (e.getHeight() / 2) - (Gdx.graphics.getHeight() / 2);
+                if(nextFortress.getX() >= xPosition && nextFortress.getX() <= xPosition + Gdx.graphics.getWidth() &&
+                        nextFortress.getY() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
+                    shouldShowFortress = true;
                 }
-                else{
-                    currentFortressIndex++;
-                    hasChangedFortress = false;
+                else if(nextFortress.getX() + nextFortress.getWidth() >= xPosition && nextFortress.getX() +
+                        nextFortress.getWidth() <= xPosition + Gdx.graphics.getWidth() && nextFortress.getY() +
+                        nextFortress.getHeight() >= yPosition && nextFortress.getY() <= yPosition + Gdx.graphics.getHeight()){
+                    shouldShowFortress = true;
                 }
-                hasChangedFortress = true;
-            }else
+            }
+            //If there is an engine near the fortress, show it and perform the fortresses attack
+            if(shouldShowFortress)
             {
-                counter++;
-                if(counter >= 180){
-                    hasChangedFortress = false;
-                    currentFortressIndex++;
-                    counter = 0;
-                }
+                this.snapToAttacker(nextFortress);
+                BattleTurn(nextFortress);
+            }
+            else{
+                currentFortressIndex++;
+                hasChangedFortress = false;
+            }
+            hasChangedFortress = true;
+        }
+        //If we are already displaying a fortress, keep displaying until the timer has reached its limit
+        else
+        {
+            counter++;
+            if(counter >= 180){
+                hasChangedFortress = false;
+                currentFortressIndex++;
+                counter = 0;
             }
         }
     }
 
+    /**
+     * Method that works out is all the engines have been destroyed by the fortresses
+     * @return Returns true if all engines are destroyed, false otherwise
+     */
     private boolean checkIfAllEnginesDead(){
         for(Engine e: engines){
             if(!e.isDead()) return false;
@@ -311,10 +338,16 @@ public class GameState extends State
         return true;
     }
 
+    /**
+     * Method that will move the camera position to one of the attackers
+     * @param a The attacker which the camera should be moved to
+     */
     private void snapToAttacker(Attacker a){
+        //Get the positions of where the camera should move to
         int newCameraX = a.getX() + (a.getWidth() / 2);
         int newCameraY = a.getY() + (a.getHeight() / 2);
 
+        //Make sure the new camera position is within the bounds of the screen
         if(newCameraX <= Gdx.graphics.getWidth() / 2)
             newCameraX = Gdx.graphics.getWidth() / 2;
         else if(newCameraX >= (gameMap.getMapWidth() * Tile.TILE_SIZE) - Gdx.graphics.getWidth() / 2)
@@ -325,6 +358,7 @@ public class GameState extends State
         else if(newCameraY >= (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2)
             newCameraY = (gameMap.getMapHeight() * Tile.TILE_SIZE) - Gdx.graphics.getHeight() / 2;
 
+        //Move the camera to its new position
         camera.position.x = newCameraX;
         camera.position.y = newCameraY;
         camera.update();
@@ -351,7 +385,6 @@ public class GameState extends State
         }
     }
 
-
     /***
      * Called when the InputManager detects an input and is used to work out what tile was pressed and what should occur as a result
      * @param x X position of the input
@@ -362,7 +395,6 @@ public class GameState extends State
     {
         //Loops through all tiles to see if it has been pressed
         for(Tile t: tiles) {
-            //WANT TO ADD SOME EFFICIENCY CODE HERE THAT FIRSTLY CHECKS IF TILE ON SCREEN BEFORE PROCESSING
             //When we have found the tile that has been pressed, perform neccessary processing
             if(t.checkIfClickedInside(x, y)) {
                 //updated the pointers to the current and previous tiles
@@ -478,6 +510,11 @@ public class GameState extends State
         }
     }
 
+    //Unused method that is required since this is a child of State
+    public void dispose(){
+
+    }
+
     /***
      * Method that handles map resizing when the window size is changed
      */
@@ -499,11 +536,7 @@ public class GameState extends State
         }
     }
 
-    public void pauseGame() {}
-
-    public void unpauseGame() {}
-
-    //Getters and setters for all private attributes in the class
+    //Getters and setters
 
     public int getTimePassed()
     {

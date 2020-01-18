@@ -1,6 +1,6 @@
 package com.septagon.entites;
 
-/*
+/**
  * Class that will be used to define the fire stations in the game
  */
 

@@ -46,6 +46,15 @@ public class StateManager
     }
 
     /**
+     * Dispose of all elements from all states when the game is closed
+     */
+    public void dispose(){
+        for(State s: states){
+            s.dispose();
+        }
+    }
+
+    /**
      * Changes the current state of the game
      * @param newState the state that is going to become the current state
      */
@@ -59,4 +68,5 @@ public class StateManager
     //Getters
     public int getCurrentIndex() { return currentIndex; }
     public State getCurrentState() { return states.get(currentIndex); }
+    public ArrayList<State> getStates() { return states; }
 }

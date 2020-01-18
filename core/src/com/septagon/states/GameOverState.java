@@ -6,12 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.septagon.game.InputManager;
 
 import java.awt.*;
 
-/*
+/**
 Child of the State class that will be used to manage the system when the user has reached game over
  */
 
@@ -28,8 +27,6 @@ public class GameOverState extends State
     private boolean didWin = false;
     private SpriteBatch gameOverSpriteBatch;
 
-    private BitmapFont blueFont;
-
     private int position = 1;
     private Rectangle yesBox;
     private Rectangle noBox;
@@ -40,6 +37,9 @@ public class GameOverState extends State
         this.didWin = didWin;
     }
 
+    /**
+     * Sets up all text and positions
+     */
     public void initialise()
     {
         gameOverLabel = new GlyphLayout();
@@ -47,16 +47,9 @@ public class GameOverState extends State
         playAgainLabel = new GlyphLayout();
         yesLabel = new GlyphLayout();
         noLabel = new GlyphLayout();
-
         gameOverSpriteBatch = new SpriteBatch();
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("GameFont.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        parameter.color = Color.BLUE;
-        parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:-";
-        blueFont = generator.generateFont(parameter);
-
+        //If the user won, tell them they won if not tell them they lost
         if(didWin){
             gameOverLabel.setText(font, "Congrats, you win!");
             extraInfoLabel.setText(font, "You destroyed all the ET Fortresses and saved York!");
@@ -64,10 +57,15 @@ public class GameOverState extends State
             gameOverLabel.setText(font, "Game Over! You Lose.");
             extraInfoLabel.setText(font, "All your fire engines were destroyed!");
         }
+
+        //Setup the text for the play Again section
         playAgainLabel.setText(font, "Play Again?");
+        font.setColor(Color.BLUE);
         yesLabel.setText(font, "Yes");
+        font.setColor(Color.WHITE);
         noLabel.setText(font, "No");
 
+        //Setup positions for all text on the screen
         gameOverX = (int)((Gdx.graphics.getWidth() / 2) - gameOverLabel.width / 2);
         gameOverY = (int)((Gdx.graphics.getHeight() / 2) + gameOverLabel.height + 100);
         extraInfoX = (int)((Gdx.graphics.getWidth() / 2) - extraInfoLabel.width / 2);
@@ -82,10 +80,15 @@ public class GameOverState extends State
         setupRectangles();
     }
 
+    //Unused method that is needed since we are a child class of State
     public void update()
     {
     }
 
+    /**
+     * Used to draw all the text to the screen
+     * @param batch The batch which is used for rendering game to screen (not used in this class)
+     */
     public void render(SpriteBatch batch)
     {
         Gdx.gl.glClearColor(50.0f/255.0f, 205.0f/255.0f, 50.0f/255.0f, 1.0f);
@@ -100,8 +103,6 @@ public class GameOverState extends State
             extraInfoLabel.setText(font, "You destroyed all the ET Fortresses and saved York!");
         }
         playAgainLabel.setText(font, "Play Again?");
-        yesLabel.setText(font, "Yes");
-        noLabel.setText(font, "No");
 
         font.draw(gameOverSpriteBatch, gameOverLabel, gameOverX, gameOverY);
         font.draw(gameOverSpriteBatch, extraInfoLabel, extraInfoX, extraInfoY);
@@ -114,7 +115,21 @@ public class GameOverState extends State
         gameOverSpriteBatch.end();
     }
 
+    /**
+     * Method used to dispose of the SpriteBatch
+     */
+    public void dispose(){
+        gameOverSpriteBatch.dispose();
+    }
+
+    /**
+     * Sets the text colour of the yes and no text which may switch colours depending on inputs
+     * @param currentPosition The position of the text in the play again menu
+     * @param currentLabel The layout being used to render the text
+     * @param text The actual string containing the text to be renderer
+     */
     private void setTextColour(int currentPosition, GlyphLayout currentLabel, String text){
+        //If the menu should be on the current text, draw it blue if not white
         if(currentPosition == this.position){
             font.setColor(Color.BLUE);
             currentLabel.setText(font, text);
@@ -125,6 +140,9 @@ public class GameOverState extends State
         }
     }
 
+    /**
+     * Setup the positions of the rectangles which are used to handle mouse input
+     */
     private void setupRectangles(){
         yesX = (int)((Gdx.graphics.getWidth() / 2) - yesLabel.width / 2);
         yesY = (int)((Gdx.graphics.getHeight() / 2) - 60);
@@ -138,6 +156,11 @@ public class GameOverState extends State
         noBox.setBounds(noX - 20, noY - 20, 100, 30);
     }
 
+    /**
+     * Called when mouse inout happens and checks if the user has pressed either yes or no buttons
+     * @param x The x position of the input
+     * @param y The y position of the input
+     */
     public void checkIfButtonPressed(float x, float y){
         if(x >= yesBox.x && x <= yesBox.x + yesBox.width && y >= yesBox.y && y <= yesBox.y + yesBox.height){
             System.out.println("YES BUTTON PRESSED");
@@ -146,7 +169,9 @@ public class GameOverState extends State
         }
     }
 
+    //Getters
     public int getPosition(){ return position; }
 
+    //Setters
     public void setPosition(int position) { this.position = position; }
 }

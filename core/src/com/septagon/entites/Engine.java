@@ -1,6 +1,6 @@
 package com.septagon.entites;
 
-/*
+/**
  * Class that inherits from vehicle that will define all the fire engines
  * in the game
  */
@@ -21,16 +21,6 @@ public class Engine extends Vehicle
 
     /***
      * Constructor that Sets up the member variables for engine
-     * @param col The column in the map that the engine is at
-     * @param row The row in the map that the engine is at
-     * @param texture The texture of the engine
-     * @param health The health of the engine - unique to engine
-     * @param damage The damage of the engine - unique to engine
-     * @param range The range of the engine - unique to engine
-     * @param speed The speed of the engine - unique to engine
-     * @param maxVolume The maximum volume of the engine - unique to engine
-     * @param fillSpeed The fill speed of the engine - unique to engine
-     * @param id The id of the engine - unique to engine
      */
     public Engine(int col, int row, Texture texture, int health, int damage, int range, int speed, int maxVolume, int fillSpeed, Integer id) {
         super(col, row, texture, health, damage, range, speed);
@@ -53,6 +43,9 @@ public class Engine extends Vehicle
         }
     }
 
+    /**
+     * Calls to update the required variables when the engine fires at a fortress
+     */
     public void fire(){
         this.volume -= this.damage;
     }

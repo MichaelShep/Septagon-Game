@@ -11,9 +11,10 @@ import com.septagon.entites.Tile;
 import com.septagon.states.*;
 
 
-/*
+/**
 Class used to handle all inputs from the user
  */
+
 public class InputManager implements InputProcessor
 {
     Vector3 tp = new Vector3();

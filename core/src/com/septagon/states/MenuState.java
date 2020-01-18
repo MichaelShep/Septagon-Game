@@ -18,24 +18,26 @@ Child of the State class that will be used to manage the system when the user is
 
 public class MenuState extends State
 {
+    //Keep track of how many elements there are in the menu
     public static final int NUM_MENU_ITEMS = 4;
 
+    //Variables with the text that will be displayed to the screen
     private String titleLabel;
     private String playLabel;
     private String exitLabel;
     private int menuPosition;
 
-    private Texture backgroundImage;
-
     private GlyphLayout layout;
     private int titleCentreX;
 
+    //Create the SpriteBatch and camera which are specific for this state
     private SpriteBatch menuBatch;
     private OrthographicCamera menuCamera;
+    private OrthographicCamera gameCamera;
 
+    //Create bounding boxes which are used to act like buttons
     private Rectangle playBox;
     private Rectangle exitBox;
-    private OrthographicCamera gameCamera;
 
     /***
      * Constructor that set initial values for all class member variables
@@ -50,10 +52,12 @@ public class MenuState extends State
         playLabel = "Play";
         exitLabel = "Exit";
         menuPosition = 0;
-        backgroundImage = null;
         layout = new GlyphLayout(font, titleLabel);
     }
 
+    /**
+     * Set up all the text and positions for the menu system
+     */
     public void initialise()
     {
         menuBatch = new SpriteBatch();
@@ -66,11 +70,18 @@ public class MenuState extends State
         setupRectanglePositions();
     }
 
+    /**
+     * Updates everything in the game
+     */
     public void update()
     {
         menuBatch.setProjectionMatrix(menuCamera.combined);
     }
 
+    /**
+     * Draws all the text to the screen
+     * @param batch
+     */
     public void render(SpriteBatch batch)
     {
         Gdx.gl.glClearColor(0, 0, 1, 1);
@@ -118,7 +129,13 @@ public class MenuState extends State
         this.menuPosition = menuPosition;
     }
 
+    /**
+     * Called when the window is resized
+     * @param width The new width of the screen
+     * @param height The new height of the screen
+     */
     public void hasResized(float width, float height){
+        //Update the menuCamera with the new dimensions
         menuCamera.viewportWidth = width;
         menuCamera.viewportHeight = height;
         menuCamera.position.x = Gdx.graphics.getWidth() / 2;
@@ -126,6 +143,9 @@ public class MenuState extends State
         menuCamera.update();
     }
 
+    /**
+     * Setup the positions of the buttons
+     */
     private void setupRectanglePositions(){
         playBox = new Rectangle();
         playBox.setBounds(80, Gdx.graphics.getHeight() - 130, 100, 50);
@@ -134,6 +154,11 @@ public class MenuState extends State
         exitBox.setBounds(180, Gdx.graphics.getHeight() - 180, 100,50);
     }
 
+    /**
+     * Checks if the user has pressed on any of the buttons
+     * @param x The x position of the input
+     * @param y The y position of the input
+     */
     public void checkIfClickedOption(float x, float y){
         if(x >= playBox.x && x <= playBox.x + playBox.width){
             if(y >= playBox.y && y <= playBox.y + playBox.height){
@@ -144,6 +169,15 @@ public class MenuState extends State
         }
     }
 
+    /**
+     * Method called to dispose of all objects when the game has finished
+     */
+    public void dispose()
+    {
+        menuBatch.dispose();
+    }
+
+    //Getters
     public int getMenuPosition() { return menuPosition; }
     public OrthographicCamera getMenuCamera() { return menuCamera; }
 }

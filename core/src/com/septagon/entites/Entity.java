@@ -1,6 +1,6 @@
 package com.septagon.entites;
 
-/*
+/**
  * Abstract class used to define all Entities within our game
  */
 
@@ -22,11 +22,6 @@ public abstract class Entity
 
     /***
      * Constructor that sets inital values for class members based on given input
-     * @param col The column that the tile is at in the map
-     * @param row The row that the tile is at in the map
-     * @param width The width of the entity
-     * @param height The height of the entity
-     * @param texture The texture of the entity
      */
     public Entity(int col, int row, int width, int height, Texture texture)
     {
@@ -58,8 +53,6 @@ public abstract class Entity
         batch.draw(this.texture, this.x, this.y, this.width, this.height);
     }
 
-
-
     //Getters
     public int getX(){ return this.x;}
     public int getY(){ return this.y; }
@@ -68,7 +61,6 @@ public abstract class Entity
     public int getWidth(){ return this.width;}
     public int getHeight(){ return this.height;}
     public Texture getTexture() { return this.texture;}
-
     public boolean isDead() {
         return dead;
     }

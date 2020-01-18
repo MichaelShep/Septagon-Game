@@ -1,6 +1,6 @@
 package com.septagon.entites;
 
-/*
+/**
  * Class that will be used to keep track of and handle the processing
  * of all entities in the game
  */
@@ -68,5 +68,6 @@ public class EntityManager
             e.render(batch);
     }
 
+    //Getters
     public ArrayList<Entity> getEntities() { return entities; }
 }

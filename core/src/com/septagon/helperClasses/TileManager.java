@@ -6,6 +6,10 @@ import com.septagon.entites.TiledGameMap;
 
 import java.util.ArrayList;
 
+/**
+ * Used to handle all of the tile interaction methods and methods for updating values of tiles
+ */
+
 public class TileManager {
 
     private ArrayList<Engine> engines;

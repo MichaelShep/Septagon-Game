@@ -1,5 +1,10 @@
 package com.septagon.entites;
 
+/**
+ * Class which is used to load our Tiled map into the game and handle all of its rendering
+ * Also allows to get the tiles from specific locations
+ */
+
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;

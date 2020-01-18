@@ -1,5 +1,5 @@
 package com.septagon.entites;
-/*
+/**
  * Abstract class that provides features that extend upon entities features
  * for all entities in the game that will be able to attack other entities
  */
@@ -52,6 +52,9 @@ public abstract class Attacker extends Entity
         if(health <= 0) health = 0;
     }
 
+    /**
+     * Set up the range corner values for each attacker which are used for detecting if an engine can be fired at
+     */
     protected void setRangeCorners() {
         //Makes an arrayList of the boundaries of the 2 x values and 2 y values at the corner
         rangeCorners.clear();

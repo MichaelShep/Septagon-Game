@@ -1,6 +1,6 @@
 package com.septagon.game;
 
-/*
+/**
 Class that is used for rendering and managing all the heads up display
  */
 
@@ -18,7 +18,7 @@ import java.awt.*;
 
 public class UIManager
 {
-    //Create variables for all the different font varients that will be used
+    //Create variables for all the different font variants that will be used
     private BitmapFont font;
     private BitmapFont smallFont;
 

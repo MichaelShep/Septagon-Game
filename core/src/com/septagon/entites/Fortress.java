@@ -1,6 +1,6 @@
 package com.septagon.entites;
 
-/*
+/**
  * Class that will be used to define all the fortresses in the game
  */
 

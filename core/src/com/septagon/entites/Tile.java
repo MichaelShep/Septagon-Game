@@ -1,8 +1,8 @@
 package com.septagon.entites;
 
-/*
- * Class that will be used to define all the different entities that are not
- * under the control of the player or the enemy
+/**
+ * Class that will be used to keep track of the different tiles in our map and the interactions
+ * between tiles
  */
 
 import com.badlogic.gdx.graphics.Texture;
