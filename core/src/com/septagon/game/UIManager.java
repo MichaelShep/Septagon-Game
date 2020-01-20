@@ -228,7 +228,7 @@ public class UIManager
         showRectHeight = Gdx.graphics.getHeight() / 16;
 
         statsRectX = Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4) - 20;
-        statsRectY = (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 2) - 50);
+        statsRectY = (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 2) - 30);
         statsRectWidth = Gdx.graphics.getWidth() / 4;
         statsRectHeight = Gdx.graphics.getHeight() / 2;
 
@@ -315,10 +315,16 @@ public class UIManager
                 Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 16);
     }
 
+    public Rectangle getStatsRect()
+    {
+        return new Rectangle(Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4) - 20, (Gdx.graphics.getHeight() - (Gdx.graphics.getHeight() / 2) - 30),
+                Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
+    }
+
     public Rectangle getMinimiseRect()
     {
-        return new Rectangle(getShowStatsRect().x + getShowStatsRect().width - (Gdx.graphics.getWidth() / 32),
-                getShowStatsRect().y + getShowStatsRect().height - (Gdx.graphics.getHeight() / 24),
+        return new Rectangle(getStatsRect().x + getStatsRect().width - (Gdx.graphics.getWidth() / 32),
+                getStatsRect().y + getStatsRect().height - (Gdx.graphics.getHeight() / 24),
                 Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight() / 24);
     }
 }

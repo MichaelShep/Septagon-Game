@@ -129,9 +129,9 @@ public class GameState extends State
         fortresses.add(fortressStation);
 
         //Sets the engines positions so that they start from the fireStation
-        engine1.setCol(fireStation.getCol() + 5 - 40);
+        engine1.setCol(fireStation.getCol() + 5);
         engine1.setRow(fireStation.getRow() - 1);
-        engine2.setCol(fireStation.getCol() + 3 - 40);
+        engine2.setCol(fireStation.getCol() + 3);
         engine2.setRow(fireStation.getRow() - 1);
 
         //Adds all the engines to the ArrayList of engines
@@ -170,6 +170,7 @@ public class GameState extends State
 
         //Sets up the camera parameters and moves it to its inital position
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.x = gameMap.getMapWidth() * Tile.TILE_SIZE - Gdx.graphics.getWidth() / 2;
         camera.update();
 
         //Create objects referring to all tiles in game
